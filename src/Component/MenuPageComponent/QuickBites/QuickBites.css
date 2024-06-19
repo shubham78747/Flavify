@@ -126,7 +126,7 @@ html {}
 }
 
 body {
-    background: black !important;
+    /* background: black !important; */
 }
 
 .modal-dialog {

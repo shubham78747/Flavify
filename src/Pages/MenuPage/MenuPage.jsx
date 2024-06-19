@@ -13,20 +13,18 @@ import ItemDetails from '../../Component/MenuPageComponent/ItemDetails/ItemDetai
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
 
-
-
 function MenuPage() {
+    const [loading, setLoading] = useState(true);
 
     const dispatch = useDispatch();
   const { menu,categories  } = useSelector((state) => state.food);
 
   useEffect(() => {
     dispatch(fetchQuickBites());
-    dispatch(fetchMenu());
+    dispatch(fetchMenu()).then(() => setLoading(false));
   }, [dispatch]);
 
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [activeCategory, setActiveCategory] = useState('veg');
@@ -36,22 +34,24 @@ function MenuPage() {
         setActiveCategory(category);
     };
     useEffect(() => {
-        const timer = setTimeout(() => {
-            handleShow();
-        }, 5000); // 5 seconds
+        if (Object.keys(categories).length > 0) {
+          const defaultCategory = Object.keys(categories)[0];
+          handleQuickbiteClick(defaultCategory);
+        }
+      }, [categories]);
 
-        // Cleanup the timer on component unmount
-        return () => clearTimeout(timer);
-    }, []);
     const [currentStep, setCurrentStep] = useState(1);
 
     // List of dummy people for selection (you can replace this with actual data)
     const [menuItem, setMenuItem] = useState([]);
-    console.log('menuItem',menuItem)
     const handleQuickbiteClick = (category) =>{
         const data = menu.items.filter(item => item.item_category === category);
-        const result=data.push(category)
-        setMenuItem(data,result);
+        const updatedData = {
+            items: data,
+            selected_category: category
+          };
+        setMenuItem(updatedData);
+        setLoading(false);
     }
 
     return (
@@ -62,7 +62,7 @@ function MenuPage() {
                         <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
                         <Search />
                         <QuickBites items={Object.keys(categories)} handleQuickbiteClick={handleQuickbiteClick}/>
-                        <ItemDetails  items={menuItem}/>
+                        <ItemDetails  items={menuItem.items} selectedCategory={menuItem.selected_category} loading={loading} />
                         {/* <Combos /> */}
                         <MobileBar />
                         {/* <div className="cartitem">

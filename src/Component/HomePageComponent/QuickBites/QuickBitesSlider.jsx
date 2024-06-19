@@ -205,6 +205,7 @@ function QuickBitesSlider() {
     // };
 
     const handleQuickbiteClick = (quickbite) => {
+        console.log('setItem9898',quickbite)
         setShow(true);
          const optionsGrouped = Object.values(menu.itemOptions
           .filter((option) => option.item_id === quickbite.item_id)
@@ -236,7 +237,7 @@ function QuickBitesSlider() {
           }, {}));
           const data = {
             price: quickbite.price,
-            name: item.item_name,
+            name: quickbite.item_name,
             addOnsGrouped: addOnsGrouped,
             optionsGrouped: optionsGrouped,
           }
