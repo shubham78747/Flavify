@@ -44,6 +44,26 @@ function SuccessPage() {
                         <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
                         <Search />
                         <MobileBar />
+                        <div className="successimg">
+                            <ul className='patern'>
+                                <li><i></i></li>
+                                <li><i></i></li>
+                                <li><i></i></li>
+                                <li><i></i></li>
+                                <li><i></i></li>
+                                <li><i></i></li>
+                            </ul>
+                            <span>
+                                <Image src='Images/tick.svg'></Image>
+                            </span>
+                            <h4>Your order has been placed successfully</h4>
+                            <Link to="" className='bg-white'>Order more items</Link>
+                            <div className="successlinks">
+                                <Link to="">View top deals</Link>
+                                <Link to="">Check out best sellers</Link>
+                                <Link to="">Call the waiter</Link>
+                            </div>
+                        </div>
                         {/* <div className="cartitem">
                             <Link className='cart'>
                                 <Image src='Images/cart.svg'></Image>

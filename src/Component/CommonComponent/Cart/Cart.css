@@ -1,0 +1,84 @@
+.maintitle h3 {}
+
+.maindishtitle h3 {
+    color: var(--Neutral-600, #4B5563);
+    text-align: center;
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    /* 133.333% */
+    letter-spacing: 0.24px;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.searchmain {
+    margin-bottom: 40px;
+}
+
+.maindishtitle {
+    position: relative;
+}
+
+.maindishtitle:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #D1D5DB;
+    height: 1px;
+    width: 140px;
+}
+
+.maindishtitle:before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #D1D5DB;
+    height: 1px;
+    left: auto;
+    z-index: 99;
+    width: 140px;
+}
+
+.maintitle.d-flex.cartheader {
+    display: flex;
+    align-items: center;
+}
+
+.maintitle.d-flex.cartheader a {
+    margin: 0;
+    color: black;
+}
+
+.maintitle.d-flex.cartheader {
+    padding: 10px;
+}
+
+.maintitle.d-flex.cartheader a+a {
+    margin-left: auto;
+}
+
+.maintitle.d-flex a {
+    margin: revert-layer;
+}
+
+.maintitle.d-flex {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin: 0;
+}
+
+.maintitle.d-flex a {
+    color: black;
+}
+
+.maintitle.d-flex a+a {
+    margin-left: auto;
+}
