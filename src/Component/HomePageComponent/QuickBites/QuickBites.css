@@ -111,20 +111,23 @@
 
 html {}
 
-.fade.modal.show {
+.fade.modal {
     max-width: 480px;
     width: 100%;
     left: 50%;
     transform: translateX(-50%);
 }
 
-.fade.modal-backdrop.show {
+.fade.modal-backdrop {
     max-width: 480px;
     margin: auto;
     left: 50%;
     transform: translateX(-50%);
 }
 
+.maintitle.d-flex h1+a {
+    margin-left: auto;
+}
 
 body {
     background: #f9fafb !important
@@ -160,4 +163,30 @@ body {
     background-color: #ababab;
     border-radius: 100%;
     color: white;
+}
+
+.maintitle.d-flex h1+a {
+    margin-left: auto;
+}
+
+.ratingmain span {
+    margin-left: auto;
+}
+
+.ratingmain p {
+    border-radius: 3px;
+    border: 0.45px solid var(--Secondary-Slate-500, #64748B);
+    background: var(--Neutral-50, #F9FAFB);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--Neutral-500, #6B7280) !important;
+    font-family: Inter !important;
+    font-size: 7px !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    line-height: 100% !important;
+    /* 7px */
+    padding: 3px !important;
+    margin-left: 6px !important;
 }
