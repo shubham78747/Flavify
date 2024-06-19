@@ -236,7 +236,7 @@ function QuickBitesSlider() {
           }, {}));
           const data = {
             price: quickbite.price,
-            name: item.item_name,
+            name: quickbite.item_name,
             addOnsGrouped: addOnsGrouped,
             optionsGrouped: optionsGrouped,
           }
