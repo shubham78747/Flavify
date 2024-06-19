@@ -1,0 +1,244 @@
+.container {
+    max-width: 480px !important;
+    width: 100%;
+    margin: auto;
+    padding: 0 !important;
+}
+
+/* Container for the entire progress bar component */
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 20px;
+    margin-bottom: 40px;
+}
+
+/* Styling for the current step number */
+.progress-number {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Container for the progress bar itself */
+.progress-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+}
+
+/* Styling for the connecting line */
+.progress-line {
+
+    background-color: #e0e0e0;
+    position: relative;
+    margin: 0 10px;
+}
+
+/* Base styling for each circle on the progress bar */
+.progress-circle {
+
+    border-radius: 50%;
+    background-color: #90c2af;
+    position: absolute;
+
+    cursor: pointer;
+}
+
+
+
+/* Styling for the active state of a circle */
+.progress-circle.active {
+    background-color: #007bff;
+}
+
+/* Container for the person selection list */
+.person-selection {
+    text-align: center;
+}
+
+/* List styling for the selectable people */
+.person-selection ul {
+    list-style: none;
+    padding: 0;
+}
+
+.person-selection li {
+    padding: 10px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    margin: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+/* Highlight the selected person */
+.person-selection li.selected {
+    background-color: #007bff;
+    color: white;
+}
+
+.progress-bar {
+    /* border-radius: 100px; */
+    /* background: var(--Primary-50, #E6F8F2) !important; */
+    /* height: 12px; */
+    width: 100%;
+}
+
+.progress-line {
+    border-radius: 100px;
+    background: var(--Primary-50, #E6F8F2);
+    height: 12px;
+    width: 100%;
+    display: flex;
+
+    position: relative;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.progress-circle {
+    width: 8px;
+    height: 8px;
+    position: relative;
+    width: 20%;
+    max-width: 8px;
+}
+
+.progress-circle.active {
+    width: 42px;
+    height: 42px;
+    background: #e6f8f2;
+    position: relative;
+}
+
+.progress-circle:after {
+    transition: all 0.5s;
+    content:
+        "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 35px;
+    height: 35px;
+    background: #71917f;
+    border-radius: 100%;
+    opacity: 0;
+}
+
+.progress-circle.active:after {
+    opacity: 1;
+}
+
+
+.progress-circle.active:before {
+    transition: all 0.5s;
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 42px;
+    height: 42px;
+    background: #bcf1e0;
+    border-radius: 100%;
+    transition: all 0.5s;
+}
+
+.progress-bar {
+    overflow: visible !important;
+}
+
+.progress-number {
+    color: #000;
+    display: block;
+    font-family: Inter;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: -.8px;
+    line-height: 48px;
+    margin-bottom: 32px;
+}
+
+body .modal-content {
+    border-radius: 20px !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.modal-body {
+    padding: 0px !important;
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+}
+
+.fade.automodal.modal.show {
+    z-index: 999999;
+}
+
+.fade.singleitem.modal.show {
+    z-index: 99999;
+}
+
+.fade.singleitem.modal.show+.fade {
+    z-index: 999999;
+}
+
+a.cart {
+    position: absolute;
+    bottom: auto;
+    right: 9;
+    z-index: 99999;
+    right: 0;
+    border-radius: 4rem 0rem 0rem 4rem;
+    border: 0.743px solid var(--primary-500-main, #71917F);
+    background: var(--Primary-50, #E6F8F2);
+    box-shadow: 0px 8px 24px -3px rgba(16, 24, 40, 0.05), 0px 8px 24px -3px rgba(16, 24, 40, 0.10);
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    border-right: 0;
+    transition: all 0.5s;
+}
+
+.cartitem {
+    max-width: 480px;
+    width: 100%;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99999;
+    bottom: 130px;
+    text-align: right;
+}
+
+ul.selectcategories li.active.nonveg a {
+    border-color: #ef4444;
+    background: var(--Primary-50, #ef444417);
+}
+
+ul.selectcategories li.active.egg a {
+    border-color: #000000;
+    background: var(--Primary-50, #0000000a);
+}
+
+.itemdetails.mb-5 .row {
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.itemdetails.mb-5 .col-lg-8 {
+    width: 60%;
+}
+
+.itemdetails.mb-5 .col-lg-4 {
+    width: 40%;
+}

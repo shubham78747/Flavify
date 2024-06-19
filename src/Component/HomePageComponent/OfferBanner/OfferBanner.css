@@ -1,0 +1,74 @@
+.offerbannerdetail {
+    border-radius: 8px;
+    background: linear-gradient(78deg, #FFFAF0 1.5%, #F5E4CC 81.12%);
+    padding: 16px;
+    position: relative;
+}
+
+.offerbannerdetail span {
+    overflow: hidden;
+    color: #000;
+    text-overflow: ellipsis;
+    font-family: Inter;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 100%;
+    /* 10px */
+    letter-spacing: -0.2px;
+    text-transform: uppercase;
+}
+
+.offerbannerdetail h3 {
+    color: #EB9623;
+    font-family: Nunito;
+    font-size: 42.468px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: 99%;
+    /* 42.044px */
+    margin: 0;
+    margin-bottom: 3px;
+}
+
+.offerbannerdetail p {
+    overflow: hidden;
+    color: #EB9623;
+    text-overflow: ellipsis;
+    font-family: Inter;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 100%;
+    /* 10px */
+    letter-spacing: -0.2px;
+    text-transform: uppercase;
+}
+
+.offerbannerdetail a {
+    border-radius: 58.802px;
+    border: 0.817px solid var(--primary-500-main, #71917F);
+    background: var(--primary-500-main, #71917F);
+    box-shadow: 0px 0.817px 1.633px 0px rgba(16, 24, 40, 0.04), 0px 0.817px 1.633px 0px rgba(16, 24, 40, 0.04);
+    padding: 8px 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--Generic-White, #FFF);
+    text-align: justify;
+    font-family: Inter;
+    font-size: 9.8px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 11.434px;
+    /* 116.667% */
+    text-decoration: none;
+}
+
+.offerbannerdetail i {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    max-width: 190px;
+    width: 100%;
+}

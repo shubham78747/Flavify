@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.guestselectmodalmain.pt-0 .itemtitle h3 {
+  text-align: left;
+}
+
+.pt-5.modal-body {
+  padding-top: 20px !important;
+}
+
+@media only screen and (max-width: 478px) {
+  .tabledetail {
+    padding: 0;
+  }
+
+  .container {
+    padding: 10px 10px !important;
+  }
+
+  .offerbannerdetail i {
+    max-width: 160px !important;
+  }
+
+  .offerbannerdetail h3 {
+    font-size: 32px !important;
+  }
+
+  .combomodal .modal-body {
+    height: calc(100vh - 120px);
+    overflow: auto;
+  }
+
+  .maindishtitle:before {
+    width: 95px !important;
+  }
+
+  .maindishtitle:after {
+    width: 95px !important;
+  }
+}

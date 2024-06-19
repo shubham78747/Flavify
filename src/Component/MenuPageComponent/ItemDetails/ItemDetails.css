@@ -1,0 +1,114 @@
+.itemtitle.mb-0 h4 {
+    color: var(--Neutral-600, #4B5563);
+
+    /* Label/XSmall/Semibold */
+    font-family: Inter;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 14px;
+    /* 140% */
+    margin-bottom: 6px;
+}
+
+.itemtitle.mb-0 p {
+    margin-bottom: 0px;
+}
+
+.itemtitle.mb-0 a {
+    overflow: hidden;
+    color: var(--Neutral-400, #9CA3AF);
+    text-overflow: ellipsis;
+    font-family: Inter;
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 14px;
+    /* 175% */
+    text-decoration: none;
+}
+
+a.viewcombomain {
+    overflow: hidden;
+    color: var(--primary-500-main, #71917F);
+    text-overflow: ellipsis;
+    font-family: Inter;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 14px;
+    /* 175% */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.bg-white {
+    border-radius: 6px;
+    background: var(--Generic-White, #FFF);
+    padding: 8px;
+    margin-bottom: 30px;
+}
+
+body {}
+
+.tabledetail {
+    background: var(--Neutral-50, #F9FAFB) !important;
+}
+
+.itemaddimg a {
+    border-radius: 6.269px;
+    border: 0.784px solid var(--Primary-100, #DCE9E3);
+    background: var(--Primary-50, #E6F8F2);
+    box-shadow: 0px 0.784px 1.567px 0px rgba(16, 24, 40, 0.04), 0px 0.784px 1.567px 0px rgba(16, 24, 40, 0.04);
+    padding: 8px 12px;
+    margin: auto;
+    display: inline-flex;
+    justify-content: center;
+    color: var(--primary-500-main, #71917F);
+    text-align: center;
+    font-family: Inter;
+    font-size: 10.972px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 12.539px;
+    /* 114.286% */
+    gap: 2px;
+    text-decoration: none;
+    align-items: center;
+    margin: auto;
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.itemaddimg {
+    text-align: center;
+    position: relative;
+}
+
+.bg-white.bg-green {
+    /* background: transparent !important; */
+    border: 1px solid #71917f;
+}
+
+.bg-white {
+    border: 1px solid var(--Generic-White, #FFF);
+    transition: all 0.5s;
+}
+
+a.viewcombomain.mb-3 {
+    border-radius: 6.269px;
+    border: 0.784px solid var(--primary-500-main, #71917F);
+    background: var(--primary-500-main, #71917F);
+    box-shadow: 0px 0.784px 1.567px 0px rgba(16, 24, 40, 0.04), 0px 0.784px 1.567px 0px rgba(16, 24, 40, 0.04);
+    max-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 6px 9px;
+}

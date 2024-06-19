@@ -1,0 +1,112 @@
+ul.mobilebar {
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    position: fixed;
+    bottom: 0;
+    z-index: 9;
+    width: 100%;
+    max-width: 480px;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+}
+
+.tabledetail {
+    margin-bottom: 40px;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    padding-bottom: 30px;
+}
+
+
+
+ul.mobilebar:after {
+    display: none;
+}
+
+ul.mobilebar {
+    text-align: center;
+}
+
+ul.mobilebar {
+    margin: 0;
+    padding: 7px 28px;
+    box-shadow: 0px -4px 30px -20px #0000005c;
+    border-radius: 15px 15px 0px 0px;
+    -webkit-border-radius: 15px 15px 0px 0px;
+    -moz-border-radius: 15px 15px 0px 0px;
+    -ms-border-radius: 15px 15px 0px 0px;
+    -o-border-radius: 15px 15px 0px 0px;
+}
+
+ul.mobilebar a:after {
+    display: none;
+}
+
+ul.mobilebar a {
+    text-decoration: none;
+    color: #71917f;
+}
+
+ul.mobilebar p {
+    color: var(--Neutral-800, #1F2937);
+    text-align: center;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 14px;
+    margin-top: 3px;
+}
+
+ul.mobilebar svg {
+    width: 30px;
+    height: 30px;
+}
+
+ul.mobilebar {
+    z-index: 88888;
+}
+
+ul.mobilebar li {
+    transition: all 0.5s;
+    position: relative;
+}
+
+ul.mobilebar li:after {
+    content: "";
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38px;
+    background: #71917f;
+    height: 5px;
+    border-radius: 10px 10px 0px 0px;
+    opacity: 0;
+}
+
+ul.mobilebar span {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+}
+
+ul.mobilebar li.active:after {
+    opacity: 1;
+}
+
+ul.mobilebar li.active {
+    transform: translateY(-5px);
+}
