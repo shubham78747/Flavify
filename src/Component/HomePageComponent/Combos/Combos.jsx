@@ -12,7 +12,7 @@ import CombosSlider from './CombosSlider';
 function Combos() {
     return (
         <div className="quickbitesslider mb-0">
-            <Title title="Custom combos just for you" className="quicktitle mb-3" />
+            <Title title="A.I Combos" className="quicktitle mb-3" />
             <CombosSlider />
         </div>
     );

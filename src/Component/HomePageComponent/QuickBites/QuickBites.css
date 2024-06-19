@@ -111,7 +111,7 @@
 
 html {}
 
-.fade.modal {
+.fade.modal.show {
     max-width: 480px;
     width: 100%;
     left: 50%;
@@ -126,7 +126,7 @@ html {}
 }
 
 body {
-    background: black !important;
+    background: #f9fafb !important
 }
 
 .modal-dialog {
@@ -153,53 +153,10 @@ body {
     border: none !important;
 }
 
+.modal-body {}
 
 .modal-header button {
     background-color: #ababab;
     border-radius: 100%;
     color: white;
-}
-
-p.titletext {
-    color: var(--Neutral-500, #6B7280);
-    font-family: Inter;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 18px;
-    /* 150% */
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-
-
-.ratingmain p {
-    color: var(--Neutral-500, #6B7280);
-    font-family: Inter;
-    font-size: 7px !important;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 100% !important;
-    /* 7px */
-    margin: 0;
-    margin-right: auto;
-    border-radius: 3px;
-    border: 0.45px solid var(--Secondary-Slate-500, #64748B);
-    background: var(--Neutral-50, #F9FAFB);
-    padding: 3px;
-}
-
-.ratingmain {
-    gap: 6px;
-}
-
-ul.rating li svg {
-    width: 10px;
-}
-
-ul.rating li {
-    height: 13px;
 }

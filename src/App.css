@@ -79,3 +79,25 @@
     width: 95px !important;
   }
 }
+
+.selectvariantGroup {
+  padding-left: 0px;
+}
+
+ul.selectvariantGroup h3 {
+  color: var(--Neutral-800, #1F2937);
+
+  /* Label/Large/Semi Bold */
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+  /* 112.5% */
+  text-align: left;
+  margin-bottom: 16px;
+}
+
+ul.selectvariantmain {
+  padding: 0;
+}

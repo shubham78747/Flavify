@@ -27,7 +27,7 @@ function HomePage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             handleShow();
-        }, 2000); // 5 seconds
+        }, 5000); // 5 seconds
 
         // Cleanup the timer on component unmount
         return () => clearTimeout(timer);
@@ -42,21 +42,16 @@ function HomePage() {
                 <div className="container">
                     <div className="tabledetail">
                         <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
-                        {/* <Search /> */}
+                        <Search />
                         <QuickBites />
                         <OfferBanner />
                         <Combos />
                         <MobileBar />
-                        {/* <div className="cartitem">
-                            <Link className='cart'>
-                                <Image src='Images/cart.svg'></Image>
-                            </Link>
-                        </div> */}
                     </div>
                 </div>
             </section>
             <Modal show={show} onHide={handleClose} className='automodal'>
-                {/* <Modal.Header closeButton></Modal.Header> */}
+                <Modal.Header closeButton></Modal.Header>
                 <Modal.Body className="pt-5 p-3">
                     <div className="guestselectmodalmain">
                         <h3>Number of guests for dining?</h3>
@@ -81,27 +76,26 @@ function HomePage() {
 
                         </div>
                         <ul className='selectcategories'>
-                            <li className={`${activeCategory === 'veg' ? 'active veg' : ''}`}>
-                                <Link to="#" onClick={() => handleCategoryClick('veg')}>
+                            <li className={activeCategory === 'veg' ? 'active' : ''}>
+                                <Link href="#" onClick={() => handleCategoryClick('veg')}>
                                     <span><Image src='/Images/veg.svg' alt="Veg" /></span>
                                     Veg
                                 </Link>
                             </li>
-                            <li className={`${activeCategory === 'nonveg' ? 'active nonveg' : ''}`}>
-                                <Link to="#" onClick={() => handleCategoryClick('nonveg')}>
+                            <li className={activeCategory === 'nonveg' ? 'active' : ''}>
+                                <Link href="#" onClick={() => handleCategoryClick('nonveg')}>
                                     <span><Image src='/Images/nonveg.svg' alt="Non-Veg" /></span>
                                     Non-Veg
                                 </Link>
                             </li>
-                            <li className={`${activeCategory === 'egg' ? 'active egg' : ''}`}>
-                                <Link to="#" onClick={() => handleCategoryClick('egg')}>
+                            <li className={activeCategory === 'egg' ? 'active' : ''}>
+                                <Link href="#" onClick={() => handleCategoryClick('egg')}>
                                     <span><Image src='/Images/egg.svg' alt="Egg" /></span>
                                     Egg
                                 </Link>
                             </li>
-
                         </ul>
-                        <Link to="/menu" className='btngreen continue'>
+                        <Link href="#" className='btngreen continue'>
                             Continue <Icon icon="formkit:right" width="16px" height="16px" />
                         </Link>
                     </div>

@@ -8,11 +8,11 @@ import QuickBitesSlider from './QuickBitesSlider';
 
 
 
-function QuickBites() {
+function QuickBites({ items, handleQuickbiteClick }) {
     return (
         <div className="quickbitesslider mb-5 mt-5">
             {/* <Title title="Quick Bites" className="quicktitle mb-3" /> */}
-            <QuickBitesSlider />
+            <QuickBitesSlider items={items} handleQuickbiteClick={handleQuickbiteClick}/>
         </div>
     );
 }

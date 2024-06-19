@@ -12,14 +12,14 @@ import GuestSelectModal from '../GuestSelectModal/GuestSelectModal';
 function CombosSlider() {
 
     const options = {
-        margin: 10,
+        margin: 24,
         responsiveClass: true,
         nav: false,
         dots: false,
         smartSpeed: 500,
         autoplay: true,
         loop: true,
-        items: 1.9,
+        items: 1.5,
 
     };
     const [show, setShow] = useState(false);
@@ -145,28 +145,24 @@ function CombosSlider() {
                             <li><Image src='Images/saladimg1.png'></Image></li>
                             <li><Image src='Images/saladimg2.png'></Image></li>
                         </ul>
-
+                        <div className="ratingmain">
+                            <ul className='rating'>
+                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                            </ul>
+                            <span><Image src='Images/veg.svg'></Image></span>
+                        </div>
                         <div className="itemtitle">
                             <h3>Lebanese Fateh Salad + Pesto pasta <span onClick={handleIconClick} style={{ cursor: 'pointer' }}>{isFilled ? (
                                 <Icon icon="ph:heart-fill" width="24px" height="24px" style={{ color: 'red' }} />
                             ) : (
                                 <Icon icon="ph:heart" width="24px" height="24px" style={{ color: 'black' }} />
                             )}</span></h3>
-                            <div className="ratingmain">
-                                {/* <span><Image src='Images/veg.svg'></Image></span> */}
-                                <ul className='rating'>
-                                    <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                    <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                    <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                    <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                    <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                </ul>
-                                <p><Image src='Images/fire.svg'></Image> 510 kcal</p>
-                            </div>
-                            <div className="combodis">
-                                <p>Lebanese Fateh Salad is a traditional Middle Eastern dish made with layers of toasted pita bread, chickpeas, and a creamy yogurt-tahini sauce. It's topped with pine nuts, fresh herbs like parsley and mint, and often drizzled with olive oil.</p>
-                                <p>Lebanese Fateh Salad is a traditional Middle Eastern dish made with layers of toasted pita bread, chickpeas, and a creamy yogurt-tahini sauce. It's topped with pine nuts, fresh herbs like parsley and mint, and often drizzled with olive oil.</p>
-                            </div>
+                            <p>Lebanese Fateh Salad is a traditional Middle Eastern dish made with layers of toasted pita bread, chickpeas, and a creamy yogurt-tahini sauce. It's topped with pine nuts, fresh herbs like parsley and mint, and often drizzled with olive oil.</p>
+
                         </div>
                         <div className="select-variant-container">
                             <div className="selectvariant">
@@ -194,7 +190,6 @@ function CombosSlider() {
                             <div className="selectvariant">
                                 <div className="selectvarianttitle">
                                     <h3>Select add-on’s</h3>
-                                    <p>Chose as many as you like</p>
                                 </div>
                                 <ul className='selectvariantmain'>
                                     <li>

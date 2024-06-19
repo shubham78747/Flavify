@@ -10,7 +10,7 @@ import QuickBitesSlider from './QuickBitesSlider';
 
 function QuickBites() {
     return (
-        <div className="quickbitesslider mb-5 mt-5">
+        <div className="quickbitesslider mb-5">
             <Title title="Quick Bites" className="quicktitle mb-3" />
             <QuickBitesSlider />
         </div>

@@ -126,8 +126,7 @@ html {}
 }
 
 body {
-    /* background: black !important; */
-    background: var(--Neutral-50, #F9FAFB) !important;
+    background: black !important;
 }
 
 .modal-dialog {
