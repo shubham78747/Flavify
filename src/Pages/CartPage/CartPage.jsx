@@ -4,22 +4,35 @@ import { Link } from 'react-router-dom';
 import './CartPage.css';
 import Cart from '../../Component/CommonComponent/Cart/Cart';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeItemFromCart } from '../../Pages/CartPage/Cartslice/Cartslice';
 
 
 
 function CartPage() {
 
+    const cartItems = useSelector((state) => state.cart.items);
+    const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+    const totalPrice = useSelector((state) => state.cart.totalPrice);
+    const dispatch = useDispatch();
+
+    console.log(cartItems,totalQuantity,totalPrice)
+
+    const handleRemoveFromCart = (id) => {
+        dispatch(removeItemFromCart(id));
+    };
+
     // List of dummy people for selection (you can replace this with actual data)
 
     return (
         <>
-            <section>
+               <section>
                 <div className="container">
                     <div className="tabledetail">
                         <Cart />
                         <MobileBar />
                     </div>
-                </div >
+                </div>
             </section>
         </>
     );
