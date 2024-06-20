@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import './CartItem.css';
 import { Accordion, Image } from 'react-bootstrap';
 import YouMayAlsoLike from './YouMayAlsoLike';
+import PastOrder from './PastOrder';
 
 
 
@@ -97,8 +98,8 @@ function CartItem() {
 
             </Accordion>
             <YouMayAlsoLike />
-
-            <Link className='btn-green placeorder'>Place order - <span>₹920 .00</span></Link>
+            <PastOrder />
+            <Link className='btn-green placeorder'>Place order - <span> ₹920 .00</span></Link>
         </>
     );
 }

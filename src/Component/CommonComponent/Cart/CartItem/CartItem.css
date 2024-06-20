@@ -255,8 +255,9 @@ a.btn-green.placeorder {
     z-index: 999;
     left: 50%;
     transform: translateX(-50%);
+    max-width: 440px;
 }
 
-.accordion-body .Combomain {
+/* .accordion-body .Combomain {
     padding-bottom: 30px;
-}
+} */
