@@ -14,14 +14,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
 
 function MenuPage() {
-    const [loading, setLoading] = useState(true);
-
     const dispatch = useDispatch();
   const { menu,categories  } = useSelector((state) => state.food);
 
   useEffect(() => {
     dispatch(fetchQuickBites());
-    dispatch(fetchMenu()).then(() => setLoading(false));
+    dispatch(fetchMenu());
   }, [dispatch]);
 
     const [show, setShow] = useState(false);
@@ -51,7 +49,6 @@ function MenuPage() {
             selected_category: category
           };
         setMenuItem(updatedData);
-        setLoading(false);
     }
 
     return (
@@ -62,7 +59,7 @@ function MenuPage() {
                         <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
                         <Search />
                         <QuickBites items={Object.keys(categories)} handleQuickbiteClick={handleQuickbiteClick}/>
-                        <ItemDetails  items={menuItem.items} selectedCategory={menuItem.selected_category} loading={loading} />
+                        <ItemDetails  items={menuItem.items} selectedCategory={menuItem.selected_category}/>
                         {/* <Combos /> */}
                         <MobileBar />
                         {/* <div className="cartitem">

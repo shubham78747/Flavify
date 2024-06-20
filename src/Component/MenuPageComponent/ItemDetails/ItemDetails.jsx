@@ -1,14 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Image, Row } from 'react-bootstrap';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import Title from '../../CommonComponent/Title/Title';
 import CombosSlider from '../Combos/CombosSlider';
 import './ItemDetails.css';
+import Loader from '../../CommonComponent/Loader/Loader';
 
-function ItemDetails({items,selectedCategory,loading }) {
-    // State to track which slider is active
+function ItemDetails({items,selectedCategory,}) {
     const [activeSlider, setActiveSlider] = useState(null);
+    const [loading, setLoading] = useState(true);
     const sliderRefs = useRef({}); // Store multiple refs
     const [activeBgGreen, setActiveBgGreen] = useState(null);
     // Function to handle the click and toggle the slider visibility
@@ -16,6 +17,11 @@ function ItemDetails({items,selectedCategory,loading }) {
         e.preventDefault();
         setActiveSlider((prevActive) => (prevActive === sectionId ? null : sectionId));
     };
+    useEffect(()=>{
+        if(items){
+            setLoading(false)
+        }
+    },[items])
 
     return (
         <div className="itemdetails mb-5">
