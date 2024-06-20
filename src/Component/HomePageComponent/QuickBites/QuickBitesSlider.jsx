@@ -11,7 +11,6 @@ import Loader from '../../CommonComponent/Loader/Loader';
 function QuickBitesSlider() {
     const dispatch = useDispatch();
   const { quickBites,menu  } = useSelector((state) => state.food);
-  console.log(menu)
   useEffect(() => {
     dispatch(fetchQuickBites());
     dispatch(fetchMenu());

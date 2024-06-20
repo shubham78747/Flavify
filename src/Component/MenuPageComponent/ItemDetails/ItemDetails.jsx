@@ -40,7 +40,7 @@ function ItemDetails({items,selectedCategory,}) {
         {/* KEBABS Section */}
         <Title title={selectedCategory} className="quicktitle mb-3" />
         {loading ? (
-            <div>Loading...</div>
+            <div><Loader/></div>
         ) : (
             items && items.map((item, index) => (
                 <div key={index} className={`bg-white ${activeBgGreen === 'kebabs' ? 'bg-green' : ''}`}>
