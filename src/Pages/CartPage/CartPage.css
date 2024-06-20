@@ -1,4 +1,14 @@
 a.btn-green.placeorder {
+    bottom: 60px;
+}
+
+a.btn-green.placeorder {
+    position: fixed;
+    bottom: 0;
+    z-index: 999;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 440px;
     bottom: 60px !important;
     z-index: 99999;
 }

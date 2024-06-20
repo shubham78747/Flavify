@@ -10,7 +10,7 @@ function TableHeaderTitle(props) {
     return (
         <div className={`maintitle ${props.className}`}>
             <h1><Image src={props.titleicon}></Image>{props.title}</h1>
-            <Link to={props.link}><Image src={props.profileimg}></Image></Link>
+            <Link to={props.link}><Image src={props.profileimg} onClick={props.handleShow}></Image></Link>
         </div>
     );
 }

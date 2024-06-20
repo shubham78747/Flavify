@@ -32,15 +32,6 @@ function MenuPage() {
         setActiveCategory(category);
     };
     useEffect(() => {
-        const timer = setTimeout(() => {
-            handleShow();
-        }, 5000); // 5 seconds
-
-        // Cleanup the timer on component unmount
-        return () => clearTimeout(timer);
-    }, []);
-
-    useEffect(() => {
         if (Object.keys(categories).length > 0) {
           const defaultCategory = Object.keys(categories)[0];
           handleQuickbiteClick(defaultCategory);

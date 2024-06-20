@@ -1,0 +1,27 @@
+export const tables = [
+    {
+        'table_id':'8ff8f093-2fb8-4964-9dc7-010c46ccf497',
+        'table_number':'Table-5',
+        'url':'https://www.ryba.flavify.com/8ff8f093-2fb8-4964-9dc7-010c46ccf497',
+    },
+    {
+        'table_id':'aac8c8a8-926d-4cb1-92fd-8fe071d097da',
+        'table_number':'Table-4',
+        'url':'https://www.ryba.flavify.com/aac8c8a8-926d-4cb1-92fd-8fe071d097da',
+    },
+    {
+        'table_id':'b38333e2-0608-411a-8358-7baddf0fc674',
+        'table_number':'Table-2',
+        'url':'https://www.ryba.flavify.com/b38333e2-0608-411a-8358-7baddf0fc674',
+    },
+    {
+        'table_id':'e935b764-a5e6-4e88-a23f-823e0b1adc31',
+        'table_number':'Table-1',
+        'url':'https://www.ryba.flavify.com/e935b764-a5e6-4e88-a23f-823e0b1adc31',
+    },
+    {
+        'table_id':'f8b9fbf2-6f16-4c3a-8db2-0f0282ab6652',
+        'table_number':'Table-3',
+        'url':'https://www.ryba.flavify.com/f8b9fbf2-6f16-4c3a-8db2-0f0282ab6652',
+    },
+]
