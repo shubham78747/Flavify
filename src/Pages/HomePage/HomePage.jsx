@@ -67,8 +67,8 @@ function HomePage() {
         }
     }, [tablenom])
 
-    const handletable = (table_id) =>{
-       dispatch(fetchtable(table_id))
+    const handletable = (table_id) => {
+        dispatch(fetchtable(table_id))
     }
 
     // List of dummy people for selection (you can replace this with actual data)
