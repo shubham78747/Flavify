@@ -20,19 +20,28 @@ function HomePage() {
     const dispatch = useDispatch();
     const { table } = useSelector((state) => state?.table);
     const [show, setShow] = useState(false);
+    const [currentStep, setCurrentStep] = useState(1);
+    const [tablenom, setTableNom] = useState();
+    const [activeCategory, setActiveCategory] = useState('V');
+
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const [activeCategory, setActiveCategory] = useState('veg');
-    const [tablenom, setTableNom] = useState(5);
+    const handleShow = () => {
+        setTableNom(tables[0].table_id)
+        setShow(true)
+    };
 
     const senddata = async () => {
         try {
             const response = await axios.post('https://flavify-test-caa8d1ec1c7d.herokuapp.com/api/v1/customerpreference', {
                 order_id: table?.response?.order_id,
-                pax: tablenom,
+                pax: currentStep,
                 diet: activeCategory,
             });
+            if(response?.data) {
+                setTableNom();
+                handleClose();
+            }
             console.log('Response from server:', response.data);
         } catch (error) {
             console.error('Error sending data:', error);
@@ -50,7 +59,13 @@ function HomePage() {
     //     // Cleanup the timer on component unmount
     //     return () => clearTimeout(timer);
     // }, []);
-    const [currentStep, setCurrentStep] = useState(1);
+    
+
+    useEffect(() => {
+        if(tablenom) {
+            handletable(tablenom)
+        }
+    }, [tablenom])
 
     const handletable = (table_id) => {
         dispatch(fetchtable(table_id))
@@ -85,11 +100,11 @@ function HomePage() {
                             {/* Progress bar */}
                             <div className="progress-bar">
                                 <div className="progress-line">
-                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(step => (
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(step => (
                                         <div
-                                            key={index}
-                                            className={`progress-circle ${index + 1 <= currentStep ? 'active' : ''}`}
-                                            onClick={() => handletable(tableItem.table_id)}
+                                            key={step}
+                                            className={`progress-circle ${step <= currentStep ? 'active' : ''}`}
+                                            onClick={() => setCurrentStep(step)}
                                         ></div>
                                     ))}
                                 </div>
@@ -98,19 +113,19 @@ function HomePage() {
 
                         </div>
                         <ul className='selectcategories'>
-                            <li className={activeCategory === 'veg' ? 'active' : ''}>
+                            <li className={activeCategory === 'V' ? 'active' : ''}>
                                 <Link href="#" onClick={() => handleCategoryClick('V')}>
                                     <span><Image src='/Images/veg.svg' alt="Veg" /></span>
                                     Veg
                                 </Link>
                             </li>
-                            <li className={activeCategory === 'nonveg' ? 'active' : ''}>
+                            <li className={activeCategory === 'N' ? 'active' : ''}>
                                 <Link href="#" onClick={() => handleCategoryClick('N')}>
                                     <span><Image src='/Images/nonveg.svg' alt="Non-Veg" /></span>
                                     Non-Veg
                                 </Link>
                             </li>
-                            <li className={activeCategory === 'egg' ? 'active' : ''}>
+                            <li className={activeCategory === 'E' ? 'active' : ''}>
                                 <Link href="#" onClick={() => handleCategoryClick('E')}>
                                     <span><Image src='/Images/egg.svg' alt="Egg" /></span>
                                     Egg
