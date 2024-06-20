@@ -6,6 +6,8 @@ import Title from '../../CommonComponent/Title/Title';
 import CombosSlider from '../Combos/CombosSlider';
 import './ItemDetails.css';
 import Loader from '../../CommonComponent/Loader/Loader';
+import { addItemToCart } from '../../../Pages/CartPage/Cartslice/Cartslice';
+import { useDispatch } from 'react-redux';
 
 function ItemDetails({items,selectedCategory,}) {
     const [activeSlider, setActiveSlider] = useState(null);
@@ -13,6 +15,7 @@ function ItemDetails({items,selectedCategory,}) {
     const sliderRefs = useRef({}); // Store multiple refs
     const [activeBgGreen, setActiveBgGreen] = useState(null);
     // Function to handle the click and toggle the slider visibility
+    const dispatch = useDispatch();
     const handleViewCombosClick = (sectionId, e) => {
         e.preventDefault();
         setActiveSlider((prevActive) => (prevActive === sectionId ? null : sectionId));
@@ -22,6 +25,15 @@ function ItemDetails({items,selectedCategory,}) {
             setLoading(false)
         }
     },[items])
+
+    const handleAddToCart = (item) => {
+        console.log(item)
+        dispatch(addItemToCart({
+            id: item.id,
+            price: item.price,
+            name: item.item_name,
+        }));
+    };
 
     return (
         <div className="itemdetails mb-5">
@@ -56,7 +68,7 @@ function ItemDetails({items,selectedCategory,}) {
                         <Col lg={4}>
                             <div className="itemaddimg">
                                 <Image src='/Images/itemimg.png' alt="Item"></Image>
-                                <Link to="#"><Icon icon="charm:plus" width="16px" height="16px" /> ADD</Link>
+                                <Link to="#"><Icon icon="charm:plus" width="16px" height="16px" onClick={() => handleAddToCart(item)} /> ADD</Link>
                             </div>
                         </Col>
                     </Row>

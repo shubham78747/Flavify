@@ -7,6 +7,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMenu, fetchQuickBites } from './QuickBiteSlice/QuickBiteSlice';
 import Carousel from '../../CommonComponent/OwlCarousel/OwlCarousel';
+import Loader from '../../CommonComponent/Loader/Loader';
 function QuickBitesSlider() {
     const dispatch = useDispatch();
   const { quickBites,menu  } = useSelector((state) => state.food);
@@ -67,6 +68,7 @@ function QuickBitesSlider() {
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [vegOptions, setVegOptions] = useState([]);
     const [item,setItem] = useState([]);
+    const [loader,setLoader] = useState(true)
 
     const handleAddClick = () => {
         if (item) {
@@ -167,7 +169,8 @@ function QuickBitesSlider() {
     
     useEffect(()=>{
         if(quickBites){
-            handleData(quickBites)      
+            handleData(quickBites)  
+            setLoader(false)    
         }
     },[quickBites])
 
@@ -248,22 +251,14 @@ function QuickBitesSlider() {
 
     return (
         <>
+           {loader ? (
+                <div>{<Loader/>}</div>
+            ) : (
             <div className="">
             <Carousel items={quickbileFirst} handleQuickbiteClick={handleQuickbiteClick}/>
             <Carousel items={quickbileSecond} handleQuickbiteClick={handleQuickbiteClick}/>
-
-                {/* <OwlCarousel className="owl-theme" {...options}>
-                {Object.keys(category).map((item,index)=>(
-                    <div className="item" key={index}>
-                        <div className="dishname">
-                            <span onClick={()=>handleShow(item)}> <Image src='Images/salad.png'></Image></span>
-                            <h4>{}</h4>
-                        </div>
-                    </div>
-                ))}
-                </OwlCarousel> */}
             </div>
-
+            )}
             <Modal show={show} onHide={handleClose} className="singleitem">
                 <Modal.Header closeButton>
                 </Modal.Header>
