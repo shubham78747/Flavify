@@ -1,35 +1,39 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Image, Row } from 'react-bootstrap';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import Title from '../../CommonComponent/Title/Title';
 import CombosSlider from '../Combos/CombosSlider';
 import './ItemDetails.css';
+import Loader from '../../CommonComponent/Loader/Loader';
 
-function ItemDetails({items}) {
-    console.log('9898',items)
-    // State to track which slider is active
+function ItemDetails({items,selectedCategory,}) {
     const [activeSlider, setActiveSlider] = useState(null);
+    const [loading, setLoading] = useState(true);
     const sliderRefs = useRef({}); // Store multiple refs
     const [activeBgGreen, setActiveBgGreen] = useState(null);
     // Function to handle the click and toggle the slider visibility
     const handleViewCombosClick = (sectionId, e) => {
         e.preventDefault();
         setActiveSlider((prevActive) => (prevActive === sectionId ? null : sectionId));
-
-        // Scroll into view if showing CombosSlider
-
     };
+    useEffect(()=>{
+        if(items){
+            setLoading(false)
+        }
+    },[items])
 
     return (
         <div className="itemdetails mb-5">
-            {/* KEBABS Section */}
-            <Title title={''} className="quicktitle mb-3" />
-            {items.map((item,index)=>(
-            <div className={`bg-white ${activeBgGreen === 'kebabs' ? 'bg-green' : ''}`}>
+            <Title title={selectedCategory} className="quicktitle mb-3" />
+            {loading ? (
+                <div>{<Loader/>}</div>
+            ) : (
+            items && items.map((item,index)=>(
+            <div className={`bg-white ${activeBgGreen === 'kebabs' ? 'bg-green' : ''}`} key={index}>
                 <Row>
                 <Col lg={8} >              
-                        <div className="itemtitle mb-0" key={index}>
+                        <div className="itemtitle mb-0" >
                             <div className="ratingmain">
                                 <ul className='rating'>
                                     <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
@@ -58,7 +62,7 @@ function ItemDetails({items}) {
                     </Col>
                 </Row>
                 <Link
-                    to="javascript:void(0)"
+                    to=""
                     className='viewcombomain mb-3'
                     onClick={(e) => handleViewCombosClick('kebabs', e)}
                 >
@@ -70,7 +74,8 @@ function ItemDetails({items}) {
                     </div>
                 )}
             </div>
-        ))}
+        ))
+    )}
         </div>
     );
 }
