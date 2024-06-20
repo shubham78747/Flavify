@@ -9,4 +9,18 @@ a.btn-green.placeorder {
     left: 50%;
     transform: translateX(-50%);
     max-width: 440px;
+    bottom: 60px !important;
+    z-index: 99999;
+}
+
+.accordion-button::after {
+    transform: scale(0.7);
+}
+
+.accordion-button:not(.collapsed)::after {
+    transform: var(--bs-accordion-btn-icon-transform) scale(0.7) !important;
+    -webkit-transform: var(--bs-accordion-btn-icon-transform) scale(0.7) !important;
+    -moz-transform: var(--bs-accordion-btn-icon-transform) scale(0.7) !important;
+    -ms-transform: var(--bs-accordion-btn-icon-transform) scale(0.7) !important;
+    -o-transform: var(--bs-accordion-btn-icon-transform) scale(0.7) !important;
 }
