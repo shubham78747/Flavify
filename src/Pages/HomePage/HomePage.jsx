@@ -52,8 +52,8 @@ function HomePage() {
     // }, []);
     const [currentStep, setCurrentStep] = useState(1);
 
-    const handletable = (table_id) =>{
-       dispatch(fetchtable(table_id))
+    const handletable = (table_id) => {
+        dispatch(fetchtable(table_id))
     }
 
     // List of dummy people for selection (you can replace this with actual data)
@@ -85,7 +85,7 @@ function HomePage() {
                             {/* Progress bar */}
                             <div className="progress-bar">
                                 <div className="progress-line">
-                                {tables.map((tableItem, index) => (
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(step => (
                                         <div
                                             key={index}
                                             className={`progress-circle ${index + 1 <= currentStep ? 'active' : ''}`}
