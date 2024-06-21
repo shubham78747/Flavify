@@ -203,3 +203,87 @@ body .modal-content {
 .itemdetails.mb-5 .col-lg-4 {
     width: 40%;
 }
+
+
+
+
+
+
+
+
+
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.progress-number {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    width: 80%;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.progress-line {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    /* Prevents interfering with slider */
+}
+
+.progress-circle {
+    width: 10px;
+    height: 10px;
+    background-color: lightgray;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    pointer-events: none;
+    /* Prevents interfering with slider */
+}
+
+.progress-circle.active {
+    background-color: green;
+}
+
+.progress-slider {
+    width: 90%;
+    -webkit-appearance: none;
+    /* Remove default styles */
+    appearance: none;
+    background: #e6f8f2;
+    /* Make the track transparent */
+    cursor: pointer;
+    height: 10px;
+    border-radius: 4rem;
+    margin-top: 20px;
+}
+
+.progress-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 35px;
+    height: 35px;
+    background: #71917f;
+    border-radius: 50%;
+    margin-top: -5px;
+    /* Center the thumb vertically with the circles */
+}
+
+
+.progress-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: green;
+    border-radius: 50%;
+}

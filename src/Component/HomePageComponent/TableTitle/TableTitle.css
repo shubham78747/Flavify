@@ -12,6 +12,7 @@
     align-items: center;
     gap: 8px;
     margin: 0;
+    cursor: pointer;
 }
 
 .maintitle.d-flex {
@@ -21,4 +22,8 @@
 
 .maintitle.d-flex a {
     margin-left: auto;
+}
+
+.table-number:hover {
+    cursor: pointer;
 }
