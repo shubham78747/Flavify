@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 import './MenuPage.css';
 import TableHeaderTitle from '../../Component/MenuPageComponent/TableTitle/TableHeaderTitle';
-import Search from '../../Component/MenuPageComponent/Search/Search';
 import QuickBites from '../../Component/MenuPageComponent/QuickBites/QuickBites';
 import Combos from '../../Component/MenuPageComponent/Combos/Combos';
 import { Image, Modal } from 'react-bootstrap';
@@ -12,6 +11,7 @@ import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
 import ItemDetails from '../../Component/MenuPageComponent/ItemDetails/ItemDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
+import Search from '../../Component/CommonComponent/Search/Search';
 
 function MenuPage() {
     const dispatch = useDispatch();
@@ -57,7 +57,7 @@ function MenuPage() {
                 <div className="container">
                     <div className="tabledetail">
                         <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
-                        <Search />
+                        <Search/>
                         <QuickBites items={Object.keys(categories)} handleQuickbiteClick={handleQuickbiteClick}/>
                         <ItemDetails  items={menuItem.items} selectedCategory={menuItem.selected_category}/>
                         {/* <Combos /> */}

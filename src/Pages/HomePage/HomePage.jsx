@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css';
 import TableHeaderTitle from '../../Component/HomePageComponent/TableTitle/TableHeaderTitle';
-import Search from '../../Component/HomePageComponent/Search/Search';
 import QuickBites from '../../Component/HomePageComponent/QuickBites/QuickBites';
 import OfferBanner from '../../Component/HomePageComponent/OfferBanner/OfferBanner';
 import Combos from '../../Component/HomePageComponent/Combos/Combos';
@@ -13,8 +12,8 @@ import { tables } from './Tablejson/Tablejson';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchtable } from './Tableslice/Tableslice';
 // import axios from 'axios';
-import Axios from '../../Helper/axiosHelper';
 import { postcustomerpreference } from './action';
+import Search from '../../Component/CommonComponent/Search/Search';
 
 
 
@@ -90,7 +89,7 @@ function HomePage() {
                 <div className="container">
                     <div className="tabledetail">
                         <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}></TableHeaderTitle>
-                        <Search />
+                        <Search/>
                         <QuickBites />
                         <OfferBanner />
                         <Combos />
@@ -107,10 +106,6 @@ function HomePage() {
                         <div className="progress-container">
                             {/* Display the current step number */}
                             <div className="progress-number">{currentStep}</div>
-
-                            {/* Progress bar */}
-
-
                             {/* Range Slider */}
                             <input
                                 type="range"

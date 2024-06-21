@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
 import './SuccessPage.css';
 import TableHeaderTitle from '../../Component/MenuPageComponent/TableTitle/TableHeaderTitle';
-import Search from '../../Component/MenuPageComponent/Search/Search';
 import QuickBites from '../../Component/MenuPageComponent/QuickBites/QuickBites';
 import Combos from '../../Component/MenuPageComponent/Combos/Combos';
 import { Image, Modal } from 'react-bootstrap';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
 import ItemDetails from '../../Component/MenuPageComponent/ItemDetails/ItemDetails';
+import Search from '../../Component/CommonComponent/Search/Search';
 
 
 

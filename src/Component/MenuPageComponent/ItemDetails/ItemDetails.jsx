@@ -6,88 +6,201 @@ import Title from '../../CommonComponent/Title/Title';
 import CombosSlider from '../Combos/CombosSlider';
 import './ItemDetails.css';
 import Loader from '../../CommonComponent/Loader/Loader';
-import { addItemToCart } from '../../../Pages/CartPage/Cartslice/Cartslice';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
+import Modals from '../../CommonComponent/Modal/Modal';
 
-function ItemDetails({items,selectedCategory,}) {
-    const [activeSlider, setActiveSlider] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const sliderRefs = useRef({}); // Store multiple refs
-    const [activeBgGreen, setActiveBgGreen] = useState(null);
-    // Function to handle the click and toggle the slider visibility
+function ItemDetails({ items, selectedCategory }) {
     const dispatch = useDispatch();
-    const handleViewCombosClick = (sectionId, e) => {
-        e.preventDefault();
-        setActiveSlider((prevActive) => (prevActive === sectionId ? null : sectionId));
-    };
-    useEffect(()=>{
-        if(items){
-            setLoading(false)
-        }
-    },[items])
+    const { quickBites, menu } = useSelector((state) => state.food);
 
-    const handleAddToCart = (item) => {
-        console.log(item)
-        dispatch(addItemToCart({
-            id: item.id,
-            price: item.price,
-            name: item.item_name,
+    useEffect(() => {
+        // dispatch(fetchQuickBites());
+        // dispatch(fetchMenu());
+    }, [dispatch]);
+
+    const [activeSlider, setActiveSlider] = useState({});
+    const [loading, setLoading] = useState(true);
+    const sliderRefs = useRef({});
+    const [activeBgGreen, setActiveBgGreen] = useState(null);
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const [item, setItem] = useState([]);
+    const [count, setCount] = useState(1);
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [vegOptions, setVegOptions] = useState([]);
+    const [isFilled, setIsFilled] = useState(false);
+    // Function to handle the click and toggle the slider visibility
+    console.log()
+    const handleViewCombosClick = (itemKey, e) => {
+        e.preventDefault();
+        setActiveSlider(prevState => ({
+            ...prevState,
+            [itemKey]: !prevState[itemKey]
+        }));
+        setActiveBgGreen(prevState => (prevState === itemKey ? null : itemKey));
+    };
+    
+    useEffect(() => {
+        if (items) {
+            setLoading(false);
+        }
+    }, [items]);
+
+    const handleCheckboxChange = (event, price) => {
+        const { id, checked } = event.target;
+        const priceChange = checked ? price : -price;
+        if (checked) {
+            setSelectedOptions([...selectedOptions, id]);
+        } else {
+            setSelectedOptions(selectedOptions.filter(option => option !== id));
+        }
+        setItem(prevItem => ({
+            ...prevItem,
+            price: prevItem.price + priceChange
         }));
     };
 
+    const handleVegCheckboxChange = (event, price) => {
+        const { id, checked } = event.target;
+        const priceChange = checked ? price : -price;
+        if (checked) {
+            setVegOptions([...vegOptions, id]);
+        } else {
+            setVegOptions(vegOptions.filter(option => option !== id));
+        }
+        setItem(prevItem => ({
+            ...prevItem,
+            price: prevItem.price + priceChange
+        }));
+    };
+
+    const calculateTotalPrice = () => {
+        return item.price * count;
+    };
+
+    const handleAddClick = () => {
+        if (item) {
+            setCount(prevCount => prevCount + 1);
+        }
+    };
+
+    const handleRemoveClick = () => {
+        if (item && count > 1) {
+            setCount(prevCount => prevCount - 1);
+        }
+    };
+
+    const handleIconClick = () => {
+        setIsFilled(!isFilled);
+    };
+
+    const handleQuickbiteClick = (quickbite) => {
+        setShow(true);
+        const optionsGrouped = Object.values(menu.itemOptions
+            .filter((option) => option.item_id === quickbite.item_id)
+            .reduce((groups, itemOption) => {
+                const groupName = itemOption.option_group_name;
+                if (!groups[groupName]) {
+                    groups[groupName] = { groupName, itemList: [] };
+                }
+                const optionDetails = menu.options.find(
+                    (option) => option.option_id === itemOption.option_id
+                );
+                groups[groupName].itemList.push(optionDetails);
+                return groups;
+            }, {}));
+
+        // Find related add-ons and group by addon_group_name
+        const addOnsGrouped = Object.values(menu.itemAddOns
+            .filter((addon) => addon.item_id === quickbite.item_id)
+            .reduce((groups, itemAddon) => {
+                const groupName = itemAddon.addon_group_name;
+                if (!groups[groupName]) {
+                    groups[groupName] = { groupName, itemList: [] };
+                }
+                const addonDetails = menu.addOns.find(
+                    (addon) => addon.addon_id === itemAddon.addon_id
+                );
+                groups[groupName].itemList.push(addonDetails);
+                return groups;
+            }, {}));
+        const data = {
+            price: quickbite.price,
+            name: quickbite.item_name,
+            addOnsGrouped: addOnsGrouped,
+            optionsGrouped: optionsGrouped,
+        }
+        setItem(data);
+    };
+
     return (
-        <div className="itemdetails mb-5">
-        {/* KEBABS Section */}
-        <Title title={selectedCategory} className="quicktitle mb-3" />
-        {loading ? (
-            <div><Loader/></div>
-        ) : (
-            items && items.map((item, index) => (
-                <div key={index} className={`bg-white ${activeBgGreen === 'kebabs' ? 'bg-green' : ''}`}>
-                    <Row>
-                        <Col lg={8}>
-                            <div className="itemtitle mb-0">
-                                <div className="ratingmain">
-                                    <ul className='rating'>
-                                        <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                        <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                        <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                        <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                        <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
-                                    </ul>
-                                    <p><Image src='/Images/fire.svg' alt="Calories"></Image> 510 kcal</p>
-                                    <span><Image src='/Images/veg.svg' alt="Veg"></Image></span>
+        <>
+            <div className="itemdetails mb-5">
+                {/* KEBABS Section */}
+                <Title title={selectedCategory} className="quicktitle mb-3" />
+                {loading ? (
+                    <div><Loader /></div>
+                ) : (
+                    items && items.map((item, index) => (
+                        <div key={index} className={`bg-white ${activeBgGreen === index ? 'bg-green' : 'bg-white'}`}>
+                            <Row>
+                                <Col lg={8}>
+                                    <div className="itemtitle mb-0">
+                                        <div className="ratingmain">
+                                            <ul className='rating'>
+                                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                                                <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
+                                            </ul>
+                                            <p><Image src='/Images/fire.svg' alt="Calories"></Image> 510 kcal</p>
+                                            <span><Image src='/Images/veg.svg' alt="Veg"></Image></span>
+                                        </div>
+                                        <h3>{item.item_name}</h3>
+                                        <h4>₹{item.price}</h4>
+                                        <h4>{item.item_category}</h4>
+                                        <p>Lebanese Fateh Salad is a traditional Middle Eastern dish made with layers of toasted pita bread, chickpeas, and a crea...</p>
+                                        <Link to="#">Read More</Link>
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="itemaddimg">
+                                        <Image src='/Images/itemimg.png' alt="Item"></Image>
+                                        <Link to="#" onClick={() => handleQuickbiteClick(item)}><Icon icon="charm:plus" width="16px" height="16px" /> ADD</Link>
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Link
+                                to="#"
+                                className='viewcombomain mb-3'
+                                onClick={(e) => handleViewCombosClick(index, e)}
+                            >
+                                Combos <Icon icon="iconamoon:arrow-down-2-light" width="16px" height="16px" />
+                            </Link>
+                            {activeSlider[index] && (
+                                <div ref={(el) => (sliderRefs.current[index] = el)}>
+                                    <CombosSlider />
                                 </div>
-                                <h3>{item.item_name}</h3>
-                                <h4>₹{item.price}</h4>
-                                <h4>{item.item_category}</h4>
-                                <p>Lebanese Fateh Salad is a traditional Middle Eastern dish made with layers of toasted pita bread, chickpeas, and a crea...</p>
-                                <Link to="#">Read More</Link>
-                            </div>
-                        </Col>
-                        <Col lg={4}>
-                            <div className="itemaddimg">
-                                <Image src='/Images/itemimg.png' alt="Item"></Image>
-                                <Link to="#"><Icon icon="charm:plus" width="16px" height="16px" onClick={() => handleAddToCart(item)} /> ADD</Link>
-                            </div>
-                        </Col>
-                    </Row>
-                    <Link
-                        to="javascript:void(0)"
-                        className='viewcombomain mb-3'
-                        onClick={(e) => handleViewCombosClick('kebabs', e)}
-                    >
-                        Combos <Icon icon="iconamoon:arrow-down-2-light" width="16px" height="16px" />
-                    </Link>
-                    {activeSlider === 'kebabs' && (
-                        <div ref={(el) => (sliderRefs.current['kebabs'] = el)}>
-                            <CombosSlider />
+                            )}
                         </div>
-                    )}
-                </div>
-            ))
-        )}
-    </div>
+                    ))
+                )}
+            </div>
+            <Modals
+                calculateTotalPrice={calculateTotalPrice}
+                item={item}
+                show={show}
+                onHide={handleClose}
+                handleAddClick={handleAddClick}
+                handleRemoveClick={handleRemoveClick}
+                handleIconClick={() => setIsFilled(!isFilled)}
+                handleCheckboxChange={handleCheckboxChange}
+                handleVegCheckboxChange={handleVegCheckboxChange}
+                isFilled={isFilled}
+                count={count}
+            />
+        </>
     );
 }
 
