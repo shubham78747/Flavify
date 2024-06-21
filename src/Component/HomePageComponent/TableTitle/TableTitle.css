@@ -22,3 +22,6 @@
 .maintitle.d-flex a {
     margin-left: auto;
 }
+.table-number:hover{
+    cursor: pointer;
+}

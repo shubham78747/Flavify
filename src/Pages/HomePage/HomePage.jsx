@@ -12,7 +12,8 @@ import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
 import { tables } from './Tablejson/Tablejson';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchtable } from './Tableslice/Tableslice';
-import axios from 'axios';
+// import axios from 'axios';
+import Axios from '../../Helper/axiosHelper';
 
 
 
@@ -27,13 +28,15 @@ function HomePage() {
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
+        console.log(tables[0].table_id,)
         setTableNom(tables[0].table_id)
         setShow(true)
     };
 
     const senddata = async () => {
+        console.log(table?.response?.order_id,currentStep,activeCategory)
         try {
-            const response = await axios.post('https://flavify-test-caa8d1ec1c7d.herokuapp.com/api/v1/customerpreference', {
+            const response = await Axios.post('/customerpreference', {
                 order_id: table?.response?.order_id,
                 pax: currentStep,
                 diet: activeCategory,
