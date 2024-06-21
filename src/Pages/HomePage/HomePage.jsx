@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchtable } from './Tableslice/Tableslice';
 // import axios from 'axios';
 import Axios from '../../Helper/axiosHelper';
+import { postcustomerpreference } from './action';
 
 
 
@@ -34,13 +35,13 @@ function HomePage() {
     };
 
     const senddata = async () => {
-        console.log(table?.response?.order_id,currentStep,activeCategory)
         try {
-            const response = await Axios.post('/customerpreference', {
+            const header = {
                 order_id: table?.response?.order_id,
                 pax: currentStep,
                 diet: activeCategory,
-            });
+            } 
+            const response = await postcustomerpreference(header) 
             if(response?.data) {
                 setTableNom();
                 handleClose();

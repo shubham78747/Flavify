@@ -2,6 +2,8 @@ import axios from "axios";
 
 const API_URL = process.env.REACT_APP_BASE_URL
 // const Token = `Bearer ${localStorage.getItem("Token")}`
+console.log("API URL:", process.env.REACT_APP_BASE_URL);
+
 
 const Axios = axios.create({
     baseURL: API_URL,
