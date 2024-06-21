@@ -40,9 +40,9 @@ function HomePage() {
                 order_id: table?.response?.order_id,
                 pax: currentStep,
                 diet: activeCategory,
-            } 
-            const response = await postcustomerpreference(header) 
-            if(response?.data) {
+            }
+            const response = await postcustomerpreference(header)
+            if (response?.data) {
                 setTableNom();
                 handleClose();
             }
@@ -63,10 +63,10 @@ function HomePage() {
     //     // Cleanup the timer on component unmount
     //     return () => clearTimeout(timer);
     // }, []);
-    
+
 
     useEffect(() => {
-        if(tablenom) {
+        if (tablenom) {
             handletable(tablenom)
         }
     }, [tablenom])
@@ -74,6 +74,13 @@ function HomePage() {
     const handletable = (table_id) => {
         dispatch(fetchtable(table_id))
     }
+
+    const steps = 10; // Define the total number of steps
+
+    // Handler to sync slider changes
+    const handleSliderChange = (event) => {
+        setCurrentStep(Number(event.target.value));
+    };
 
     // List of dummy people for selection (you can replace this with actual data)
 
@@ -102,19 +109,17 @@ function HomePage() {
                             <div className="progress-number">{currentStep}</div>
 
                             {/* Progress bar */}
-                            <div className="progress-bar">
-                                <div className="progress-line">
-                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(step => (
-                                        <div
-                                            key={step}
-                                            className={`progress-circle ${step <= currentStep ? 'active' : ''}`}
-                                            onClick={() => setCurrentStep(step)}
-                                        ></div>
-                                    ))}
-                                </div>
-                            </div>
 
 
+                            {/* Range Slider */}
+                            <input
+                                type="range"
+                                min="1"
+                                max={steps}
+                                value={currentStep}
+                                onChange={handleSliderChange}
+                                className="progress-slider"
+                            />
                         </div>
                         <ul className='selectcategories'>
                             <li className={activeCategory === 'V' ? 'active' : ''}>
