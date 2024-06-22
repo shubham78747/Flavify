@@ -2,12 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './SuccessPage.css';
 import TableHeaderTitle from '../../Component/MenuPageComponent/TableTitle/TableHeaderTitle';
-import QuickBites from '../../Component/MenuPageComponent/QuickBites/QuickBites';
-import Combos from '../../Component/MenuPageComponent/Combos/Combos';
-import { Image, Modal } from 'react-bootstrap';
-import { Icon } from '@iconify/react/dist/iconify.js';
+import { Image } from 'react-bootstrap';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
-import ItemDetails from '../../Component/MenuPageComponent/ItemDetails/ItemDetails';
 import Search from '../../Component/CommonComponent/Search/Search';
 
 
@@ -56,7 +52,7 @@ function SuccessPage() {
                                 <Image src='Images/tick.svg'></Image>
                             </span>
                             <h4>Your order has been placed successfully</h4>
-                            <Link to="" className='bg-white'>Order more items</Link>
+                            <Link to={'/menu'} className='bg-white'>Order more items</Link>
                             <div className="successlinks">
                                 <Link to="">View top deals</Link>
                                 <Link to="">Check out best sellers</Link>

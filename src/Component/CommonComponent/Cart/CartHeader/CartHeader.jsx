@@ -10,7 +10,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 function CartHeader(props) {
     return (
         <div className={`maintitle ${props.className}`}>
-            <Link><Icon icon="ion:chevron-back" /></Link>
+            <Link to={'/menu'}><Icon icon="ion:chevron-back" /></Link>
             <Link to={props.link}><Image src={props.profileimg}></Image></Link>
         </div>
     );

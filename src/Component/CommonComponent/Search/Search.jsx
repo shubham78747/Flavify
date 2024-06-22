@@ -1,41 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import React, { useState } from 'react';
 import './Search.css';
 import { Image } from 'react-bootstrap';
-
-
-
-function Search(props) {
-    const [selectedOption, setSelectedOption] = useState('veg'); // Defaulting to 'veg'
+function Search({setSelectedOption,selectedOption}) {
+    const [isImageShown, setIsImageShown] = useState(false);
+   console.log('selectedOption=======-------------->',selectedOption)
 
     const handleClick = (option) => {
         setSelectedOption(option);
         setIsImageShown(!isImageShown);
     };
-
-    useEffect(() => {
-        // Optionally, you can perform any side effects based on selectedOption here
-        console.log(`Selected option changed to: ${selectedOption}`);
-    }, [selectedOption]);
-    const [isImageShown, setIsImageShown] = useState(false);
-
-    const toggleImage = () => {
+     const toggleImage = () => {
         setIsImageShown(!isImageShown);
     };
-
     return (
         <div className={`searchmain`}>
             <i><Image src='Images/searchicon.svg'></Image></i>
             <input type="search" placeholder='Search' />
             <div className={`image-container ${isImageShown ? 'show' : ''}`}>
-                <div className={`image-option ${selectedOption === 'veg' && 'selected'}`} onClick={() => handleClick('veg')}>
+                <div className={`image-option ${selectedOption === 'V' && 'selected'}`} onClick={() => handleClick('V')}>
                     <Image src="Images/veg.svg" alt="Veg" className="image" />
                 </div>
-                <div className={`image-option ${selectedOption === 'nonveg' && 'selected'}`} onClick={() => handleClick('nonveg')}>
+                <div className={`image-option ${selectedOption === 'N' && 'selected'}`} onClick={() => handleClick('N')}>
                     <Image src="Images/nonveg.svg" alt="Non-Veg" className="image" />
                 </div>
-                <div className={`image-option ${selectedOption === 'egg' && 'selected'}`} onClick={() => handleClick('egg')}>
+                <div className={`image-option ${selectedOption === 'E' && 'selected'}`} onClick={() => handleClick('E')}>
                     <Image src="Images/egg.svg" alt="Egg" className="image" />
                 </div>
             </div>
@@ -43,21 +31,19 @@ function Search(props) {
                 selectedOption && (
                     <div className="selected-image-container" onClick={toggleImage}>
                         {/* Render larger image based on selected option */}
-                        {selectedOption === 'veg' && (
-                            <> <p>Veg</p> <Image src="Images/veg.svg" alt="Veg" className="selected-image" /></>
+                        {selectedOption === 'V' && (
+                            <> <Image src="Images/veg.svg" alt="Veg" className="selected-image" /></>
                         )}
-                        {selectedOption === 'nonveg' && (
-                            <> <p>Non Veg</p>  <Image src="Images/nonveg.svg" alt="Non-Veg" className="selected-image" /></>
+                        {selectedOption === 'N' && (
+                            <> <Image src="Images/nonveg.svg" alt="Non-Veg" className="selected-image" /></>
                         )}
-                        {selectedOption === 'egg' && (
-                            <> <p>Egg</p> <Image src="Images/egg.svg" alt="Egg" className="selected-image" /></>
+                        {selectedOption === 'E' && (
+                            <><Image src="Images/egg.svg" alt="Egg" className="selected-image" /></>
                         )}
                     </div>
                 )
             }
-
-
-        </div >
+        </div>
     );
 }
 
