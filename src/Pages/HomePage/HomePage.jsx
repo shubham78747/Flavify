@@ -17,11 +17,11 @@ import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/Qu
 
 function HomePage() {
     const dispatch = useDispatch();
-    const { quickBites, menu } = useSelector((state) => state.food);
+    const { quickBites,menu  } = useSelector((state) => state.food);
     useEffect(() => {
         dispatch(fetchQuickBites());
         dispatch(fetchMenu());
-    }, [dispatch]);
+    }, [0]);
 
     const { table } = useSelector((state) => state?.table);
     const [show, setShow] = useState(false);
@@ -29,17 +29,16 @@ function HomePage() {
     const [tablenom, setTableNom] = useState();
     const [activeCategory, setActiveCategory] = useState('V');
     const [selectedOption, setSelectedOption] = useState('V');
-    const [selectedFilter, setSelectedFilter] = useState('');
-    console.log(selectedFilter)
+    const [selectedFilter, setSelectedFilter] = useState([]);
+    console.log({selectedFilter})
 
     useEffect(() => {
-        const filtermenu = quickBites.filter((item) => item.diet === selectedOption);
+        const filtermenu = quickBites.filter((item) => item?.diet === selectedOption);
         setSelectedFilter(filtermenu)
-    }, [selectedOption, quickBites]);
+    }, [selectedOption,quickBites]);
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
-        console.log(tables[0].table_id,)
         setTableNom(tables[0].table_id)
         setShow(true)
     };
@@ -89,10 +88,10 @@ function HomePage() {
                 <div className="container">
                     <div className="tabledetail">
                         <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}></TableHeaderTitle>
-                        <Search
-                            selectedOption={selectedOption}
-                            setSelectedOption={setSelectedOption} />
-                        <QuickBites menu={menu} quickBites={!selectedOption ? quickBites : selectedFilter} />
+                        <Search 
+                          selectedOption={selectedOption} 
+                          setSelectedOption={setSelectedOption} />
+                        {<QuickBites menu={menu} quickBites={selectedFilter} />}
                         <OfferBanner />
                         <Combos />
                         <MobileBar />
@@ -117,7 +116,7 @@ function HomePage() {
                                 onChange={handleSliderChange}
                                 className="progress-slider"
                             />
-                        </div >
+                        </div>
                         <ul className='selectcategories'>
                             <li className={activeCategory === 'V' ? 'active' : ''}>
                                 <Link href="#" onClick={() => handleCategoryClick('V')}>
@@ -141,10 +140,9 @@ function HomePage() {
                         <Link href="#" className='btngreen continue' onClick={senddata}>
                             Continue <Icon icon="formkit:right" width="16px" height="16px" />
                         </Link>
-                    </div >
-                </Modal.Body >
-            </Modal >
-
+                    </div>
+                </Modal.Body>
+            </Modal>
 
         </>
     );

@@ -6,18 +6,11 @@ import Title from '../../CommonComponent/Title/Title';
 import CombosSlider from '../Combos/CombosSlider';
 import './ItemDetails.css';
 import Loader from '../../CommonComponent/Loader/Loader';
-import { useDispatch,useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Modals from '../../CommonComponent/Modal/Modal';
 
 function ItemDetails({ items, selectedCategory }) {
-    const dispatch = useDispatch();
-    const { quickBites, menu } = useSelector((state) => state.food);
-
-    useEffect(() => {
-        // dispatch(fetchQuickBites());
-        // dispatch(fetchMenu());
-    }, [dispatch]);
-
+    const { menu } = useSelector((state) => state.food);
     const [activeSlider, setActiveSlider] = useState({});
     const [loading, setLoading] = useState(true);
     const sliderRefs = useRef({});
@@ -25,12 +18,8 @@ function ItemDetails({ items, selectedCategory }) {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const [item, setItem] = useState([]);
-    const [count, setCount] = useState(1);
-    const [selectedOptions, setSelectedOptions] = useState([]);
-    const [vegOptions, setVegOptions] = useState([]);
     const [isFilled, setIsFilled] = useState(false);
     // Function to handle the click and toggle the slider visibility
-    console.log()
     const handleViewCombosClick = (itemKey, e) => {
         e.preventDefault();
         setActiveSlider(prevState => ({
@@ -46,55 +35,12 @@ function ItemDetails({ items, selectedCategory }) {
         }
     }, [items]);
 
-    const handleCheckboxChange = (event, price) => {
-        const { id, checked } = event.target;
-        const priceChange = checked ? price : -price;
-        if (checked) {
-            setSelectedOptions([...selectedOptions, id]);
-        } else {
-            setSelectedOptions(selectedOptions.filter(option => option !== id));
-        }
-        setItem(prevItem => ({
-            ...prevItem,
-            price: prevItem.price + priceChange
-        }));
-    };
-
-    const handleVegCheckboxChange = (event, price) => {
-        const { id, checked } = event.target;
-        const priceChange = checked ? price : -price;
-        if (checked) {
-            setVegOptions([...vegOptions, id]);
-        } else {
-            setVegOptions(vegOptions.filter(option => option !== id));
-        }
-        setItem(prevItem => ({
-            ...prevItem,
-            price: prevItem.price + priceChange
-        }));
-    };
-
-    const calculateTotalPrice = () => {
-        return item.price * count;
-    };
-
-    const handleAddClick = () => {
-        if (item) {
-            setCount(prevCount => prevCount + 1);
-        }
-    };
-
-    const handleRemoveClick = () => {
-        if (item && count > 1) {
-            setCount(prevCount => prevCount - 1);
-        }
-    };
-
     const handleIconClick = () => {
         setIsFilled(!isFilled);
     };
 
     const handleQuickbiteClick = (quickbite) => {
+        console.log({ quickbite })
         setShow(true);
         const optionsGrouped = Object.values(menu.itemOptions
             .filter((option) => option.item_id === quickbite.item_id)
@@ -125,11 +71,13 @@ function ItemDetails({ items, selectedCategory }) {
                 return groups;
             }, {}));
         const data = {
+            item_id: quickbite.item_id,
             price: quickbite.price,
-            name: quickbite.item_name,
+            item_name: quickbite.item_name,
             addOnsGrouped: addOnsGrouped,
             optionsGrouped: optionsGrouped,
         }
+        console.log({ data })
         setItem(data);
     };
 
@@ -155,7 +103,7 @@ function ItemDetails({ items, selectedCategory }) {
                                                 <li><Icon icon="twemoji:star" width="16px" height="16px" /></li>
                                             </ul>
                                             <p><Image src='/Images/fire.svg' alt="Calories"></Image> 510 kcal</p>
-                                            <span><Image src='/Images/veg.svg' alt="Veg"></Image></span>
+                                            <span><Image src={item.diet === 'N' ? '/Images/nonveg.svg' : item.diet === 'V' ?  '/Images/veg.svg' : '/Images/egg.svg'} alt="Veg"></Image></span>
                                         </div>
                                         <h3>{item.item_name}</h3>
                                         <h4>₹{item.price}</h4>
@@ -188,17 +136,11 @@ function ItemDetails({ items, selectedCategory }) {
                 )}
             </div>
             <Modals
-                calculateTotalPrice={calculateTotalPrice}
                 item={item}
                 show={show}
                 onHide={handleClose}
-                handleAddClick={handleAddClick}
-                handleRemoveClick={handleRemoveClick}
                 handleIconClick={() => setIsFilled(!isFilled)}
-                handleCheckboxChange={handleCheckboxChange}
-                handleVegCheckboxChange={handleVegCheckboxChange}
                 isFilled={isFilled}
-                count={count}
             />
         </>
     );

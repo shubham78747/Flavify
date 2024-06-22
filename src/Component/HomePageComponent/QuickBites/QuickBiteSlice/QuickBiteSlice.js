@@ -46,7 +46,9 @@ const foodSlice = createSlice({
           acc[item.item_category].push(item);
           return acc;
         }, {});
-        state.categories = categories;
+        state.categories = Object.keys(categories).map(item => ({
+          item_name: item
+     }));
       })
   },
 });
