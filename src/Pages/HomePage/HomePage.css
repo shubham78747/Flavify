@@ -367,6 +367,7 @@ span.bluetag {
 
 .tabledetail.p-0 {
     overflow: auto;
+    height: auto !important;
 }
 
 .mb-5.accordion {
