@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 import './SignUp.css';
 import TableHeaderTitle from '../../Component/HomePageComponent/TableTitle/TableHeaderTitle';
-import Search from '../../Component/HomePageComponent/Search/Search';
 import QuickBites from '../../Component/HomePageComponent/QuickBites/QuickBites';
 import OfferBanner from '../../Component/HomePageComponent/OfferBanner/OfferBanner';
 import Combos from '../../Component/HomePageComponent/Combos/Combos';
