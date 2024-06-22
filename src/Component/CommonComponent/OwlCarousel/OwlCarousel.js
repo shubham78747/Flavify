@@ -12,7 +12,7 @@ const Carousel = ({ items, handleQuickbiteClick }) => {
     smartSpeed: 500,
     autoplay: true,
     loop: true,
-    items: 3.5,
+    items: 4.3,
   };
 
   const checkIsquickbite = items.find(item => item.is_available === true);

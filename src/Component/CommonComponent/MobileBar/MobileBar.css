@@ -76,12 +76,12 @@ ul.mobilebar {
     z-index: 88888;
 }
 
-ul.mobilebar li {
+ul.mobilebar li a p {
     transition: all 0.5s;
     position: relative;
 }
 
-ul.mobilebar li:after {
+ul.mobilebar li a p:after {
     content: "";
     position: absolute;
     bottom: -12px;
@@ -103,10 +103,15 @@ ul.mobilebar span {
     margin: auto;
 }
 
-ul.mobilebar li.active:after {
+ul.mobilebar li.active a p:after {
     opacity: 1;
 }
 
 ul.mobilebar li.active {
     transform: translateY(-5px);
+}
+
+.itemtitle h3 {
+    font-size: 18px !important;
+    line-height: 25px !important;
 }

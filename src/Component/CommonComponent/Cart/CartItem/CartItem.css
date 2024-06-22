@@ -261,3 +261,26 @@ a.btn-green.placeorder {
 /* .accordion-body .Combomain {
     padding-bottom: 30px;
 } */
+
+.accordion-body .combosubdetail h3 {
+    margin: 10px;
+}
+
+
+.accordion-body .combodetail {
+    flex-direction: row;
+}
+
+.accordion-body .combosubdetail h3 {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.accordion-body ul.saladimgs.gap-1.mb-0 img {
+    max-width: 90px;
+    height: 100%;
+}
+
+.accordion-body ul li {
+    height: 100%;
+}

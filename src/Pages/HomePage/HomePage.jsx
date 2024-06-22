@@ -11,20 +11,31 @@ import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
 import { tables } from './Tablejson/Tablejson';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchtable } from './Tableslice/Tableslice';
-// import axios from 'axios';
 import { postcustomerpreference } from './action';
 import Search from '../../Component/CommonComponent/Search/Search';
-
-
+import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
 
 function HomePage() {
     const dispatch = useDispatch();
+    const { quickBites, menu } = useSelector((state) => state.food);
+    useEffect(() => {
+        dispatch(fetchQuickBites());
+        dispatch(fetchMenu());
+    }, [dispatch]);
+
     const { table } = useSelector((state) => state?.table);
     const [show, setShow] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
     const [tablenom, setTableNom] = useState();
     const [activeCategory, setActiveCategory] = useState('V');
+    const [selectedOption, setSelectedOption] = useState('V');
+    const [selectedFilter, setSelectedFilter] = useState('');
+    console.log(selectedFilter)
 
+    useEffect(() => {
+        const filtermenu = quickBites.filter((item) => item.diet === selectedOption);
+        setSelectedFilter(filtermenu)
+    }, [selectedOption, quickBites]);
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
@@ -54,15 +65,6 @@ function HomePage() {
     const handleCategoryClick = (category) => {
         setActiveCategory(category);
     };
-    // useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //         handleShow();
-    //     }, 5000); // 5 seconds
-
-    //     // Cleanup the timer on component unmount
-    //     return () => clearTimeout(timer);
-    // }, []);
-
 
     useEffect(() => {
         if (tablenom) {
@@ -80,17 +82,17 @@ function HomePage() {
     const handleSliderChange = (event) => {
         setCurrentStep(Number(event.target.value));
     };
-
-    // List of dummy people for selection (you can replace this with actual data)
-
+    const maxStep = Math.min(steps, 10);
     return (
         <>
             <section>
                 <div className="container">
                     <div className="tabledetail">
                         <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}></TableHeaderTitle>
-                        <Search/>
-                        <QuickBites />
+                        <Search
+                            selectedOption={selectedOption}
+                            setSelectedOption={setSelectedOption} />
+                        <QuickBites menu={menu} quickBites={!selectedOption ? quickBites : selectedFilter} />
                         <OfferBanner />
                         <Combos />
                         <MobileBar />
@@ -105,7 +107,7 @@ function HomePage() {
                         {/* <span className='selectedguest'>1</span> */}
                         <div className="progress-container">
                             {/* Display the current step number */}
-                            <div className="progress-number">{currentStep}</div>
+                            <div className="progress-number">{currentStep >= 10 ? '10+' : currentStep}</div>
                             {/* Range Slider */}
                             <input
                                 type="range"
@@ -115,7 +117,7 @@ function HomePage() {
                                 onChange={handleSliderChange}
                                 className="progress-slider"
                             />
-                        </div>
+                        </div >
                         <ul className='selectcategories'>
                             <li className={activeCategory === 'V' ? 'active' : ''}>
                                 <Link href="#" onClick={() => handleCategoryClick('V')}>
@@ -139,9 +141,9 @@ function HomePage() {
                         <Link href="#" className='btngreen continue' onClick={senddata}>
                             Continue <Icon icon="formkit:right" width="16px" height="16px" />
                         </Link>
-                    </div>
-                </Modal.Body>
-            </Modal>
+                    </div >
+                </Modal.Body >
+            </Modal >
 
 
         </>

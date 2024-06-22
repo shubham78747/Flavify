@@ -16,7 +16,7 @@ function CartPage() {
     const totalPrice = useSelector((state) => state.cart.totalPrice);
     const dispatch = useDispatch();
 
-    console.log(cartItems,totalQuantity,totalPrice)
+    console.log(cartItems, totalQuantity, totalPrice)
 
     const handleRemoveFromCart = (id) => {
         dispatch(removeItemFromCart(id));
@@ -26,9 +26,9 @@ function CartPage() {
 
     return (
         <>
-               <section>
+            <section>
                 <div className="container">
-                    <div className="tabledetail">
+                    <div className="tabledetail p-0">
                         <Cart />
                         <MobileBar />
                     </div>

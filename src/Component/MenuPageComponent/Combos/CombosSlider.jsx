@@ -19,7 +19,7 @@ function CombosSlider() {
         smartSpeed: 500,
         autoplay: true,
         loop: true,
-        items: 1.9,
+        items: 1.6,
 
     };
     const [show, setShow] = useState(false);
@@ -187,7 +187,7 @@ function CombosSlider() {
                                             <input
                                                 type="radio"
                                                 name="variant"
-                                                defaultChecked // Set default checked for the first option (if needed)
+                                            // defaultChecked // Set default checked for the first option (if needed)
                                             />
                                             <span className="radio-indicator"></span>
                                         </label>
