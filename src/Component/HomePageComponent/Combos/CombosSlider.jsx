@@ -178,7 +178,7 @@ function CombosSlider() {
                                             <input
                                                 type="radio"
                                                 name="variant"
-                                                defaultChecked // Set default checked for the first option (if needed)
+                                            // defaultChecked // Set default checked for the first option (if needed)
                                             />
                                             <span className="radio-indicator"></span>
                                         </label>

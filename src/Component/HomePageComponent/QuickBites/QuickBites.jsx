@@ -12,6 +12,7 @@ function QuickBites() {
     return (
         <div className="quickbitesslider mb-5">
             <Title title="Quick Bites" className="quicktitle mb-3" />
+            <p className='text'><Image src='Images/clock.svg'></Image> Food items ready in 10min. Quick, Fast, Fresh</p>
             <QuickBitesSlider />
         </div>
     );

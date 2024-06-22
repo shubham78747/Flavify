@@ -19,7 +19,7 @@ function CartItemSlider() {
         smartSpeed: 500,
         autoplay: true,
         loop: true,
-        items: 1.5,
+        items: 1.3,
 
     };
     const [show, setShow] = useState(false);
