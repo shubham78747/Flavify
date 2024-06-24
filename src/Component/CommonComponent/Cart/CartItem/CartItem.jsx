@@ -63,6 +63,8 @@ function CartItem() {
                 console.log('Response from server:', response.data);
                 if(response.data){
                     navigate('/success')
+                    setCartItems()
+                    setTotalPrice()
                 }
             } catch (error) {
                 console.error('Error sending data:', error);
@@ -83,6 +85,7 @@ function CartItem() {
                                         <Image src='Images/makhniimg.png'></Image>
                                     </span>
                                     <div className="itemsubdetail">
+                                    {/* <Image src={item.diet === 'N' ? '/Images/nonveg.svg' : item.diet === 'V' ?  '/Images/veg.svg' : '/Images/egg.svg'} alt="Veg"></Image> */}
                                         <Link to=""><Image src='Images/veg.svg'></Image>{item.item_name}</Link>
                                         <span>₹{item.price}</span>
                                     </div>

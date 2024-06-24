@@ -64,7 +64,6 @@ function QuickBites({menu,quickBites}) {
         
 
         useEffect(()=>{
-            console.log({ quickBites })
             if(quickBites.length > 0){
                 handleData(quickBites)  
                 setLoader(false)    

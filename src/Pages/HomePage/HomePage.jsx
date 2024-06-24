@@ -18,24 +18,37 @@ import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/Qu
 function HomePage() {
     const dispatch = useDispatch();
     const { quickBites,menu  } = useSelector((state) => state.food);
+    const { table } = useSelector((state) => state?.table);
+
     useEffect(() => {
         dispatch(fetchQuickBites());
         dispatch(fetchMenu());
+        dispatch(fetchtable(tables[0].table_id))      
+        const tableDataStr = localStorage.getItem('tableData');
+        console.log({ tableDataStr })
+        const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false}; 
+        if (!tableData.isfirst) {
+                setShow(true)
+        } else {
+            console.log('tableData is not present in localStorage');
+        }
     }, [0]);
-
-    const { table } = useSelector((state) => state?.table);
+    
     const [show, setShow] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
     const [tablenom, setTableNom] = useState();
     const [activeCategory, setActiveCategory] = useState('V');
-    const [selectedOption, setSelectedOption] = useState('V');
     const [selectedFilter, setSelectedFilter] = useState([]);
-    console.log({selectedFilter})
 
     useEffect(() => {
-        const filtermenu = quickBites.filter((item) => item?.diet === selectedOption);
+        const filtermenu = quickBites.filter((item) => item?.diet === activeCategory);
         setSelectedFilter(filtermenu)
-    }, [selectedOption,quickBites]);
+    }, [activeCategory,quickBites]);
+    
+  useEffect(() => {
+    const getitemdata = JSON.parse(localStorage.getItem('category'));
+    setActiveCategory(getitemdata.diet)
+  }, [0]);
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
@@ -54,16 +67,31 @@ function HomePage() {
             if (response?.data) {
                 setTableNom();
                 handleClose();
+                updateIsFirst(true);
             }
-            console.log('Response from server:', response.data);
         } catch (error) {
             console.error('Error sending data:', error);
         }
     };
-    // Handler to set the active category
-    const handleCategoryClick = (category) => {
-        setActiveCategory(category);
+
+    const updateIsFirst = (value) => {
+        const tableData = JSON.parse(localStorage.getItem('tableData')) || {};
+        tableData.isfirst = value;
+        localStorage.setItem('tableData', JSON.stringify(tableData));
     };
+
+    // localStorage.setItem('category', JSON.stringify({ diet: activeCategory }));
+    
+    const handleCategoryClick = (category) => {
+        const storedCategory = JSON.parse(localStorage.getItem('category'));
+        if (storedCategory && storedCategory.diet === category) {
+            setActiveCategory(category);
+        } else {
+            localStorage.setItem('category', JSON.stringify({ diet: category }));
+            setActiveCategory(category);
+        }
+    };
+
 
     useEffect(() => {
         if (tablenom) {
@@ -89,8 +117,10 @@ function HomePage() {
                     <div className="tabledetail">
                         <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}></TableHeaderTitle>
                         <Search 
-                          selectedOption={selectedOption} 
-                          setSelectedOption={setSelectedOption} />
+                          selectedOption={activeCategory} 
+                          setSelectedOption={setActiveCategory} 
+                          handleCategoryClick={handleCategoryClick}  
+                          />
                         {<QuickBites menu={menu} quickBites={selectedFilter} />}
                         <OfferBanner />
                         <Combos />
@@ -99,7 +129,7 @@ function HomePage() {
                 </div>
             </section>
             <Modal show={show} onHide={handleClose} className='automodal'>
-                <Modal.Header closeButton></Modal.Header>
+                {/* <Modal.Header closeButton></Modal.Header> */}
                 <Modal.Body className="pt-5 p-3">
                     <div className="guestselectmodalmain">
                         <h3>Number of guests for dining?</h3>
