@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import Modals from '../../CommonComponent/Modal/Modal';
 
 function ItemDetails({ items, selectedCategory }) {
+    console.log({ items, selectedCategory })
     const { menu } = useSelector((state) => state.food);
     const [activeSlider, setActiveSlider] = useState({});
     const [loading, setLoading] = useState(true);
@@ -77,19 +78,19 @@ function ItemDetails({ items, selectedCategory }) {
             addOnsGrouped: addOnsGrouped,
             optionsGrouped: optionsGrouped,
         }
-        console.log({ data })
         setItem(data);
     };
+    
 
     return (
         <>
             <div className="itemdetails mb-5">
                 {/* KEBABS Section */}
-                <Title title={selectedCategory} className="quicktitle mb-3" />
+                <Title title={selectedCategory?.item_name ? selectedCategory?.item_name : selectedCategory} className="quicktitle mb-3" />
                 {loading ? (
                     <div><Loader /></div>
                 ) : (
-                    items && items.map((item, index) => (
+                    items?.length > 0 && items.map((item, index) => (
                         <div key={index} className={`bg-white ${activeBgGreen === index ? 'bg-green' : 'bg-white'}`}>
                             <Row>
                                 <Col lg={8}>

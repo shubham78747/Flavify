@@ -82,3 +82,9 @@
 .maintitle.d-flex a+a {
     margin-left: auto;
 }
+
+.Toastify__toast-container.Toastify__toast-container--top-right {
+    position: absolute;
+    right: 377px;
+    top: 0;
+}

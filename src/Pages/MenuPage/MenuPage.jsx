@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import './MenuPage.css';
 import TableHeaderTitle from '../../Component/MenuPageComponent/TableTitle/TableHeaderTitle';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
@@ -9,59 +8,120 @@ import Search from '../../Component/CommonComponent/Search/Search';
 import Carousel from '../../Component/CommonComponent/OwlCarousel/OwlCarousel';
 
 function MenuPage() {
-  const { menu,categories  } = useSelector((state) => state.food);
-  const [selectedOption, setSelectedOption] = useState('V');
-  const [cate, setSelectedFilter] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState()
-    useEffect(() => {
-        if (categories.length > 0) {          
-          filterMenu(categories[0], selectedOption);
-        }
-      }, [categories]);
+  const getitemdata = JSON.parse(localStorage.getItem('category'));
+  console.log({ getitemdata })
 
-      useEffect(() => {
-        if(selectedCategory) {
-          filterMenu(selectedCategory, selectedOption)
-        }
-      }, [selectedOption])
+  const { menu, categories } = useSelector((state) => state.food);
+  const [activePref, setActivePref] = useState(getitemdata?.diet || 'V');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
+  // useEffect(() => {
+  //   if (categories.length > 0) {
+  //     filterMenu(categories[0]);
+  //   }
+  // }, [categories]);
 
-    // List of dummy people for selection (you can replace this with actual data)
-    const [menuItem, setMenuItem] = useState([]);
-    const handleQuickbiteClick = (category) =>{
-          filterMenu(category, selectedOption)
-          setSelectedCategory(category)
+  useEffect(() => {
+    if (selectedCategory && activePref) {
+      filterMenu(selectedCategory, activePref);
     }
+  }, [selectedCategory, activePref]);
 
-    const filterMenu = (category, option) => {
-      const data = menu.items.filter(item => item.item_category === category.item_name && item.diet === option);
-      const updatedData = {
-          items: data,
-          selected_category: category.item_name
-        };
-        setMenuItem(updatedData);
+  useEffect(() => {
+    const getitemdata = JSON.parse(localStorage.getItem('category'));
+    setActivePref(getitemdata.diet)
+  }, [0]);
+
+  // State to hold filtered menu items
+  const [filteredItems, setFilteredItems] = useState([]);
+  
+  useEffect(() => {
+    console.log({menu: menu.items})
+    if(menu?.items?.length > 0) {
+      setFilteredItems(menu.items);
     }
+  }, [menu.items]);
 
-    return (
-        <>
-            <section>
-                <div className="container">
-                    <div className="tabledetail">
-                        <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
-                        <Search selectedOption={selectedOption} 
-                          setSelectedOption={setSelectedOption}/>
-                          <Carousel items={categories} handleQuickbiteClick={handleQuickbiteClick}/>
-                        {/* <QuickBites items={Object.keys(categories)} handleQuickbiteClick={handleQuickbiteClick}/> */}
-                          <ItemDetails  items={menuItem.items} selectedCategory={menuItem.selected_category}/>
-                        {/* <Combos /> */}
-                        <MobileBar />
-                    </div>
-                </div>
-            </section>
+  const handleQuickbiteClick = (category) => {
+    setSelectedCategory(category);
+    filterMenu(category, activePref)
+  };
 
+  const filterMenu = (category, preference) => {
+    console.log({ category, preference })
+      const data = menu?.items?.filter(item => {
+        if(category !== 'All') {
+          if(item.item_category === category.item_name && item.diet === preference) {
+            return item;
+          }
+        } else {
+          if(item.diet === preference) {
+            return item;
+          }
+        }
+      })
+      setFilteredItems(data);
+  };
 
-        </>
+  // const itemsToDisplay = selectedCategory ? filteredItems : menu.items.filter(item => item.diet === activePref);
+  // const categoryToDisplay = selectedCategory ? selectedCategory.item_name : activePref || 'All';
+
+  const handleCategoryClick = (pref) => {
+    if (activePref !== pref) {
+      filterMenu(selectedCategory, pref)
+      setActivePref(pref);
+    }
+  };
+
+  const handleSearchChange = (event) => {
+    const searchTerm = event.target.value ? event.target.value.toLowerCase() : '';
+    const filteredData = menu.items.filter(item =>{
+      if(selectedCategory !== 'All') {
+        if(item.item_category === selectedCategory.item_name && item.diet === activePref && (item.item_name && item.item_name.toLowerCase().includes(searchTerm)) ||
+        (item.item_description && item.item_description.toLowerCase().includes(searchTerm))) {
+          return item;
+        }
+      } else {
+        if(item.diet === activePref && (item.item_name && item.item_name.toLowerCase().includes(searchTerm)) ||
+        (item.item_description && item.item_description.toLowerCase().includes(searchTerm))) {
+          return item;
+        }
+      }
+      (item.item_name && item.item_name.toLowerCase().includes(searchTerm)) ||
+      (item.item_description && item.item_description.toLowerCase().includes(searchTerm))
+    }
     );
+    setFilteredItems(filteredData);
+  };  
+
+  // const categoryToDisplay = selectedCategory ? selectedCategory.item_name : 'All';
+
+console.log({  filteredItems })
+
+  return (
+    <>
+      <section>
+        <div className="container">
+          <div className="tabledetail">
+            <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
+            <Search
+              selectedOption={activePref}
+              setSelectedOption={setActivePref}
+              handleCategoryClick={handleCategoryClick}
+              handleSearchchnage={handleSearchChange}
+            />
+            <Carousel items={categories} handleQuickbiteClick={handleQuickbiteClick} />
+            {/* {activePref && !selectedCategory && <ItemDetails items={menu.items} />} */}
+            <ItemDetails items={filteredItems} selectedCategory={selectedCategory} />
+            {/* {itemsToDisplay && <ItemDetails items={itemsToDisplay} />} */}
+            
+            {/* <Combos /> */}
+            <MobileBar />
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
 
 export default MenuPage;

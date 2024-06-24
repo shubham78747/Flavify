@@ -16,8 +16,6 @@ function CartPage() {
     const totalPrice = useSelector((state) => state.cart.totalPrice);
     const dispatch = useDispatch();
 
-    console.log(cartItems, totalQuantity, totalPrice)
-
     const handleRemoveFromCart = (id) => {
         dispatch(removeItemFromCart(id));
     };

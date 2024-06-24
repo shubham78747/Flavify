@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Image } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function Modals({ 
     isFilled, 
@@ -35,7 +36,6 @@ function Modals({
     
 
     const handleAddToCart = (itemId) => {
-        console.log({ itemId, item })
         const selectedItem = {
             item_id: itemId,
             item_name: item.item_name,
@@ -52,19 +52,15 @@ function Modals({
         };
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);
-
         if (existingItemIndex >= 0) {
-            // Item exists, update its quantity and price
             cartItems[existingItemIndex].qty += selectedItem.qty;
             cartItems[existingItemIndex].price += selectedItem.price;
         } else {
-            // Item does not exist, add it to the cart
             cartItems.push(selectedItem);
         }
-
-        console.log(cartItems)
-        
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        toast.success(`Add Item SuccessFully`);
+        onHide();
     };
 
     const handleAdonChange = (e, addon) => {
@@ -96,7 +92,6 @@ function Modals({
             setCount(prevCount => prevCount - 1);
         }
     };
-    console.log({ item })
 
     return (
         <>

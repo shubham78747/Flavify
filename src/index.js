@@ -9,6 +9,8 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import { Provider } from 'react-redux';
 import { store } from './Component/Store/Store';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,6 +19,7 @@ root.render(
     <Provider store={store}>
     <BrowserRouter>
       <App />
+      <ToastContainer />
     </BrowserRouter>
     </Provider>
   </React.StrictMode>
