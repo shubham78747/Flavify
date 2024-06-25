@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux';
 import Modals from '../../CommonComponent/Modal/Modal';
 
 function ItemDetails({ items, selectedCategory }) {
-    console.log({ items, selectedCategory })
     const { menu } = useSelector((state) => state.food);
     const [activeSlider, setActiveSlider] = useState({});
     const [loading, setLoading] = useState(true);

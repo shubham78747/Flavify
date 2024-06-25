@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SignUp.css';
 import { Button, Form, Image } from 'react-bootstrap';
@@ -9,11 +9,8 @@ function SignUp() {
     const { table } = useSelector((state) => state?.table);
     const navigate = useNavigate();
     const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
+    const [phone, setPhone] = useState();
     const [dob, setDOB] = useState('');
-
-    console.log('pavan', table);
-
     const formatDate = (date) => {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const [year, month, day] = date.split("-");
@@ -25,11 +22,10 @@ function SignUp() {
         const formattedDOB = formatDate(dob);
         const header = {
             name: name,
-            phone: phone,
+            phone: Number(phone),
             dob: formattedDOB,
             order_id: table?.response?.order_id,
-        };
-        console.log('Header:', header); 
+        }; 
         try {
             const res = await userInfo(header);
             if (res.data) {

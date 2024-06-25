@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Search.css';
 import { Image } from 'react-bootstrap';
 import { event } from 'jquery';
-function Search({setSelectedOption,selectedOption,handleCategoryClick,handleSearchchnage}) {
+function Search({selectedOption,handleCategoryClick,handleSearchchnage}) {
     const [isImageShown, setIsImageShown] = useState(false);
 
     // const handleCategoryClick = (option) => {

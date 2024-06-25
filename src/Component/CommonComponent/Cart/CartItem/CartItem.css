@@ -284,3 +284,39 @@ a.btn-green.placeorder {
 .accordion-body ul li {
     height: 100%;
 }
+a.btn-green.order {
+    border-radius: 8px;
+    border: 1px solid var(--primary-500-main, #71917F);
+    background: var(--primary-500-main, #71917F);
+
+    /* Drop shadow/XSmall */
+    box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.04), 0px 1px 2px 0px rgba(16, 24, 40, 0.04);
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--Generic-White, #FFF);
+    text-align: justify;
+
+    /* Label/Medium/Medium */
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    /* 114.286% */
+    text-decoration: none;
+    padding: 10px 16px;
+    margin-bottom: 10px !important;
+    margin: auto;
+    margin-top: 10px !important;
+}
+
+a.btn-green.order {
+    position: fixed;
+    bottom: 100px;
+    z-index: 999;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 440px;
+}

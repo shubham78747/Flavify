@@ -15,6 +15,7 @@ import { postcustomerpreference } from './action';
 import Search from '../../Component/CommonComponent/Search/Search';
 import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
 
+
 function HomePage() {
     const dispatch = useDispatch();
     const { quickBites,menu  } = useSelector((state) => state.food);
@@ -25,7 +26,6 @@ function HomePage() {
         dispatch(fetchMenu());
         dispatch(fetchtable(tables[0].table_id))      
         const tableDataStr = localStorage.getItem('tableData');
-        console.log({ tableDataStr })
         const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false}; 
         if (!tableData.isfirst) {
                 setShow(true)
@@ -47,12 +47,12 @@ function HomePage() {
     
   useEffect(() => {
     const getitemdata = JSON.parse(localStorage.getItem('category'));
-    setActiveCategory(getitemdata.diet)
+    setActiveCategory(getitemdata?.diet || 'V')
   }, [0]);
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
-        setTableNom(tables[0].table_id)
+        setTableNom(tables[1].table_id)
         setShow(true)
     };
 
@@ -109,6 +109,11 @@ function HomePage() {
     const handleSliderChange = (event) => {
         setCurrentStep(Number(event.target.value));
     };
+    const handleSearchchnage = (e) => {
+        const serach = e.target.value;
+        const filtermenu = quickBites.filter((item) => item?.item_name.toLowerCase().includes(serach.toLowerCase()));
+        setSelectedFilter(filtermenu) 
+    }
     const maxStep = Math.min(steps, 10);
     return (
         <>
@@ -120,6 +125,7 @@ function HomePage() {
                           selectedOption={activeCategory} 
                           setSelectedOption={setActiveCategory} 
                           handleCategoryClick={handleCategoryClick}  
+                          handleSearchchnage={handleSearchchnage}
                           />
                         {<QuickBites menu={menu} quickBites={selectedFilter} />}
                         <OfferBanner />

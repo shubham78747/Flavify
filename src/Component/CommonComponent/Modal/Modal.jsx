@@ -18,7 +18,6 @@ function Modals({
     const [adonPrice,setAdonPrice] = useState(0)
     const [optionPrice,setOptionPrice] = useState(0)
 
-
     // Calculate total price of selected items
     useEffect(() => {
         // Calculate the total prices of add-ons and options when they change
@@ -31,6 +30,7 @@ function Modals({
     const calculateItemPrice = () => {
         const basePrice = item.price || 0;
         const totalPrice = (basePrice + adonPrice + optionPrice) * count;
+        console.log({totalPrice})
         return totalPrice;
     };
     
@@ -59,6 +59,10 @@ function Modals({
             cartItems.push(selectedItem);
         }
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        setOptionPrice(0)
+        setAdonPrice(0)
+        setAdon([])
+        setOption([])
         toast.success(`Add Item SuccessFully`);
         onHide();
     };

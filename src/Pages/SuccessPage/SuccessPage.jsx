@@ -57,6 +57,7 @@ function SuccessPage() {
                                 <Link to="">View top deals</Link>
                                 <Link to="">Check out best sellers</Link>
                                 <Link to="">Call the waiter</Link>
+                                <Link to={'/cart'}>Order Edit</Link>
                             </div>
                         </div>
                         {/* <div className="cartitem">

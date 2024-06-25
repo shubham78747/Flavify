@@ -9,11 +9,10 @@ import Carousel from '../../Component/CommonComponent/OwlCarousel/OwlCarousel';
 
 function MenuPage() {
   const getitemdata = JSON.parse(localStorage.getItem('category'));
-  console.log({ getitemdata })
-
   const { menu, categories } = useSelector((state) => state.food);
   const [activePref, setActivePref] = useState(getitemdata?.diet || 'V');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [filteredItems, setFilteredItems] = useState([]);
 
   // useEffect(() => {
   //   if (categories.length > 0) {
@@ -29,18 +28,15 @@ function MenuPage() {
 
   useEffect(() => {
     const getitemdata = JSON.parse(localStorage.getItem('category'));
-    setActivePref(getitemdata.diet)
+    setActivePref(getitemdata?.diet)
   }, [0]);
 
   // State to hold filtered menu items
-  const [filteredItems, setFilteredItems] = useState([]);
-  
-  useEffect(() => {
-    console.log({menu: menu.items})
-    if(menu?.items?.length > 0) {
-      setFilteredItems(menu.items);
-    }
-  }, [menu.items]);
+  // useEffect(() => {
+  //   if(menu?.items?.length > 0) {
+  //     setFilteredItems(menu.items);
+  //   }
+  // }, [menu.items]);
 
   const handleQuickbiteClick = (category) => {
     setSelectedCategory(category);
@@ -48,7 +44,6 @@ function MenuPage() {
   };
 
   const filterMenu = (category, preference) => {
-    console.log({ category, preference })
       const data = menu?.items?.filter(item => {
         if(category !== 'All') {
           if(item.item_category === category.item_name && item.diet === preference) {
@@ -62,9 +57,6 @@ function MenuPage() {
       })
       setFilteredItems(data);
   };
-
-  // const itemsToDisplay = selectedCategory ? filteredItems : menu.items.filter(item => item.diet === activePref);
-  // const categoryToDisplay = selectedCategory ? selectedCategory.item_name : activePref || 'All';
 
   const handleCategoryClick = (pref) => {
     if (activePref !== pref) {
@@ -93,10 +85,6 @@ function MenuPage() {
     );
     setFilteredItems(filteredData);
   };  
-
-  // const categoryToDisplay = selectedCategory ? selectedCategory.item_name : 'All';
-
-console.log({  filteredItems })
 
   return (
     <>
