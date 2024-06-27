@@ -7,13 +7,17 @@ import { placeorder,Updateplaceorder } from '../action/action';
 import { useSelector } from 'react-redux';
 import { tables } from '../../../../Pages/HomePage/Tablejson/Tablejson';
 import { toast } from 'react-toastify';
-import Modals from '../../Modal/Modal';
+import CartModal from './CartModal/CartModal';
 
 function CartItem() {
     const navigate = useNavigate();
+    const {menu} = useSelector((state)=>state?.food);
     const { table } = useSelector((state) => state?.table);
     const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cartItems')) || []);
     const [totalPrice, setTotalPrice] = useState(0); 
+    const [show, setShow] = useState(false); 
+    const handleClose = () => {setShow(false);}
+    const [itemdata,setItemdata] = useState([]);
     
     useEffect(() => {
         const storedCartItems = JSON.parse(localStorage.getItem('cartItems'));
@@ -47,26 +51,36 @@ function CartItem() {
     };
 
     const calculateTotalPrice = (items) => {
-        const total = items && items?.reduce((acc, item) => acc + (item.price*item.qty), 0);
-        setTotalPrice(total);
+        if (Array.isArray(items) && items.length > 0) {
+            const total = items.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            setTotalPrice(total);
+        } else {
+            setTotalPrice(0); 
+        }
     };
+    
             const handleCartItem = async() =>{
                 if(cartItems && cartItems.length > 0){
                     try {
                         const checkOrder = JSON.parse(localStorage.getItem('custorder'));
                         const header = {
                             table_id: tables[0].table_id,
-                            order_id: table?.response?.order_id,
+                            order_id: table?.order_id,
                             items: cartItems,  
                         }
+                        const updatedata = {
+                            order_id: table?.order_id,
+                            items: cartItems,
+                        }
                         if(checkOrder?.order){
-                            const response = await Updateplaceorder(header)
+                            const response = await Updateplaceorder(updatedata)
                             console.log(response.data)
                             if(response?.data){
                                 navigate('/success')
                                 setCartItems()
                                 setTotalPrice()
                             }
+                            toast.success("Order Updated successfully!");
                         }else{
                             const response = await placeorder(header)
                             if(response?.data){
@@ -75,12 +89,13 @@ function CartItem() {
                                 setTotalPrice()
                                 localStorage.setItem('custorder',JSON.stringify({order:true}))
                             }
-                        }                
+                        }   
+                        toast.success("Order placed successfully!");             
                     } catch (error) {
                         console.error('Error sending data:', error);
                     }
                 }else{
-                    toast("Please add Item")
+                    toast.warning("Please add an item");
                 }
         }
 
@@ -88,7 +103,7 @@ function CartItem() {
             try {
                 const header = {
                     table_id: tables[0].table_id,
-                    order_id: table?.response?.order_id,
+                    order_id: table?.order_id,
                     items: cartItems,  
                 }
                 localStorage.setItem('placeorder',JSON.stringify(header))
@@ -99,6 +114,50 @@ function CartItem() {
             }
         }
 
+        const handleQuickbiteClick = (quickbite) => {
+            setShow(true);
+            const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
+            const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
+            const optionsGrouped = Object.values(itemOptions
+            .filter((option) => option.item_id === quickbite.item_id)
+            .reduce((groups, itemOption) => {
+                const groupName = itemOption.option_group_name;
+                if (!groups[groupName]) {
+                groups[groupName] = { groupName, itemList: [] };
+                }
+                const optionDetails = menu.options.find(
+                (option) => option.option_id === itemOption.option_id
+                );
+                groups[groupName].itemList.push(optionDetails);
+                return groups;
+            }, {}));
+
+            // Find related add-ons and group by addon_group_name
+            const addOnsGrouped = Object.values(itemAddOns
+            .filter((addon) => addon.item_id === quickbite.item_id)
+            .reduce((groups, itemAddon) => {
+                const groupName = itemAddon.addon_group_name;
+                if (!groups[groupName]) {
+                groups[groupName] = { groupName, itemList: [] };
+                }
+                const addonDetails = menu.addOns.find(
+                (addon) => addon.addon_id === itemAddon.addon_id
+                );
+                groups[groupName].itemList.push(addonDetails);
+                return groups;
+            }, {}));
+            const data = {
+                item_id: quickbite.item_id,
+                price: quickbite.price,
+                item_name: quickbite.item_name,
+                addOnsGrouped: addOnsGrouped,
+                optionsGrouped: optionsGrouped,
+            }
+            setItemdata(data);
+            // setRelatedOptions(data);
+            // setRelatedAddOns(addOns);
+        };
+
     return (
         <>
             <Accordion defaultActiveKey={['0']} alwaysOpen>
@@ -108,7 +167,7 @@ function CartItem() {
                         <ul>
                         {cartItems?.length > 0 && cartItems?.map((item,index)=>(
                             <li key={index}>
-                                <div className="itemmaindetail">
+                                <div className="itemmaindetail" onClick={() => handleQuickbiteClick(item)}>
                                     <span>
                                         <Image src='Images/makhniimg.png'></Image>
                                     </span>
@@ -136,6 +195,7 @@ function CartItem() {
             {/* <YouMayAlsoLike /> */}
             <PastOrder handleplaceorder={handleplaceorder} />
             <Link className='btn-green placeorder' onClick={handleCartItem}>{!localStorage.getItem('custorder') ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
+            <CartModal show={show} onHide={handleClose} item={itemdata} setCartItems={setCartItems}/>
         </>
     );
 }

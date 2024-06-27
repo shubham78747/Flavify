@@ -17,7 +17,7 @@ export const Updateplaceorder = async (data) => {
   try {
     const response = await Axios({
       method: "put",
-      url: `/placeorderupdate`,
+      url: `/updatesuborder`,
       data: data,
     });
     return response; 

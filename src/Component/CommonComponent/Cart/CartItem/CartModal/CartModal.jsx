@@ -11,98 +11,108 @@ function Modals({
     show, 
     onHide, 
     handleIconClick,
+    setCartItems,
  }) {
-    const [adon, setAdon] = useState([]);
-    const [option, setOption] = useState([]);
-    const [count, setCount] = useState(1);
-    const [adonPrice,setAdonPrice] = useState(0)
-    const [optionPrice,setOptionPrice] = useState(0)
-
-    // Calculate total price of selected items
-    useEffect(() => {
-        // Calculate the total prices of add-ons and options when they change
-        const newAdonPrice = adon.reduce((acc, addon) => acc + addon.price, 0);
-        const newOptionPrice = option.reduce((acc, opt) => acc + opt.price, 0);
-        setAdonPrice(newAdonPrice);
-        setOptionPrice(newOptionPrice);
-    }, [adon, option]);
+    const [filtereddata,setFiltereddata] = useState([]);
+    console.log('nnnnnnnnnnnn',filtereddata)
 
     const calculateItemPrice = () => {
-        const basePrice = item.price || 0;
-        const totalPrice = (basePrice + adonPrice + optionPrice) * count;
+        const basePrice = filtereddata?.price || 0;
+        const totalPrice = basePrice * filtereddata?.qty;
         return totalPrice;
     };
 
-    useEffect(() => {
-        if (!show) {
-            setCount(1);
-        }
-    }, [show]);
-
-    
-
     const handleAddToCart = (itemId) => {
-        const selectedItem = {
-            item_id: itemId,
-            item_name: item.item_name,
-            qty: count,
-            price: calculateItemPrice(),
-            add_ons: adon.map(addon => ({
-                addon_id: addon.addon_id,
-                price: addon.price,
-            })),
-            options: option.map(opt => ({
-                option_id: opt.option_id,
-                price: opt.price,
-            })),
-        };
-        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);
-        if (existingItemIndex >= 0) {
-            cartItems[existingItemIndex].qty += selectedItem.qty;
-            cartItems[existingItemIndex].price += selectedItem.price;
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        const existingItemIndex = cartItems.findIndex(item => item.item_id === itemId);
+        if (existingItemIndex !== -1) {
+            cartItems[existingItemIndex] = { ...filtereddata, item_id: itemId };
         } else {
-            cartItems.push(selectedItem);
+            cartItems.push({ ...filtereddata, item_id: itemId });
         }
+    
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
-        setOptionPrice(0)
-        setAdonPrice(0)
-        setAdon([])
-        setOption([])
-        toast.success(`Add Item SuccessFully`);
+        setCartItems(cartItems)
         onHide();
-        setCount(1)
+        toast.success(`Item added successfully`);
     };
 
-    const handleAdonChange = (e, addon) => {
-        const isChecked = e.target.checked;
-        if (isChecked) {
-            setAdon([...adon, addon]);
-        } else {
-            setAdon(adon.filter(ad => ad.addon_id !== addon.addon_id));
-        }
-        }
+        const handleAdonChange = (e, addon) => {
+            const isChecked = e.target.checked;
+            if (isChecked) {
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    add_ons: [...prev.add_ons, {addon_id: addon.addon_id, price:addon.price}]
+                }))
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    price: prev.price+addon.price,
+                }))
+            } else {
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    add_ons: prev.add_ons.filter(ad => ad.addon_id !== addon.addon_id)
+                }))
+                  setFiltereddata((prev) => ({
+                    ...prev,
+                    price: prev.price-addon.price,
+                }))
+                }
+            }
 
-    const handleOptionChange = (e, opt) => {
-        const isChecked = e.target.checked;
-        if (isChecked) {
-            setOption([...option, opt]);
-        } else {
-            setOption(option.filter(op => op.option_id !== opt.option_id));
-        }
+        const handleOptionChange = (e, opt) => {
+            const isChecked = e.target.checked;
+            if (isChecked) {
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    options: [...prev.options, {option_id: opt.option_id, price:opt.price}],
+                }))
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    price: prev.price+opt.price,
+                }))
+            } else {
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    options: prev.options.filter(ad => ad.option_id !== opt.option_id)
+                }))
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    price: prev.price-opt.price,
+                }))
+            }
     };
-
     const handleAddClick = () => {
         if (item) {
-            setCount(prevCount => prevCount + 1);
+            setFiltereddata((prev) => ({
+                ...prev,
+                qty: prev.qty + 1
+            }))
         }
     };
 
     const handleRemoveClick = () => {
-        if (item && count > 1) {
-            setCount(prevCount => prevCount - 1);
+        if (item && filtereddata?.qty > 1) {
+            setFiltereddata((prev) => ({
+                ...prev,
+                qty: prev.qty - 1
+            }))
         }
     };
+
+    useEffect(() => {
+        if (item) {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const data = Array.isArray(cartItems) ? cartItems.filter(cartItem => cartItem.item_id === item.item_id) : [];
+            if (data.length > 0) {
+                setFiltereddata(data[0]);
+            }
+            else {
+                setFiltereddata([]);
+            }
+        }
+    }, [item]);
+    
 
     return (
         <>
@@ -135,7 +145,6 @@ function Modals({
                         <div className="select-variant-container">
                             <div className="selectvariant">
                                 <div className="selectvarianttitle">
-                                    {/* <h3>Select add-on’s</h3> */}
                                 </div>
                                 <ul className='selectvariantGroup'>
                                     {item && item.addOnsGrouped && item.addOnsGrouped.length > 0 ? (
@@ -143,7 +152,7 @@ function Modals({
                                             <li key={`addon-group-${index}`}>
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
-                                                    {group.itemList.map((addon, addonIndex) => (
+                                                    {group.itemList.map((addon, addonIndex) => (            
                                                         <li key={`addon-${addonIndex}`}>
                                                             <h5>{addon.addon_name}</h5>
                                                             <label className="custom-checkbox" htmlFor={`selectaddonoption${addonIndex}`}>
@@ -153,6 +162,7 @@ function Modals({
                                                                     id={`selectaddonoption${addonIndex}`}
                                                                     value={addon}
                                                                     onChange={(e) => handleAdonChange(e, addon)}
+                                                                    checked={filtereddata?.add_ons?.length ? filtereddata?.add_ons?.some(item => item.addon_id === addon.addon_id) : false}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>
@@ -168,24 +178,24 @@ function Modals({
                             </div>
                             <div className="selectvariant">
                                 <div className="selectvarianttitle">
-                                    {/* <h3>Select options</h3> */}
                                 </div>
                                 <ul className='selectvariantGroup'>
                                     {item && item.optionsGrouped && item.optionsGrouped.length > 0 ? (
                                         item.optionsGrouped.map((group, index) => (
-                                            <li key={`addon-option-${index}`}>
+                                            <li key={`addon-option-${index}`}>                                            
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
-                                                    {group.itemList.map((option, optionIndex) => (
+                                                    {group.itemList.map((opt, optionIndex) => (                                                        
                                                         <li key={`option-${optionIndex}`}>
-                                                            <h5>{option.option_name}</h5>
+                                                            <h5>{opt.option_name}</h5>
                                                             <label className="custom-checkbox" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
-                                                                <span className="checkbox-label">₹{option.price}</span>
+                                                                <span className="checkbox-label">₹{opt.price}</span>                                                            
                                                                 <input
                                                                     type="checkbox"
                                                                     id={`selectaddonoptionMeat${optionIndex}`}
-                                                                    value={option}
-                                                                    onChange={(e) => handleOptionChange(e, option)}
+                                                                    value={opt}
+                                                                    onChange={(e) => handleOptionChange(e, opt)}
+                                                                    checked={filtereddata?.options?.length > 0 && filtereddata?.options?.some(item => item.option_id === opt.option_id)}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>
@@ -206,7 +216,7 @@ function Modals({
                                         style={{ cursor: item ? 'pointer' : 'not-allowed', opacity: item ? 1 : 0.5 }}>
                                         <Icon icon="ri:subtract-fill" width="24px" height="24px" />
                                     </span>
-                                    <h5 style={{ margin: '0 10px' }}>{count}</h5>
+                                    <h5 style={{ margin: '0 10px' }}>{filtereddata?.qty}</h5>
                                     <span
                                         onClick={item ? handleAddClick : null}
                                         style={{ cursor: item ? 'pointer' : 'not-allowed', opacity: item ? 1 : 0.5 }}>
@@ -214,7 +224,7 @@ function Modals({
                                     </span>
                                 </div>
                                 <Link className='btngreen continue' onClick={()=>handleAddToCart(item.item_id)}>
-                                    Add Item - ₹{calculateItemPrice()}
+                                    Add Item -₹{calculateItemPrice()}
                                 </Link>
                             </div>
                         </div>

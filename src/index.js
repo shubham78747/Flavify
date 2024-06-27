@@ -11,17 +11,21 @@ import { Provider } from 'react-redux';
 import { store } from './Component/Store/Store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import * as Ably from 'ably';
+import { AblyProvider } from 'ably/react';
 
+const client = new Ably.Realtime({ key: process.env.REACT_APP_ABLY_API_KEY });
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-
+     <AblyProvider client={client}>
     <Provider store={store}>
     <BrowserRouter>
       <App />
       <ToastContainer />
     </BrowserRouter>
     </Provider>
+    </AblyProvider>
   </React.StrictMode>
 );
 

@@ -24,15 +24,23 @@ function HomePage() {
     useEffect(() => {
         dispatch(fetchQuickBites());
         dispatch(fetchMenu());
-        dispatch(fetchtable(tables[0].table_id))      
+        dispatch(fetchtable(tables[4].table_id))       
+        // const tableDataStr = localStorage.getItem('tableData');
+        // const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false}; 
+        // if (!tableData.isfirst) {
+        //         setShow(true)
+        // } else {
+        //     console.log('tableData is not present in localStorage');
+        // }
+    }, [0]);
+
+    useEffect(() => {
         const tableDataStr = localStorage.getItem('tableData');
         const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false}; 
-        if (!tableData.isfirst) {
-                setShow(true)
-        } else {
-            console.log('tableData is not present in localStorage');
+        if(table?.fresh_order && !tableData.isfirst) {
+            setShow(true)
         }
-    }, [0]);
+    }, [table])
     
     const [show, setShow] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
@@ -59,7 +67,7 @@ function HomePage() {
     const senddata = async () => {
         try {
             const header = {
-                order_id: table?.response?.order_id,
+                order_id: table?.order_id,
                 pax: currentStep,
                 diet: activeCategory,
             }
@@ -67,6 +75,7 @@ function HomePage() {
             if (response?.data) {
                 setTableNom();
                 handleClose();
+                setShow(false)
                 updateIsFirst(true);
             }
         } catch (error) {
@@ -134,7 +143,7 @@ function HomePage() {
                     </div>
                 </div>
             </section>
-            <Modal show={show} onHide={handleClose} className='automodal'>
+            <Modal show={show}  className='automodal'>
                 {/* <Modal.Header closeButton></Modal.Header> */}
                 <Modal.Body className="pt-5 p-3">
                     <div className="guestselectmodalmain">

@@ -24,7 +24,7 @@ function SignUp() {
             name: name,
             phone: Number(phone),
             dob: formattedDOB,
-            order_id: table?.response?.order_id,
+            order_id: table?.order_id,
         }; 
         try {
             const res = await userInfo(header);

@@ -26,8 +26,8 @@ function MobileBar() {
                 </Link>
             </li>
             <li className={activeLink === '/cart' ? 'active' : ''}>
-                {/* <Link to={localStorage.getItem('isRegistered') ? "/cart" : '/signUp'} onClick={() => setActiveLink('/cart')}> */}
-                <Link to={"/cart"} onClick={() => setActiveLink('/cart')}>
+                <Link to={localStorage.getItem('isRegistered') ? "/cart" : '/signUp'} onClick={() => setActiveLink('/cart')}>
+                {/* <Link to={"/cart"} onClick={() => setActiveLink('/cart')}> */}
                     <span><Icon icon="mdi:cart" /></span>
                     <p>Cart</p>
                 </Link>

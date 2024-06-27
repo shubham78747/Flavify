@@ -5,40 +5,30 @@ import Carousel from '../../CommonComponent/OwlCarousel/OwlCarousel';
 import Modals from '../../CommonComponent/Modal/Modal';
 
 function QuickBites({menu,quickBites}) {
-    const [show, setShow] = useState(false);   
-        const handleClose = () => setShow(false);
-
-        // Event handler to close the modal
-
+        const [show, setShow] = useState(false);   
         const [isFilled, setIsFilled] = useState(false);
-
-        // Event handler to toggle the filled state
-        const handleIconClick = () => {
-            setIsFilled(!isFilled);
-        };
-        const [count, setCount] = useState(1);
+        // const [count, setCount] = useState(1);
         const [quickbileFirst,setQuickBitefirst] = useState([])
         const [quickbileSecond,setQuickBiteSecond] = useState([])
-        // const [selectedOptions, setSelectedOptions] = useState([]);
-        // const [vegOptions, setVegOptions] = useState([]);
         const [item,setItem] = useState([]);
         const [loader,setLoader] = useState(true)
-         
-        const handleAddClick = () => {
-            if (item) {
-                setCount(prevCount => prevCount + 1);
-            }
-        };
+        const handleClose = () => {setShow(false);}
 
-        const handleRemoveClick = () => {
-            if (item && count > 1) {
-                setCount(prevCount => prevCount - 1);
-            }
-        };
+        // const handleAddClick = () => {
+        //     if (item) {
+        //         setCount(prevCount => prevCount + 1);
+        //     }
+        // };
+
+        // const handleRemoveClick = () => {
+        //     if (item && count > 1) {
+        //         setCount(prevCount => prevCount - 1);
+        //     }
+        // };
         
-        const calculateTotalPrice = () => {
-        return item.price*count;
-        };
+        // const calculateTotalPrice = () => {
+        // return item.price*count;
+        // };
 
         const handleData = (data) => {
             // Calculate the number of items for each half
@@ -103,7 +93,6 @@ function QuickBites({menu,quickBites}) {
                 groups[groupName].itemList.push(addonDetails);
                 return groups;
             }, {}));
-            console.log({ quickbite })
             const data = {
                 item_id: quickbite.item_id,
                 price: quickbite.price,
@@ -123,15 +112,11 @@ function QuickBites({menu,quickBites}) {
             {quickbileSecond.length > 0 && <Carousel items={quickbileSecond} handleQuickbiteClick={handleQuickbiteClick}/>}
             {/* <QuickBitesSlider menu={menu} quickBites={quickBites}/> */}
             <Modals
-                    calculateTotalPrice={calculateTotalPrice}
-                    item={item}
-                    show={show}
-                    onHide={handleClose}
-                    handleAddClick={handleAddClick}
-                    handleRemoveClick={handleRemoveClick}
-                    handleIconClick={() => setIsFilled(!isFilled)}
-                    isFilled={isFilled}
-                    count={count}
+                item={item}
+                show={show}
+                onHide={handleClose}
+                handleIconClick={() => setIsFilled(!isFilled)}
+                isFilled={isFilled}
                 /> 
         </div>
     );

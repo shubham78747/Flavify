@@ -6,7 +6,7 @@ export const fetchtable = createAsyncThunk(
   async (table_id) => {
     try {
       const response = await axios.get(`https://flavify-test-caa8d1ec1c7d.herokuapp.com/api/v1/table/${table_id}`)
-      return response.data;
+      return response.data.response;
     } catch (error) {
       console.error("Error fetching table data:", error);
       throw error;
