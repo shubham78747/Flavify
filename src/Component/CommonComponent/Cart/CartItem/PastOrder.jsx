@@ -4,19 +4,21 @@ import './CartItem.css';
 import { Accordion, Image } from 'react-bootstrap';
 
 function PastOrder({handleplaceorder}) {
-    const item = JSON.parse(localStorage.getItem('placeorder'));   
+    const item = JSON.parse(localStorage.getItem('placeorder'));
+    console.log({ item })
     return (
         <>
             <Accordion defaultActiveKey={['0']} alwaysOpen className='mb-5'>
+        {item.map((order, index) => (
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>Past Order</Accordion.Header>
                     <Accordion.Body>
                         <Accordion defaultActiveKey={['0']} alwaysOpen>
                             <Accordion.Item eventKey="0">
-                                <Accordion.Header>Order {item?.items?.length}</Accordion.Header>
+                                <Accordion.Header>Order {order?.sub_order_id}</Accordion.Header>
                                 <Accordion.Body>
                                     <ul>
-                                     {item?.items?.map((item,index)=>{
+                                     {order?.items?.map((item,index)=>{
                                         return(
                                             <li key={index}>
                                             <div className="itemmaindetail">
@@ -109,7 +111,8 @@ function PastOrder({handleplaceorder}) {
                         </Accordion>
                     </Accordion.Body>
                 </Accordion.Item>
-            </Accordion>
+        ))}
+        </Accordion>
             {/* <Link className='btn-green order' onClick={handleplaceorder}>order</Link> */}
         </>
     );

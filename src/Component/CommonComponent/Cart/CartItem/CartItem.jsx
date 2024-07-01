@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import { tables } from '../../../../Pages/HomePage/Tablejson/Tablejson';
 import { toast } from 'react-toastify';
 import CartModal from './CartModal/CartModal';
+import { tab } from '@testing-library/user-event/dist/tab';
+import { useChannel } from 'ably/react';
 
 function CartItem() {
     const navigate = useNavigate();
@@ -18,7 +20,25 @@ function CartItem() {
     const [show, setShow] = useState(false); 
     const handleClose = () => {setShow(false);}
     const [itemdata,setItemdata] = useState([]);
-    
+    const { channel } = useChannel('punched_sub_order', (message) => {
+        console.log({ message })
+        const pastOrders = []
+        const allPastOrder = JSON.parse(localStorage.getItem('placeorder'));
+        console.log({ cartItems, allPastOrder })
+        
+        const data = {
+            is_punched: true,
+            items: cartItems,
+            sub_order_id: allPastOrder.length + 1
+        }
+        console.log({ pastOrders, data })
+        pastOrders = [...allPastOrder, data]
+        console.log({ pastOrders, data })
+        localStorage.setItem('placeorder', JSON.stringify(pastOrders))
+        localStorage.setItem('cartItems', JSON.stringify([]))
+        setCartItems([])
+    });
+
     useEffect(() => {
         const storedCartItems = JSON.parse(localStorage.getItem('cartItems'));
         if (storedCartItems) {
@@ -60,11 +80,12 @@ function CartItem() {
     };
     
             const handleCartItem = async() =>{
+                console.log({ table })
                 if(cartItems && cartItems.length > 0){
                     try {
                         const checkOrder = JSON.parse(localStorage.getItem('custorder'));
                         const header = {
-                            table_id: tables[0].table_id,
+                            table_id: table?.table_id,
                             order_id: table?.order_id,
                             items: cartItems,  
                         }
@@ -87,6 +108,7 @@ function CartItem() {
                                 navigate('/success')
                                 setCartItems()
                                 setTotalPrice()
+
                                 localStorage.setItem('custorder',JSON.stringify({order:true}))
                             }
                         }   
@@ -102,7 +124,7 @@ function CartItem() {
         const handleplaceorder = async() =>{
             try {
                 const header = {
-                    table_id: tables[0].table_id,
+                    table_id: table?.table_id,
                     order_id: table?.order_id,
                     items: cartItems,  
                 }
@@ -194,7 +216,7 @@ function CartItem() {
             </Accordion>
             {/* <YouMayAlsoLike /> */}
             <PastOrder handleplaceorder={handleplaceorder} />
-            <Link className='btn-green placeorder' onClick={handleCartItem}>{!localStorage.getItem('custorder') ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
+            <Link className='btn-green placeorder' onClick={handleCartItem}>{!JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
             <CartModal show={show} onHide={handleClose} item={itemdata} setCartItems={setCartItems}/>
         </>
     );

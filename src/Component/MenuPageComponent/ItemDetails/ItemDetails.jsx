@@ -77,6 +77,7 @@ function ItemDetails({ items, selectedCategory }) {
             addOnsGrouped: addOnsGrouped,
             optionsGrouped: optionsGrouped,
         }
+        console.log({ data })
         setItem(data);
     };
     

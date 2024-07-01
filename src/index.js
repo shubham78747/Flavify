@@ -1,30 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'owl.carousel/dist/assets/owl.carousel.css';
-import 'owl.carousel/dist/assets/owl.theme.default.css';
-import { Provider } from 'react-redux';
-import { store } from './Component/Store/Store';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import * as Ably from 'ably';
-import { AblyProvider } from 'ably/react';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "owl.carousel/dist/assets/owl.carousel.css";
+import "owl.carousel/dist/assets/owl.theme.default.css";
+import { Provider } from "react-redux";
+import { store } from "./Component/Store/Store";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import * as Ably from "ably";
+import { AblyProvider } from "ably/react";
 
 const client = new Ably.Realtime({ key: process.env.REACT_APP_ABLY_API_KEY });
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-     <AblyProvider client={client}>
-    <Provider store={store}>
-    <BrowserRouter>
-      <App />
-      <ToastContainer />
-    </BrowserRouter>
-    </Provider>
+    <AblyProvider client={client}>
+      <Provider store={store}>
+        <BrowserRouter>
+          <App />
+          <ToastContainer />
+        </BrowserRouter>
+      </Provider>
     </AblyProvider>
   </React.StrictMode>
 );

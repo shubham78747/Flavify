@@ -14,7 +14,6 @@ function Modals({
     setCartItems,
  }) {
     const [filtereddata,setFiltereddata] = useState([]);
-    console.log('nnnnnnnnnnnn',filtereddata)
 
     const calculateItemPrice = () => {
         const basePrice = filtereddata?.price || 0;

@@ -36,9 +36,34 @@ function HomePage() {
 
     useEffect(() => {
         const tableDataStr = localStorage.getItem('tableData');
-        const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false}; 
-        if(table?.fresh_order && !tableData.isfirst) {
-            setShow(true)
+        const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false};
+        if(table) {
+
+            if(table?.fresh_order && !tableData.isfirst) {
+                setShow(true)
+            }
+            if(!table?.fresh_order) {
+                let pastOrder = []
+                let currecntOrder = []
+                for (const order of table?.order_info) {
+                    if(order?.is_punched) {
+                        pastOrder.push(order)
+                    } else {
+                        currecntOrder = order.items
+                    }
+                    localStorage.setItem('placeorder', JSON.stringify(pastOrder))
+                    if(currecntOrder.length > 0) {
+                        const data = {"order":true}
+                        localStorage.setItem('custorder', JSON.stringify(data))
+                        localStorage.setItem('cartItems', JSON.stringify(currecntOrder))
+                    } else {
+                        const data = {"order":false}
+                        localStorage.setItem('custorder', JSON.stringify(data))
+
+                    }
+                    console.log({ order })
+                }
+            }
         }
     }, [table])
     
@@ -60,7 +85,7 @@ function HomePage() {
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
-        setTableNom(tables[1].table_id)
+        setTableNom(table.table_id)
         setShow(true)
     };
 
@@ -129,7 +154,7 @@ function HomePage() {
             <section>
                 <div className="container">
                     <div className="tabledetail">
-                        <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}></TableHeaderTitle>
+                        <TableHeaderTitle titleicon="/Images/table.svg" title={`Table Number : ${table?.table_number ? table?.table_number : '' }`} className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}></TableHeaderTitle>
                         <Search 
                           selectedOption={activeCategory} 
                           setSelectedOption={setActiveCategory} 
