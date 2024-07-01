@@ -43,6 +43,7 @@ function HomePage() {
                 setShow(true)
             }
             if(!table?.fresh_order) {
+                localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
                 let pastOrder = []
                 let currecntOrder = []
                 for (const order of table?.order_info) {

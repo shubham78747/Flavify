@@ -5,10 +5,8 @@ import { Accordion, Image } from 'react-bootstrap';
 import PastOrder from './PastOrder';
 import { placeorder,Updateplaceorder } from '../action/action';
 import { useSelector } from 'react-redux';
-import { tables } from '../../../../Pages/HomePage/Tablejson/Tablejson';
 import { toast } from 'react-toastify';
 import CartModal from './CartModal/CartModal';
-import { tab } from '@testing-library/user-event/dist/tab';
 import { useChannel } from 'ably/react';
 
 function CartItem() {
@@ -20,8 +18,8 @@ function CartItem() {
     const [show, setShow] = useState(false); 
     const handleClose = () => {setShow(false);}
     const [itemdata,setItemdata] = useState([]);
+
     const { channel } = useChannel('punched_sub_order', (message) => {
-        console.log({ message })
         const pastOrders = []
         const allPastOrder = JSON.parse(localStorage.getItem('placeorder'));
         console.log({ cartItems, allPastOrder })

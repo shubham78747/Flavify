@@ -44,8 +44,8 @@ function MenuPage() {
   };
 
   const filterMenu = (category, preference) => {
-      const data = menu?.items?.filter(item => {
-        if(category !== 'All') {
+      const data = menu?.items?.filter(item => { 
+       if(category !== 'All') {
           if(item.item_category === category.item_name && item.diet === preference) {
             return item;
           }
@@ -59,6 +59,7 @@ function MenuPage() {
   };
 
   const handleCategoryClick = (pref) => {
+    console.log(pref)
     if (activePref !== pref) {
       filterMenu(selectedCategory, pref)
       setActivePref(pref);
