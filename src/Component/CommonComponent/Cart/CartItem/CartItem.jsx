@@ -4,54 +4,60 @@ import './CartItem.css';
 import { Accordion, Image } from 'react-bootstrap';
 import PastOrder from './PastOrder';
 import { placeorder,Updateplaceorder } from '../action/action';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import CartModal from './CartModal/CartModal';
 import { useChannel } from 'ably/react';
+import { addItemToCart, setAllPastOrders } from '../../../../Pages/CartPage/Cartslice/Cartslice';
 
 function CartItem() {
     const navigate = useNavigate();
     const {menu} = useSelector((state)=>state?.food);
     const { table } = useSelector((state) => state?.table);
-    const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cartItems')) || []);
+    const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0); 
     const [show, setShow] = useState(false); 
     const handleClose = () => {setShow(false);}
     const [itemdata,setItemdata] = useState([]);
-
+    const dispatch = useDispatch()
+    const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
+    
     const { channel } = useChannel('punched_sub_order', (message) => {
-        const pastOrders = []
-        const allPastOrder = JSON.parse(localStorage.getItem('placeorder'));
-        console.log({ cartItems, allPastOrder })
+        const response = JSON.parse(message.data)
+        let pastOrders = []
+        console.log({ cartItemsList, pastOrdersList })
         
         const data = {
             is_punched: true,
-            items: cartItems,
-            sub_order_id: allPastOrder.length + 1
+            items: cartItemsList,
+            sub_order_id: response.sub_order_id
         }
         console.log({ pastOrders, data })
-        pastOrders = [...allPastOrder, data]
+        pastOrders = [...pastOrdersList, data]
         console.log({ pastOrders, data })
-        localStorage.setItem('placeorder', JSON.stringify(pastOrders))
+        dispatch(setAllPastOrders(pastOrders))
+        dispatch(addItemToCart([]))
         localStorage.setItem('cartItems', JSON.stringify([]))
-        setCartItems([])
+        console.log("called till end ")
     });
 
+    console.log({ cartItems })
+
     useEffect(() => {
-        const storedCartItems = JSON.parse(localStorage.getItem('cartItems'));
-        if (storedCartItems) {
-            setCartItems(storedCartItems);
-            calculateTotalPrice(storedCartItems);
-        }
-    }, []);
+        // if (cartItemsList) {
+            setCartItems(cartItemsList);
+            calculateTotalPrice(cartItemsList);
+        // }
+    }, [cartItemsList]);
 
     useEffect(() => {
         calculateTotalPrice(cartItems);
     }, [cartItems]);
 
     const updateCartItemsInLocalStorage = (updatedCartItems) => {
+        dispatch(addItemToCart(updatedCartItems))
         localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
-        setCartItems(updatedCartItems);
+        // setCartItems(updatedCartItems);
     };
 
     const addquantity = (item) => {
@@ -119,20 +125,20 @@ function CartItem() {
                 }
         }
 
-        const handleplaceorder = async() =>{
-            try {
-                const header = {
-                    table_id: table?.table_id,
-                    order_id: table?.order_id,
-                    items: cartItems,  
-                }
-                localStorage.setItem('placeorder',JSON.stringify(header))
-                setCartItems([])
-                localStorage.removeItem('cartItems');
-            } catch (error) {
-                console.error('Error sending data:', error);
-            }
-        }
+        // const handleplaceorder = async() =>{
+        //     try {
+        //         const header = {
+        //             table_id: table?.table_id,
+        //             order_id: table?.order_id,
+        //             items: cartItems,  
+        //         }
+        //         localStorage.setItem('placeorder',JSON.stringify(header))
+        //         setCartItems([])
+        //         localStorage.removeItem('cartItems');
+        //     } catch (error) {
+        //         console.error('Error sending data:', error);
+        //     }
+        // }
 
         const handleQuickbiteClick = (quickbite) => {
             setShow(true);
@@ -213,7 +219,7 @@ function CartItem() {
                 </Accordion.Item>
             </Accordion>
             {/* <YouMayAlsoLike /> */}
-            <PastOrder handleplaceorder={handleplaceorder} />
+            <PastOrder />
             <Link className='btn-green placeorder' onClick={handleCartItem}>{!JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
             <CartModal show={show} onHide={handleClose} item={itemdata} setCartItems={setCartItems}/>
         </>

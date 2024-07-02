@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import OwlCarousel from 'react-owl-carousel';
 import { Image } from 'react-bootstrap';
 // import './Carousel.css'; 
@@ -14,10 +14,15 @@ const Carousel = ({ items, handleQuickbiteClick }) => {
     loop: true,
     items: 4.3,
   };
+  const [slides, setSlides] = useState([])
+  useEffect(() => {
+    setSlides(items)
+  }, [items])
+  console.log({ slides})
   return (
     <>
-        <OwlCarousel className="owl-theme mb-3" {...options}>
-          {items.length > 0 && items?.map((item, index) => (
+        {slides.length > 0 && <OwlCarousel className="owl-theme mb-3" {...options}>
+          {items?.map((item, index) => (
             <div className="item" key={index}>
               <div className="dishname">
                 <span onClick={() => handleQuickbiteClick(item)}>
@@ -27,7 +32,7 @@ const Carousel = ({ items, handleQuickbiteClick }) => {
               </div>
             </div>
           ))}
-        </OwlCarousel>
+        </OwlCarousel>}
     </>
   );
 };

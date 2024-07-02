@@ -2,8 +2,10 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import React, { useEffect, useState } from 'react'
 import { Image } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { addItemToCart } from '../../../../../Pages/CartPage/Cartslice/Cartslice';
 
 function Modals({ 
     isFilled, 
@@ -14,7 +16,7 @@ function Modals({
     setCartItems,
  }) {
     const [filtereddata,setFiltereddata] = useState([]);
-
+    const dispatch = useDispatch()
     const calculateItemPrice = () => {
         const basePrice = filtereddata?.price || 0;
         const totalPrice = basePrice * filtereddata?.qty;
@@ -29,7 +31,7 @@ function Modals({
         } else {
             cartItems.push({ ...filtereddata, item_id: itemId });
         }
-    
+        dispatch(addItemToCart(cartItems))
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
         setCartItems(cartItems)
         onHide();

@@ -31,26 +31,27 @@ function QuickBites({menu,quickBites}) {
         // };
 
         const handleData = (data) => {
-            // Calculate the number of items for each half
-            let firstHalfLength = Math.ceil(data.length / 2);
-            let secondHalfLength = Math.floor(data.length / 2);
-        
-            // Adjust for odd number of items
-            if (data.length % 2 !== 0) {
-                firstHalfLength++;
+            const filteredData = [...data]
+            if(filteredData.length > 5) {
+                if(filteredData.length < 10) {
+                    const data1 = [...filteredData]
+                    const data2 = [...filteredData.reverse()]
+                    setQuickBitefirst(data1);
+                    setQuickBiteSecond(data2);
+                } else {
+                    const midpoint = Math.floor(filteredData.length / 2);
+                    const firstHalf = filteredData.slice(0, midpoint);
+                    const secondHalf = filteredData.slice(midpoint);
+                    setQuickBitefirst(firstHalf);
+                    setQuickBiteSecond(secondHalf);
+                }
+            } else {
+                setQuickBitefirst(filteredData);
+                setQuickBiteSecond([]);
             }
-        
-            // Split the data into two parts
-            const firstHalf = data.slice(0, firstHalfLength);
-            let secondHalf = data.slice(firstHalfLength);
-        
-            // Reverse the second half
-            secondHalf = secondHalf.reverse();
-        
-            // Set state for first and reversed second halves
-            setQuickBitefirst(firstHalf);
-            setQuickBiteSecond(secondHalf);
         };
+
+        console.log({ quickbileFirst, quickbileSecond })
         
 
         useEffect(()=>{
@@ -108,8 +109,8 @@ function QuickBites({menu,quickBites}) {
     return (
         <div className="quickbitesslider mb-5">
             {quickBites.length > 0 &&<Title title="Quick Bites" className="quicktitle mb-3" />}
-            {quickbileFirst.length > 0 && <Carousel items={quickbileFirst} handleQuickbiteClick={handleQuickbiteClick}/>}
-            {quickbileSecond.length > 0 && <Carousel items={quickbileSecond} handleQuickbiteClick={handleQuickbiteClick}/>}
+            <Carousel items={quickbileFirst} handleQuickbiteClick={handleQuickbiteClick}/>
+            <Carousel items={quickbileSecond} handleQuickbiteClick={handleQuickbiteClick}/>
             {/* <QuickBitesSlider menu={menu} quickBites={quickBites}/> */}
             <Modals
                 item={item}

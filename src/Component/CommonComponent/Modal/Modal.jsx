@@ -2,8 +2,10 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import React, { useEffect, useState } from 'react'
 import { Image } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { addItemToCart } from '../../../Pages/CartPage/Cartslice/Cartslice';
 
 function Modals({ 
     isFilled, 
@@ -17,7 +19,7 @@ function Modals({
     const [count, setCount] = useState(1);
     const [adonPrice,setAdonPrice] = useState(0)
     const [optionPrice,setOptionPrice] = useState(0)
-
+    const dispatch = useDispatch()
     // Calculate total price of selected items
     useEffect(() => {
         // Calculate the total prices of add-ons and options when they change
@@ -64,6 +66,7 @@ function Modals({
         } else {
             cartItems.push(selectedItem);
         }
+        dispatch(addItemToCart(cartItems))
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
         setOptionPrice(0)
         setAdonPrice(0)

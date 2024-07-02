@@ -14,17 +14,46 @@ import { fetchtable } from './Tableslice/Tableslice';
 import { postcustomerpreference } from './action';
 import Search from '../../Component/CommonComponent/Search/Search';
 import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
+import { addItemToCart, setAllPastOrders } from '../CartPage/Cartslice/Cartslice';
+import { useChannel } from 'ably/react';
 
 
 function HomePage() {
+    const [show, setShow] = useState(false);
+    const [currentStep, setCurrentStep] = useState(1);
+    const [tablenom, setTableNom] = useState();
+    const [activeCategory, setActiveCategory] = useState('');
+    const [selectedFilter, setSelectedFilter] = useState([]);
     const dispatch = useDispatch();
     const { quickBites,menu  } = useSelector((state) => state.food);
+    const { cartItems, pastOrdersList  } = useSelector((state) => state.cart);
     const { table } = useSelector((state) => state?.table);
+
+    const { channel } = useChannel('punched_sub_order', (message) => {
+        const response = JSON.parse(message.data)
+        let pastOrders = []
+        console.log({ cartItems, pastOrdersList })
+        
+        const data = {
+            is_punched: true,
+            items: cartItems,
+            sub_order_id: response.sub_order_id
+        }
+        console.log({ pastOrders, data })
+        pastOrders = [...pastOrdersList, data]
+        console.log({ pastOrders, data })
+        dispatch(setAllPastOrders(pastOrders))
+        dispatch(addItemToCart([]))
+
+        localStorage.setItem('cartItems', JSON.stringify([]))
+        // setCartItems([])
+        console.log("called till end ")
+    });
 
     useEffect(() => {
         dispatch(fetchQuickBites());
         dispatch(fetchMenu());
-        dispatch(fetchtable(tables[4].table_id))       
+        dispatch(fetchtable(tables[1].table_id))       
         // const tableDataStr = localStorage.getItem('tableData');
         // const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false}; 
         // if (!tableData.isfirst) {
@@ -43,7 +72,7 @@ function HomePage() {
                 setShow(true)
             }
             if(!table?.fresh_order) {
-                localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
+                // localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
                 let pastOrder = []
                 let currecntOrder = []
                 for (const order of table?.order_info) {
@@ -52,37 +81,41 @@ function HomePage() {
                     } else {
                         currecntOrder = order.items
                     }
-                    localStorage.setItem('placeorder', JSON.stringify(pastOrder))
-                    if(currecntOrder.length > 0) {
-                        const data = {"order":true}
-                        localStorage.setItem('custorder', JSON.stringify(data))
-                        localStorage.setItem('cartItems', JSON.stringify(currecntOrder))
-                    } else {
-                        const data = {"order":false}
-                        localStorage.setItem('custorder', JSON.stringify(data))
-
-                    }
-                    console.log({ order })
+                }
+                console.log({ pastOrder })
+                dispatch(setAllPastOrders(pastOrder))
+                // localStorage.setItem('placeorder', JSON.stringify(pastOrder))
+                if(table?.diet) {
+                    localStorage.setItem('category', JSON.stringify({ diet: table?.diet }));
+                    setActiveCategory(table?.diet)
+                }
+                if(currecntOrder.length > 0) {
+                    const data = {"order":true}
+                    localStorage.setItem('custorder', JSON.stringify(data))
+                    dispatch(addItemToCart(currecntOrder))
+                    localStorage.setItem('cartItems', JSON.stringify(currecntOrder))
+                } else {
+                    const data = {"order":false}
+                    localStorage.setItem('custorder', JSON.stringify(data));
                 }
             }
         }
     }, [table])
     
-    const [show, setShow] = useState(false);
-    const [currentStep, setCurrentStep] = useState(1);
-    const [tablenom, setTableNom] = useState();
-    const [activeCategory, setActiveCategory] = useState('V');
-    const [selectedFilter, setSelectedFilter] = useState([]);
+    
 
     useEffect(() => {
-        const filtermenu = quickBites.filter((item) => item?.diet === activeCategory);
-        setSelectedFilter(filtermenu)
+        console.log({ activeCategory })
+        if(activeCategory) {
+            const filtermenu = quickBites.filter((item) => item?.diet === activeCategory);
+            setSelectedFilter(filtermenu)
+        }
     }, [activeCategory,quickBites]);
     
-  useEffect(() => {
-    const getitemdata = JSON.parse(localStorage.getItem('category'));
-    setActiveCategory(getitemdata?.diet || 'V')
-  }, [0]);
+    useEffect(() => {
+        const getitemdata = JSON.parse(localStorage.getItem('category'));
+        setActiveCategory(getitemdata?.diet || 'V')
+    }, [0]);
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
@@ -118,13 +151,14 @@ function HomePage() {
     // localStorage.setItem('category', JSON.stringify({ diet: activeCategory }));
     
     const handleCategoryClick = (category) => {
-        const storedCategory = JSON.parse(localStorage.getItem('category'));
-        if (storedCategory && storedCategory.diet === category) {
-            setActiveCategory(category);
-        } else {
+        // const storedCategory = JSON.parse(localStorage.getItem('category'));
+        // if (storedCategory && storedCategory.diet === category) {
+        //     setActiveCategory(category);
+        // } else {
             localStorage.setItem('category', JSON.stringify({ diet: category }));
+            // setSelectedFilter([])
             setActiveCategory(category);
-        }
+        // }
     };
 
 
@@ -147,6 +181,7 @@ function HomePage() {
     const handleSearchchnage = (e) => {
         const serach = e.target.value;
         const filtermenu = quickBites.filter((item) => item?.item_name.toLowerCase().includes(serach.toLowerCase()));
+        // setSelectedFilter([])
         setSelectedFilter(filtermenu) 
     }
     const maxStep = Math.min(steps, 10);
@@ -158,7 +193,6 @@ function HomePage() {
                         <TableHeaderTitle titleicon="/Images/table.svg" title={`Table Number : ${table?.table_number ? table?.table_number : '' }`} className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}></TableHeaderTitle>
                         <Search 
                           selectedOption={activeCategory} 
-                          setSelectedOption={setActiveCategory} 
                           handleCategoryClick={handleCategoryClick}  
                           handleSearchchnage={handleSearchchnage}
                           />

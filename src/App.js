@@ -16,10 +16,6 @@ function App() {
         <Route path="/cart" element={<CartPage />} /> {/* Use element prop to render the ProductPage component */}
         <Route path="/success" element={<SuccessPage />} /> {/* Use element prop to render the ProductPage component */}
       </Routes>
-
-
-
-
     </>
   );
 }

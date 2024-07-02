@@ -12,7 +12,7 @@ import { store } from "./Component/Store/Store";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as Ably from "ably";
-import { AblyProvider } from "ably/react";
+import { AblyProvider, ChannelProvider } from "ably/react";
 
 const client = new Ably.Realtime({ key: process.env.REACT_APP_ABLY_API_KEY });
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -21,7 +21,9 @@ root.render(
     <AblyProvider client={client}>
       <Provider store={store}>
         <BrowserRouter>
+        <ChannelProvider channelName='punched_sub_order'>
           <App />
+          </ChannelProvider>
           <ToastContainer />
         </BrowserRouter>
       </Provider>

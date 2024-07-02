@@ -24,9 +24,8 @@ function Cart() {
     return (
         <>
             <TableHeaderTitle profileimg="Images/profile.svg" className="d-flex" />
-            <ChannelProvider channelName='punched_sub_order'>
+            
                 <CartItem />
-            </ChannelProvider>
         </>
     );
 }
