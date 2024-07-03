@@ -10,7 +10,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
 import { tables } from './Tablejson/Tablejson';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchtable } from './Tableslice/Tableslice';
+import { fetchtable, setComboList } from './Tableslice/Tableslice';
 import { postcustomerpreference } from './action';
 import Search from '../../Component/CommonComponent/Search/Search';
 import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
@@ -22,12 +22,16 @@ function HomePage() {
     const [show, setShow] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
     const [tablenom, setTableNom] = useState();
-    const [activeCategory, setActiveCategory] = useState('');
+    const [activeCategory, setActiveCategory] = useState('V');
     const [selectedFilter, setSelectedFilter] = useState([]);
     const dispatch = useDispatch();
     const { quickBites,menu  } = useSelector((state) => state.food);
     const { cartItems, pastOrdersList  } = useSelector((state) => state.cart);
     const { table } = useSelector((state) => state?.table);
+    const [isImageShown, setIsImageShown] = useState(false);
+    const toggleImage = () => {
+        setIsImageShown(!isImageShown);
+    };
 
     const { channel } = useChannel('punched_sub_order', (message) => {
         const response = JSON.parse(message.data)
@@ -46,33 +50,42 @@ function HomePage() {
     });
 
     useEffect(() => {
+        dispatch(fetchtable(tables[1].table_id))       
         dispatch(fetchQuickBites());
         dispatch(fetchMenu());
-        dispatch(fetchtable(tables[1].table_id))       
-        // const tableDataStr = localStorage.getItem('tableData');
-        // const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false}; 
-        // if (!tableData.isfirst) {
-        //         setShow(true)
-        // } else {
-        //     console.log('tableData is not present in localStorage');
-        // }
     }, [0]);
+
+    const createCombos = (combos, diet) => {
+        let comboslist = []
+        for (const combo of combos) {
+            let comboItems = []
+            combo.items.map((item) => {
+                const i = menu.items.find((i) => i.item_id === item)
+                comboItems.push(i)
+            })
+            const data = {
+                ...combo,
+                diet: diet,
+                items: comboItems
+            }
+            comboslist.push(data)
+        }
+        dispatch(setComboList(comboslist))
+    }
 
     useEffect(() => {
         const tableDataStr = localStorage.getItem('tableData');
         const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false};
         if(table) {
 
+
             if(table?.fresh_order && !tableData.isfirst) {
                 setShow(true)
-                // dispatch(setUserRegistered(false))
-                // localStorage.setItem('isRegistered', false);
                 localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
                 setActiveCategory('V')
             }
             if(!table?.fresh_order) {
-                // localStorage.setItem('isRegistered', true);
-                // localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
+                const getitemdata = JSON.parse(localStorage.getItem('category'));
                 let pastOrder = []
                 let currecntOrder = []
                 for (const order of table?.order_info) {
@@ -107,8 +120,11 @@ function HomePage() {
         if(activeCategory) {
             const filtermenu = quickBites.filter((item) => item?.diet === activeCategory);
             setSelectedFilter(filtermenu)
+            if(table) {
+                createCombos(table?.lp_combos[activeCategory], activeCategory)
+            }
         }
-    }, [activeCategory,quickBites]);
+    }, [activeCategory, quickBites, table]);
     
     useEffect(() => {
         const tableDataStr = localStorage.getItem('tableData');
@@ -152,18 +168,11 @@ function HomePage() {
         tableData.isfirst = value;
         localStorage.setItem('tableData', JSON.stringify(tableData));
     };
-
-    // localStorage.setItem('category', JSON.stringify({ diet: activeCategory }));
     
     const handleCategoryClick = (category) => {
-        // const storedCategory = JSON.parse(localStorage.getItem('category'));
-        // if (storedCategory && storedCategory.diet === category) {
-        //     setActiveCategory(category);
-        // } else {
             localStorage.setItem('category', JSON.stringify({ diet: category }));
-            // setSelectedFilter([])
             setActiveCategory(category);
-        // }
+            setIsImageShown(false)
     };
 
 
@@ -177,19 +186,18 @@ function HomePage() {
         dispatch(fetchtable(table_id))
     }
 
-    const steps = 10; // Define the total number of steps
+    const steps = 10; 
 
-    // Handler to sync slider changes
     const handleSliderChange = (event) => {
         setCurrentStep(Number(event.target.value));
     };
     const handleSearchchnage = (e) => {
         const serach = e.target.value;
         const filtermenu = quickBites.filter((item) => item?.item_name.toLowerCase().includes(serach.toLowerCase()));
-        // setSelectedFilter([])
         setSelectedFilter(filtermenu) 
     }
     const maxStep = Math.min(steps, 10);
+
     return (
         <>
             <section>
@@ -200,24 +208,23 @@ function HomePage() {
                           selectedOption={activeCategory} 
                           handleCategoryClick={handleCategoryClick}  
                           handleSearchchnage={handleSearchchnage}
+                          isImageShown={isImageShown}
+                          toggleImage={toggleImage}
                           />
-                        {<QuickBites menu={menu} quickBites={selectedFilter} />}
+                        <QuickBites menu={menu} quickBites={selectedFilter} />
                         <OfferBanner />
-                        <Combos />
+                        {table?.lp_combos ? <Combos/> : ''}
                         <MobileBar />
                     </div>
                 </div>
             </section>
             <Modal show={show}  className='automodal'>
-                {/* <Modal.Header closeButton></Modal.Header> */}
+              
                 <Modal.Body className="pt-5 p-3">
                     <div className="guestselectmodalmain">
-                        <h3>Number of guests for dining?</h3>
-                        {/* <span className='selectedguest'>1</span> */}
+                        <h3>Number of guests for dining?</h3>                       
                         <div className="progress-container">
-                            {/* Display the current step number */}
                             <div className="progress-number">{currentStep >= 10 ? '10+' : currentStep}</div>
-                            {/* Range Slider */}
                             <input
                                 type="range"
                                 min="1"

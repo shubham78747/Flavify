@@ -259,7 +259,7 @@ ul.saladimgs:after {
 }
 
 .selectvarianttitle {
-    padding: 8px 10px;
+    padding: 8px 0px;
     border-bottom: 1px solid var(--Neutral-50, #F9FAFB);
 }
 
@@ -341,6 +341,7 @@ ul.selectvariantmain:after {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-top: 20px;
 }
 
 .addremoveitem {

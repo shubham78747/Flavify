@@ -17,12 +17,17 @@ const initialState = {
   table: null, 
   loading: false,
   error: null,
+  comboList: []
 };
 
 const tableSlice = createSlice({
   name: 'table',
   initialState,
-  reducers: {},
+  reducers: {
+    setComboList(state, action) {
+          state.comboList = action.payload
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchtable.pending, (state) => {
@@ -39,5 +44,8 @@ const tableSlice = createSlice({
       });
   },
 });
+
+
+export const {setComboList} = tableSlice.actions;
 
 export default tableSlice.reducer;
