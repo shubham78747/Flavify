@@ -14,7 +14,7 @@ import { fetchtable } from './Tableslice/Tableslice';
 import { postcustomerpreference } from './action';
 import Search from '../../Component/CommonComponent/Search/Search';
 import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
-import { addItemToCart, setAllPastOrders } from '../CartPage/Cartslice/Cartslice';
+import { addItemToCart, setAllPastOrders, setUserRegistered } from '../CartPage/Cartslice/Cartslice';
 import { useChannel } from 'ably/react';
 
 
@@ -32,22 +32,17 @@ function HomePage() {
     const { channel } = useChannel('punched_sub_order', (message) => {
         const response = JSON.parse(message.data)
         let pastOrders = []
-        console.log({ cartItems, pastOrdersList })
         
         const data = {
             is_punched: true,
             items: cartItems,
             sub_order_id: response.sub_order_id
         }
-        console.log({ pastOrders, data })
         pastOrders = [...pastOrdersList, data]
-        console.log({ pastOrders, data })
         dispatch(setAllPastOrders(pastOrders))
         dispatch(addItemToCart([]))
 
         localStorage.setItem('cartItems', JSON.stringify([]))
-        // setCartItems([])
-        console.log("called till end ")
     });
 
     useEffect(() => {
@@ -70,8 +65,13 @@ function HomePage() {
 
             if(table?.fresh_order && !tableData.isfirst) {
                 setShow(true)
+                // dispatch(setUserRegistered(false))
+                // localStorage.setItem('isRegistered', false);
+                localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
+                setActiveCategory('V')
             }
             if(!table?.fresh_order) {
+                // localStorage.setItem('isRegistered', true);
                 // localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
                 let pastOrder = []
                 let currecntOrder = []
@@ -82,7 +82,6 @@ function HomePage() {
                         currecntOrder = order.items
                     }
                 }
-                console.log({ pastOrder })
                 dispatch(setAllPastOrders(pastOrder))
                 // localStorage.setItem('placeorder', JSON.stringify(pastOrder))
                 if(table?.diet) {
@@ -105,7 +104,6 @@ function HomePage() {
     
 
     useEffect(() => {
-        console.log({ activeCategory })
         if(activeCategory) {
             const filtermenu = quickBites.filter((item) => item?.diet === activeCategory);
             setSelectedFilter(filtermenu)
@@ -113,8 +111,15 @@ function HomePage() {
     }, [activeCategory,quickBites]);
     
     useEffect(() => {
-        const getitemdata = JSON.parse(localStorage.getItem('category'));
-        setActiveCategory(getitemdata?.diet || 'V')
+        const tableDataStr = localStorage.getItem('tableData');
+        const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false};
+        const isRegistered = JSON.parse(localStorage.getItem('isRegistered'))
+        dispatch(setUserRegistered(isRegistered))
+        // dispatch(addItemToCart(cart))
+        if(tableData.isfirst) {
+            const getitemdata = JSON.parse(localStorage.getItem('category'));
+            setActiveCategory(getitemdata?.diet || 'V')
+        }
     }, [0]);
 
     const handleClose = () => setShow(false);

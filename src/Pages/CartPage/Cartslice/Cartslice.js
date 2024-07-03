@@ -4,7 +4,8 @@ const initialState = {
     cartItemsList: [],
     totalQuantity: 0,
     totalPrice: 0,
-    pastOrdersList: []
+    pastOrdersList: [],
+    isRegistered: false
 };
 
 const cartSlice = createSlice({
@@ -33,12 +34,14 @@ const cartSlice = createSlice({
             state.totalPrice = 0;
         },
         setAllPastOrders(state, action) {
-            console.log({state, payload: action.payload})
             state.pastOrdersList = action.payload
+        },
+        setUserRegistered(state, action) {
+            state.isRegistered = action.payload
         }
     },
 });
 
-export const {addItemToCart, removeItemFromCart, clearCart, setAllPastOrders} = cartSlice.actions;
+export const {addItemToCart, removeItemFromCart, clearCart, setAllPastOrders, setUserRegistered} = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -18,7 +18,6 @@ const Carousel = ({ items, handleQuickbiteClick }) => {
   useEffect(() => {
     setSlides(items)
   }, [items])
-  console.log({ slides})
   return (
     <>
         {slides.length > 0 && <OwlCarousel className="owl-theme mb-3" {...options}>

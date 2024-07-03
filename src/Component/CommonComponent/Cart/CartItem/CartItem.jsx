@@ -25,23 +25,17 @@ function CartItem() {
     const { channel } = useChannel('punched_sub_order', (message) => {
         const response = JSON.parse(message.data)
         let pastOrders = []
-        console.log({ cartItemsList, pastOrdersList })
         
         const data = {
             is_punched: true,
             items: cartItemsList,
             sub_order_id: response.sub_order_id
         }
-        console.log({ pastOrders, data })
         pastOrders = [...pastOrdersList, data]
-        console.log({ pastOrders, data })
         dispatch(setAllPastOrders(pastOrders))
         dispatch(addItemToCart([]))
         localStorage.setItem('cartItems', JSON.stringify([]))
-        console.log("called till end ")
     });
-
-    console.log({ cartItems })
 
     useEffect(() => {
         // if (cartItemsList) {
@@ -49,6 +43,10 @@ function CartItem() {
             calculateTotalPrice(cartItemsList);
         // }
     }, [cartItemsList]);
+    useEffect(() => {
+        const cart = JSON.parse(localStorage.getItem('cartItems'))
+        dispatch(addItemToCart(cart))
+    }, [0]);
 
     useEffect(() => {
         calculateTotalPrice(cartItems);
@@ -84,7 +82,6 @@ function CartItem() {
     };
     
             const handleCartItem = async() =>{
-                console.log({ table })
                 if(cartItems && cartItems.length > 0){
                     try {
                         const checkOrder = JSON.parse(localStorage.getItem('custorder'));
@@ -219,7 +216,7 @@ function CartItem() {
                 </Accordion.Item>
             </Accordion>
             {/* <YouMayAlsoLike /> */}
-            <PastOrder />
+            <PastOrder pastOrdersList={pastOrdersList}/>
             <Link className='btn-green placeorder' onClick={handleCartItem}>{!JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
             <CartModal show={show} onHide={handleClose} item={itemdata} setCartItems={setCartItems}/>
         </>

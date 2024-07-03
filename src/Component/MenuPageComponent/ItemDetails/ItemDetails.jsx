@@ -40,7 +40,6 @@ function ItemDetails({ items, selectedCategory }) {
     };
 
     const handleQuickbiteClick = (quickbite) => {
-        console.log({ quickbite })
         setShow(true);
         const optionsGrouped = Object.values(menu.itemOptions
             .filter((option) => option.item_id === quickbite.item_id)
@@ -77,7 +76,6 @@ function ItemDetails({ items, selectedCategory }) {
             addOnsGrouped: addOnsGrouped,
             optionsGrouped: optionsGrouped,
         }
-        console.log({ data })
         setItem(data);
     };
     

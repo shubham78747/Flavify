@@ -3,10 +3,12 @@ import { Link, useLocation } from 'react-router-dom';
 import './MobileBar.css';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { Image } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 
 function MobileBar() {
     const location = useLocation()
     const [activeLink, setActiveLink] = useState(location.pathname);
+    const { isRegistered  } = useSelector((state) => state.cart);
 
     useEffect(()=>{
         setActiveLink(location.pathname);
@@ -26,7 +28,7 @@ function MobileBar() {
                 </Link>
             </li>
             <li className={activeLink === '/cart' ? 'active' : ''}>
-                <Link to={localStorage.getItem('isRegistered') ? "/cart" : '/signUp'} onClick={() => setActiveLink('/cart')}>
+                <Link to={isRegistered ? "/cart" : '/signUp'} onClick={() => setActiveLink('/cart')}>
                 {/* <Link to={"/cart"} onClick={() => setActiveLink('/cart')}> */}
                     <span><Icon icon="mdi:cart" /></span>
                     <p>Cart</p>

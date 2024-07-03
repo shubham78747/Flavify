@@ -50,8 +50,6 @@ function QuickBites({menu,quickBites}) {
                 setQuickBiteSecond([]);
             }
         };
-
-        console.log({ quickbileFirst, quickbileSecond })
         
 
         useEffect(()=>{

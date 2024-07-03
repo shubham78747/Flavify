@@ -4,9 +4,9 @@ import './CartItem.css';
 import { Accordion, Image } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
-function PastOrder({handleplaceorder}) {
+function PastOrder({pastOrdersList}) {
     const [orders, setOrders] = useState([]);
-    const {pastOrdersList} = useSelector(state => state.cart)
+    // const {pastOrdersList} = useSelector(state => state.cart)
     
     useEffect(() => {
         setOrders(pastOrdersList)
@@ -18,7 +18,7 @@ function PastOrder({handleplaceorder}) {
                     <Accordion.Header>Past Order</Accordion.Header>
                     <Accordion.Body>
                         <Accordion defaultActiveKey={['0']} alwaysOpen>
-        {orders.map((order, index) => (
+                            {orders.map((order, index) => (
                             <Accordion.Item eventKey="0">
                                 <Accordion.Header>Order {order?.sub_order_id}</Accordion.Header>
                                 <Accordion.Body>

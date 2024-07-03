@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './SignUp.css';
 import { Button, Form, Image } from 'react-bootstrap';
 import { userInfo } from './action/action';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserRegistered } from '../CartPage/Cartslice/Cartslice';
 
 function SignUp() {
     const { table } = useSelector((state) => state?.table);
@@ -11,6 +12,7 @@ function SignUp() {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState();
     const [dob, setDOB] = useState('');
+    const dispatch = useDispatch();
     const formatDate = (date) => {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const [year, month, day] = date.split("-");
@@ -29,7 +31,8 @@ function SignUp() {
         try {
             const res = await userInfo(header);
             if (res.data) {
-                localStorage.setItem('isRegistered', 'true');
+                dispatch(setUserRegistered(true))
+                localStorage.setItem('isRegistered', true);
                 navigate('/cart');
             }
         } catch (error) {

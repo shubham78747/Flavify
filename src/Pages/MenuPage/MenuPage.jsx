@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Search from '../../Component/CommonComponent/Search/Search';
 import Carousel from '../../Component/CommonComponent/OwlCarousel/OwlCarousel';
 import { useChannel } from 'ably/react';
-import { setAllPastOrders } from '../CartPage/Cartslice/Cartslice';
+import { addItemToCart, setAllPastOrders } from '../CartPage/Cartslice/Cartslice';
 
 function MenuPage() {
   const getitemdata = JSON.parse(localStorage.getItem('category'));
@@ -16,23 +16,21 @@ function MenuPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [filteredItems, setFilteredItems] = useState([]);
   const {pastOrdersList, cartItemsList} = useSelector(state => state.cart)
+  const { table } = useSelector((state) => state?.table);
   const dispatch = useDispatch()
   const { channel } = useChannel('punched_sub_order', (message) => {
       const response = JSON.parse(message.data)
       let pastOrders = []
-      console.log({ cartItemsList, pastOrdersList })
       
       const data = {
           is_punched: true,
           items: cartItemsList,
           sub_order_id: response.sub_order_id
       }
-      console.log({ pastOrders, data })
       pastOrders = [...pastOrdersList, data]
-      console.log({ pastOrders, data })
       dispatch(setAllPastOrders(pastOrders))
-      localStorage.setItem('cartItemsList', JSON.stringify([]))     
-      console.log("called till end ")
+      dispatch(addItemToCart([]))
+      localStorage.setItem('cartItems', JSON.stringify([]))
   });
   // useEffect(() => {
   //   if (categories.length > 0) {
@@ -112,7 +110,7 @@ function MenuPage() {
       <section>
         <div className="container">
           <div className="tabledetail">
-            <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
+            <TableHeaderTitle titleicon="/Images/table.svg" title={`Table Number : ${table?.table_number ? table?.table_number : '' }`} className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
             <Search
               selectedOption={activePref}
               setSelectedOption={setActivePref}
