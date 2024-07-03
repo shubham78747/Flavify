@@ -88,7 +88,11 @@ function CombosSlider() {
     const handleShow = async (item) => {
         setShow(true);
         const comboDetails = await item?.items?.map((i) => handleQuickbiteClick(i))
-        setFilteredItem(comboDetails)
+        const data = {
+            ...item,
+            items: comboDetails
+        }
+        setFilteredItem(data)
     }
   
 
@@ -121,8 +125,8 @@ function CombosSlider() {
     }, [adon, option]);
 
     const calculateTotalPrice = () => {
-        const basePrice = 0;
-        const totalPrice = (basePrice + adonPrice + optionPrice) * count;
+        const totalPrice = filtereItem.total - filtereItem.discount;
+        console.log({ filtereItem })
         return totalPrice;
     };
  
@@ -235,7 +239,7 @@ function CombosSlider() {
                         </div>
                     </div>
                     <Accordion defaultActiveKey="0">
-                        {filtereItem?.map((mainitem,mainindex)=>(
+                        {filtereItem?.items?.map((mainitem,mainindex)=>(
                             <Accordion.Item eventKey={mainindex} key={mainindex}>
                             <Accordion.Header>{mainitem?.item_name}</Accordion.Header>
                             <Accordion.Body>
