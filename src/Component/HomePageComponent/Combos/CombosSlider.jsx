@@ -25,19 +25,15 @@ function CombosSlider() {
     };
     const [show, setShow] = useState(false);
     const [filtereItem,setFilteredItem] = useState([])
-    const [item,setItem] = useState([]);
     const [adon, setAdon] = useState([]);
     const [option, setOption] = useState([]);
-    const [activeCategory, setActiveCategory] = useState('V');
     const [isFilled, setIsFilled] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useState([]);
     const [count, setCount] = useState(1);
     const [adonPrice,setAdonPrice] = useState(0)
     const [optionPrice,setOptionPrice] = useState(0)
-
     const [allCombos, setAllCombos] = useState([])
 
-    const { table, comboList } = useSelector((state) => state?.table);
+    const { comboList } = useSelector((state) => state?.table);
     const { menu  } = useSelector((state) => state.food);
 
     useEffect(() => {
@@ -46,19 +42,8 @@ function CombosSlider() {
         }
     }, [comboList])
 
-
-    console.log({ allCombos })
-
-    // useEffect(() => {
-    //     const getitemdata = JSON.parse(localStorage.getItem('category'));
-    //     setActiveCategory(getitemdata?.diet)
-    //   }, [0]);
     const handleQuickbiteClick = (combo) => {
-        console.log({ menu, combo })
-        // return
         const menuItem = menu.items.find((i) => i.item_id === combo.item_id)
-        console.log({ menuItem })
-
         const optionsGrouped = Object.values(menu.itemOptions
         .filter((option) => option.item_id === combo.item_id)
         .reduce((groups, itemOption) => {
@@ -94,94 +79,49 @@ function CombosSlider() {
             addOnsGrouped: addOnsGrouped,
             optionsGrouped: optionsGrouped,
         }
-        // setItem(data);
-        console.log({ data })
         return data
-        // setRelatedOptions(data);
-        // setRelatedAddOns(addOns);
+      
     };
 
     
     const handleClose = () => setShow(false);
     const handleShow = async (item) => {
         setShow(true);
-        console.log({ item })
-        
         const comboDetails = await item?.items?.map((i) => handleQuickbiteClick(i))
-        console.log({ comboDetails })
-
-
         setFilteredItem(comboDetails)
     }
-    
-    const handleClick = () => {
-        document.body.classList.add('show'); // Add the 'show' class to the body
-    };
   
-
-    // Handler to set the active category
-    const handleCategoryClick = (category) => {
-        setActiveCategory(category);
-    };
-
-    // Event handler to close the modal
-
-   
 
     // Event handler to toggle the filled state
     const handleIconClick = () => {
         setIsFilled(!isFilled);
     };
 
-
-    // State to manage selected options
     
-
-    // Base price for the variant (this could be dynamic based on actual data)
-    const basePrice = 450;
-
-    // Option prices (you could use different prices for different options)
-    const optionPrices = {
-        selectoption: 450,
-        selectoption1: 450,
-        selectoption2: 450,
-        selectoption3: 450,
-    };
-
     // Handler to increase the count
     const handleAddClick = () => {
-        if (item) {
+        if (allCombos) {
             setCount(prevCount => prevCount + 1);
         }
     };
 
     // Handler to decrease the count
     const handleRemoveClick = () => {
-        if (item && count > 1) {
+        if (allCombos && count > 1) {
             setCount(prevCount => prevCount - 1);
         }
     };
 
-    // Handler to toggle checkbox selection
-    // const handleCheckboxChange = (event) => {
-    //     const { id, checked } = event.target;
-    //     if (checked) {
-    //         setSelectedOptions([...selectedOptions, id]);
-    //     } else {
-    //         setSelectedOptions(selectedOptions.filter(option => option !== id));
-    //     }
-    // };
-
-    // Calculate total price
+   
     useEffect(() => {
-        // Calculate the total prices of add-ons and options when they change
         const newAdonPrice = adon.reduce((acc, addon) => acc + addon.price, 0);
         const newOptionPrice = option.reduce((acc, opt) => acc + opt.price, 0);
         setAdonPrice(newAdonPrice);
         setOptionPrice(newOptionPrice);
     }, [adon, option]);
+
     const calculateTotalPrice = () => {
-        const basePrice = (filtereItem.total-filtereItem.discount) || 0;
+        const basePrice = 0;
         const totalPrice = (basePrice + adonPrice + optionPrice) * count;
         return totalPrice;
     };
@@ -210,7 +150,7 @@ function CombosSlider() {
         const handleAddToCart = (itemId) => {
             const selectedItem = {
                 item_id: itemId,
-                item_name: item.item_name,
+                item_name: allCombos.item_name,
                 qty: count,
                 price: calculateTotalPrice(),
                 add_ons: adon.map(addon => ({
@@ -239,8 +179,6 @@ function CombosSlider() {
             setShow(false);
             toast.success(`Add Item SuccessFully`);
         };
-    
-console.log({ lpCombos: table?.lpCombos, allCombos, filtereItem })
     return (
         <div className="Combomain">
             {allCombos?.length > 0 && <OwlCarousel className="owl-theme mb-3" {...options}>
@@ -369,8 +307,14 @@ console.log({ lpCombos: table?.lpCombos, allCombos, filtereItem })
                                     )}
                                 </ul>
                             </div>
+                        </div>
+                            </Accordion.Body>  
+                        </Accordion.Item>
+                        )
+                        )}
+                        </Accordion>
 
-                            <div className="additem">
+                        <div className="additem">
                                 <div className="addremoveitem" style={{ display: 'flex', alignItems: 'center' }}>
                                     <span onClick={handleRemoveClick} style={{ cursor: 'pointer' }}>
                                         <Icon icon="ri:subtract-fill" width="24px" height="24px" />
@@ -380,17 +324,11 @@ console.log({ lpCombos: table?.lpCombos, allCombos, filtereItem })
                                         <Icon icon="ic:round-plus" width="24px" height="24px" />
                                     </span>
                                 </div>
-                                <Link className='btngreen continue' onClick={()=>handleAddToCart(item.item_id)}>
+                                <Link className='btngreen continue' onClick={()=>handleAddToCart(allCombos.item_id)}>
                                     Add Item - ₹{calculateTotalPrice().toFixed(2)}
                                 </Link>
 
                             </div>
-                        </div>
-                            </Accordion.Body>  
-                        </Accordion.Item>
-                        )
-                        )}
-                        </Accordion>
                 </Modal.Body>
 
             </Modal>
