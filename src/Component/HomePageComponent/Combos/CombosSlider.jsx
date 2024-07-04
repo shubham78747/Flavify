@@ -6,8 +6,8 @@ import OwlCarousel from 'react-owl-carousel';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import Accordion from 'react-bootstrap/Accordion';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
+import {addComboItemToCart} from '../../../Pages/CartPage/Cartslice/Cartslice'
 function CombosSlider() {
 
     const options = {
@@ -23,30 +23,41 @@ function CombosSlider() {
     };
     const [show, setShow] = useState(false);
     const [filtereItem,setFilteredItem] = useState([])
-    const [adon, setAdon] = useState([]);
-    const [option, setOption] = useState([]);
+    const [adon, setAdon] = useState({});
+    const [option, setOption] = useState({});
     const [isFilled, setIsFilled] = useState(false);
     const [allCombos, setAllCombos] = useState([])
     const [adonPrice,setAdonPrice] = useState(0)
     const [optionPrice,setOptionPrice] = useState(0)
-
     const { comboList } = useSelector((state) => state?.table);
     const { menu  } = useSelector((state) => state.food);
-    console.log(filtereItem.items)
+    const { cartcomboItemsList } = useSelector(state => state.cart)
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        // Calculate the total prices of add-ons and options when they change
-        const newAdonPrice = adon.reduce((acc, addon) => acc + addon.price, 0);
-        const newOptionPrice = option.reduce((acc, opt) => acc + opt.price, 0);
+        const newAdonPrice = Object.values(adon).reduce((acc, addOns) => {
+          const totalAddOnPrice = addOns.reduce((sum, addOn) => sum + addOn.price, 0);
+          return acc + totalAddOnPrice;
+        }, 0);
+        const newOptionPrice = Object.values(option).reduce((acc, options) => {
+          const totalOptionPrice = options.reduce((sum, option) => sum + option.price, 0);
+          return acc + totalOptionPrice;
+        }, 0);
         setAdonPrice(newAdonPrice);
         setOptionPrice(newOptionPrice);
-    }, [adon, option]);
+      }, [adon, option]);
 
+    // useEffect(() => {
+    //     if(comboList){
+    //         setAllCombos(comboList)
+    //     }
+    // }, [comboList])
     useEffect(() => {
-        if(comboList){
-            setAllCombos(comboList)
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        if (comboList) {
+            setAllCombos(comboList);
         }
-    }, [comboList])
+    }, [comboList]);
 
     const handleQuickbiteClick = (combo) => {
         const menuItem = menu.items.find((i) => i.item_id === combo.item_id)
@@ -100,6 +111,8 @@ function CombosSlider() {
             items: comboDetails
         }
         setFilteredItem(data)
+        setOptionPrice(0)
+        setAdonPrice(0)
     }
   
 
@@ -127,60 +140,69 @@ function CombosSlider() {
         return totalPriceWithqty;
     };
  
-
-    const handleAdonChange = (e, addon) => {
-        const isChecked = e.target.checked;
-        console.log(isChecked,addon)
-        if (isChecked) {
-            setAdon([...adon, addon]);
-        } else {
-            setAdon(adon.filter(ad => ad.addon_id !== addon.addon_id));
-        }
-        }
-
-        const handleOptionChange = (e, opt) => {
+        const handleAdonChange = (e, itemId, addOnId, price) => {
             const isChecked = e.target.checked;
-            console.log(isChecked,opt)
-            if (isChecked) {
-                setOption([...option, opt]);
-            } else {
-                setOption(option.filter(op => op.option_id !== opt.option_id));
-            }
-        };
+            setAdon((prev) => {
+              const itemAddOns = prev[itemId] || [];
+              if (isChecked) {
+                return {
+                  ...prev,
+                  [itemId]: [...itemAddOns, { addon_id: addOnId, price }]
+                };
+              } else {
+                return {
+                  ...prev,
+                  [itemId]: itemAddOns.filter(addOn => addOn.addon_id !== addOnId)
+                };
+              }
+            });
+          };
 
-        const handleAddToCart = (itemId) => {
-            const selectedItem = {
-                combo:"LandingPage / Menu",
-                qty: filtereItem.qty,
+          const handleOptionChange = (e, itemId, optionId, price) => {
+            const isChecked = e.target.checked;
+            setOption((prev) => {
+              const itemOptions = prev[itemId] || [];
+              if (isChecked) {
+                return {
+                  ...prev,
+                  [itemId]: [...itemOptions, { option_id: optionId, price }]
+                };
+              } else {
+                return {
+                  ...prev,
+                  [itemId]: itemOptions.filter(option => option.option_id !== optionId)
+                };
+              }
+            });
+          };
+        const handleAddToCart = () => {
+            const cartItemsAdd = filtereItem.items.map((item) => ({
+                item_id: item.item_id,
+                item_name:item.item_name,
+                price: item.price,
+                add_ons: adon[item.item_id] ? [adon[item.item_id]] : [],
+                options: option[item.item_id] ? [option[item.item_id]] : []
+              }));
+              const cartData = {
+                combo: "LandingPage / Menu",
+                qty: 1,
                 price: calculateTotalPrice(),
                 discount: filtereItem.discount,
-                items:[{
-                    add_ons: adon.map(addon => ({
-                        addon_id: addon.addon_id,
-                        price: addon.price,
-                    })),
-                    options: option.map(opt => ({
-                        option_id: opt.option_id,
-                        price: opt.price,
-                    }))
-                }],
-            };
-            console.log(selectedItem)
-            // let cartItems = JSON.parse(localStorage.getItem('Combos')) || [];
-            // const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);
-            // if (existingItemIndex >= 0) {
-            //     cartItems[existingItemIndex].qty += selectedItem.qty;
-            //     cartItems[existingItemIndex].price += selectedItem.price;
-            // } else {
-            //     cartItems.push(selectedItem);
-            // }
-            // localStorage.setItem('Combos', JSON.stringify(cartItems));
-            setAdon([]);
-            setOption([]);
-            setOptionPrice(0)
-            setAdonPrice(0)
+                items: cartItemsAdd
+              };
+              let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+              cartItems.push(cartData);
+              dispatch(addComboItemToCart(cartItems))
+              localStorage.setItem('cartItems', JSON.stringify(cartItems));
+              toast.success(`Add Item SuccessFully`);
+
+            setAdon({});
+            setOption({});
+            setOptionPrice(0);
+            setAdonPrice(0);
             setShow(false);
-            toast.success(`Add Item SuccessFully`);
+            // setFilteredItem([]);
+            // setAllCombos([]);
         };
     return (
         <div className="Combomain">
@@ -255,7 +277,7 @@ function CombosSlider() {
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain '>
                                                     {group.itemList.map((addon, addonIndex) => (
-                                                        <li key={`addon-${addonIndex}`}>
+                                                        <li key={`addon-${addonIndex}`}>                                                        
                                                             <h5>{addon.addon_name}</h5>
                                                             <label className="custom-checkbox" htmlFor={`selectaddonoption${addonIndex}`}>
                                                                 <span className="checkbox-label">₹{addon.price}</span>
@@ -263,7 +285,7 @@ function CombosSlider() {
                                                                     type="checkbox"
                                                                     id={`selectaddonoption${addonIndex}`}
                                                                     value={addon}
-                                                                    onChange={(e) => handleAdonChange(e, addon)}
+                                                                    onChange={(e) => handleAdonChange(e, mainitem.item_id, addon.addon_id, addon.price)}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>
@@ -284,19 +306,19 @@ function CombosSlider() {
                                 <ul className='selectvariantGroup'>
                                     {mainitem && mainitem.optionsGrouped && mainitem.optionsGrouped.length > 0 ? (
                                         mainitem.optionsGrouped.map((group, index) => (
-                                            <li key={`addon-option-${index}`}>
+                                            <li key={`option-group-${index}`}>
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((option, optionIndex) => (
-                                                        <li key={`option-${optionIndex}`}>
+                                                        <li key={`option-${option.option_id}`}>                                                       
                                                             <h5>{option.option_name}</h5>
-                                                            <label className="custom-checkbox" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
+                                                            <label className="custom-checkbox" htmlFor={`selectaddonoptionMeat${option.option_id}`}>
                                                                 <span className="checkbox-label">₹{option.price}</span>
                                                                 <input
                                                                     type="checkbox"
-                                                                    id={`selectaddonoptionMeat${optionIndex}`}
+                                                                    id={`selectaddonoptionMeat${option.option_id}`}
                                                                     value={option}
-                                                                    onChange={(e) => handleOptionChange(e, option)}                                                            
+                                                                    onChange={(e) => handleOptionChange(e, mainitem.item_id, option.option_id, option.price)}                                                            
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>
@@ -327,7 +349,7 @@ function CombosSlider() {
                                         <Icon icon="ic:round-plus" width="24px" height="24px" />
                                     </span>
                                 </div>
-                                <Link className='btngreen continue' onClick={()=>handleAddToCart(allCombos.item_id)}>
+                                <Link className='btngreen continue' onClick={handleAddToCart}>
                                     Add Item - ₹{calculateTotalPrice().toFixed(2)}
                                 </Link>
 

@@ -122,21 +122,6 @@ function CartItem() {
                 }
         }
 
-        // const handleplaceorder = async() =>{
-        //     try {
-        //         const header = {
-        //             table_id: table?.table_id,
-        //             order_id: table?.order_id,
-        //             items: cartItems,  
-        //         }
-        //         localStorage.setItem('placeorder',JSON.stringify(header))
-        //         setCartItems([])
-        //         localStorage.removeItem('cartItems');
-        //     } catch (error) {
-        //         console.error('Error sending data:', error);
-        //     }
-        // }
-
         const handleQuickbiteClick = (quickbite) => {
             setShow(true);
             const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
@@ -177,8 +162,6 @@ function CartItem() {
                 optionsGrouped: optionsGrouped,
             }
             setItemdata(data);
-            // setRelatedOptions(data);
-            // setRelatedAddOns(addOns);
         };
 
     return (

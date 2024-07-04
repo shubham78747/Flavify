@@ -44,17 +44,23 @@ function Modals({
     const handleAddToCart = (itemId) => {
         const selectedItem = {
             item_id: itemId,
+            combo:"None / Checkout",
             item_name: item.item_name,
+            discount:0,
+            price: item.price,
             qty: count,
-            price: calculateItemPrice(),
-            add_ons: adon.map(addon => ({
-                addon_id: addon.addon_id,
-                price: addon.price,
-            })),
-            options: option.map(opt => ({
-                option_id: opt.option_id,
-                price: opt.price,
-            })),
+            items:[{
+                item_id: itemId,
+                price: calculateItemPrice(),
+                add_ons: adon.map(addon => ({
+                    addon_id: addon.addon_id,
+                    price: addon.price,
+                })),
+                options: option.map(opt => ({
+                    option_id: opt.option_id,
+                    price: opt.price,
+                })),
+            }],
         };
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);

@@ -5,6 +5,7 @@ const initialState = {
     totalQuantity: 0,
     totalPrice: 0,
     pastOrdersList: [],
+    cartcomboItemsList: [],
     isRegistered: false
 };
 
@@ -14,6 +15,9 @@ const cartSlice = createSlice({
     reducers: {
         addItemToCart(state, action) {
             state.cartItemsList = action.payload
+        },
+        addComboItemToCart(state, action) {
+            state.cartcomboItemsList = action.payload
         },
         removeItemFromCart(state, action) {
             const id = action.payload;
@@ -42,6 +46,6 @@ const cartSlice = createSlice({
     },
 });
 
-export const {addItemToCart, removeItemFromCart, clearCart, setAllPastOrders, setUserRegistered} = cartSlice.actions;
+export const {addItemToCart,addComboItemToCart, removeItemFromCart, clearCart, setAllPastOrders, setUserRegistered} = cartSlice.actions;
 
 export default cartSlice.reducer;
