@@ -15,6 +15,7 @@ function Modals({
     handleIconClick,
     setCartItems,
  }) {
+ 
     const [filtereddata,setFiltereddata] = useState([]);
     const dispatch = useDispatch()
     const calculateItemPrice = () => {
@@ -37,7 +38,6 @@ function Modals({
         onHide();
         toast.success(`Item added successfully`);
     };
-
         const handleAdonChange = (e, addon) => {
             const isChecked = e.target.checked;
             if (isChecked) {
@@ -105,6 +105,7 @@ function Modals({
         if (item) {
             const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             const data = Array.isArray(cartItems) ? cartItems.filter(cartItem => cartItem.item_id === item.item_id) : [];
+            console.log('pavan',{data})
             if (data.length > 0) {
                 setFiltereddata(data[0]);
             }

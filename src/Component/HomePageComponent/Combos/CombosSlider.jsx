@@ -8,8 +8,6 @@ import Accordion from 'react-bootstrap/Accordion';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 
-
-
 function CombosSlider() {
 
     const options = {
@@ -28,13 +26,21 @@ function CombosSlider() {
     const [adon, setAdon] = useState([]);
     const [option, setOption] = useState([]);
     const [isFilled, setIsFilled] = useState(false);
-    const [count, setCount] = useState(1);
+    const [allCombos, setAllCombos] = useState([])
     const [adonPrice,setAdonPrice] = useState(0)
     const [optionPrice,setOptionPrice] = useState(0)
-    const [allCombos, setAllCombos] = useState([])
 
     const { comboList } = useSelector((state) => state?.table);
     const { menu  } = useSelector((state) => state.food);
+    console.log(filtereItem.items)
+
+    useEffect(() => {
+        // Calculate the total prices of add-ons and options when they change
+        const newAdonPrice = adon.reduce((acc, addon) => acc + addon.price, 0);
+        const newOptionPrice = option.reduce((acc, opt) => acc + opt.price, 0);
+        setAdonPrice(newAdonPrice);
+        setOptionPrice(newOptionPrice);
+    }, [adon, option]);
 
     useEffect(() => {
         if(comboList){
@@ -90,6 +96,7 @@ function CombosSlider() {
         const comboDetails = await item?.items?.map((i) => handleQuickbiteClick(i))
         const data = {
             ...item,
+            qty:1,
             items: comboDetails
         }
         setFilteredItem(data)
@@ -103,31 +110,21 @@ function CombosSlider() {
 
     
     // Handler to increase the count
-    const handleAddClick = () => {
-        if (allCombos) {
-            setCount(prevCount => prevCount + 1);
-        }
+    const handleAddClick = (item) => {
+        setFilteredItem({...filtereItem, qty: filtereItem.qty + 1})
     };
 
     // Handler to decrease the count
-    const handleRemoveClick = () => {
-        if (allCombos && count > 1) {
-            setCount(prevCount => prevCount - 1);
+    const handleRemoveClick = (item) => {
+        if (filtereItem.qty > 1){
+            setFilteredItem({...filtereItem, qty: filtereItem.qty - 1})
         }
     };
 
-   
-    useEffect(() => {
-        const newAdonPrice = adon.reduce((acc, addon) => acc + addon.price, 0);
-        const newOptionPrice = option.reduce((acc, opt) => acc + opt.price, 0);
-        setAdonPrice(newAdonPrice);
-        setOptionPrice(newOptionPrice);
-    }, [adon, option]);
-
     const calculateTotalPrice = () => {
         const totalPrice = filtereItem.total - filtereItem.discount;
-        console.log({ filtereItem })
-        return totalPrice;
+        const totalPriceWithqty = (totalPrice + adonPrice + optionPrice) * filtereItem.qty;
+        return totalPriceWithqty;
     };
  
 
@@ -153,33 +150,35 @@ function CombosSlider() {
 
         const handleAddToCart = (itemId) => {
             const selectedItem = {
-                item_id: itemId,
-                item_name: allCombos.item_name,
-                qty: count,
+                combo:"LandingPage / Menu",
+                qty: filtereItem.qty,
                 price: calculateTotalPrice(),
-                add_ons: adon.map(addon => ({
-                    addon_id: addon.addon_id,
-                    price: addon.price,
-                })),
-                options: option.map(opt => ({
-                    option_id: opt.option_id,
-                    price: opt.price,
-                })),
+                discount: filtereItem.discount,
+                items:[{
+                    add_ons: adon.map(addon => ({
+                        addon_id: addon.addon_id,
+                        price: addon.price,
+                    })),
+                    options: option.map(opt => ({
+                        option_id: opt.option_id,
+                        price: opt.price,
+                    }))
+                }],
             };
-            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-            const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);
-            if (existingItemIndex >= 0) {
-                cartItems[existingItemIndex].qty += selectedItem.qty;
-                cartItems[existingItemIndex].price += selectedItem.price;
-            } else {
-                cartItems.push(selectedItem);
-            }
-            localStorage.setItem('cartItems', JSON.stringify(cartItems));
-            setOptionPrice(0);
-            setAdonPrice(0);
+            console.log(selectedItem)
+            // let cartItems = JSON.parse(localStorage.getItem('Combos')) || [];
+            // const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);
+            // if (existingItemIndex >= 0) {
+            //     cartItems[existingItemIndex].qty += selectedItem.qty;
+            //     cartItems[existingItemIndex].price += selectedItem.price;
+            // } else {
+            //     cartItems.push(selectedItem);
+            // }
+            // localStorage.setItem('Combos', JSON.stringify(cartItems));
             setAdon([]);
             setOption([]);
-            setCount(1);
+            setOptionPrice(0)
+            setAdonPrice(0)
             setShow(false);
             toast.success(`Add Item SuccessFully`);
         };
@@ -320,11 +319,11 @@ function CombosSlider() {
 
                         <div className="additem">
                                 <div className="addremoveitem" style={{ display: 'flex', alignItems: 'center' }}>
-                                    <span onClick={handleRemoveClick} style={{ cursor: 'pointer' }}>
+                                    <span onClick={()=>handleRemoveClick(filtereItem)} style={{ cursor: 'pointer' }}>
                                         <Icon icon="ri:subtract-fill" width="24px" height="24px" />
                                     </span>
-                                    <h5 style={{ margin: '0 10px' }}>{count}</h5>
-                                    <span onClick={handleAddClick} style={{ cursor: 'pointer' }}>
+                                    <h5 style={{ margin: '0 10px' }}>{filtereItem?.qty}</h5>
+                                    <span onClick={()=>handleAddClick(filtereItem)} style={{ cursor: 'pointer' }}>
                                         <Icon icon="ic:round-plus" width="24px" height="24px" />
                                     </span>
                                 </div>
