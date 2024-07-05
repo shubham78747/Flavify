@@ -50,7 +50,7 @@ function HomePage() {
     });
 
     useEffect(() => {
-        dispatch(fetchtable(tables[1].table_id))       
+        dispatch(fetchtable(tables[2].table_id))       
         dispatch(fetchQuickBites());
         dispatch(fetchMenu());
     }, [0]);
@@ -121,7 +121,7 @@ function HomePage() {
             const filtermenu = quickBites.filter((item) => item?.diet === activeCategory);
             setSelectedFilter(filtermenu)
             if(table) {
-                createCombos(table?.lp_combos[activeCategory], activeCategory)
+                createCombos(table?.lpCombos[activeCategory], activeCategory)
             }
         }
     }, [activeCategory, quickBites, table]);
@@ -213,7 +213,7 @@ function HomePage() {
                           />
                         <QuickBites menu={menu} quickBites={selectedFilter} />
                         <OfferBanner />
-                        {table?.lp_combos ? <Combos/> : ''}
+                        {table?.lpCombos ? <Combos/> : ''}
                         <MobileBar />
                     </div>
                 </div>

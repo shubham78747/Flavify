@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import CartModal from './CartModal/CartModal';
 import { useChannel } from 'ably/react';
 import { addItemToCart, setAllPastOrders } from '../../../../Pages/CartPage/Cartslice/Cartslice';
-import YouMayAlsoLike from './YouMayAlsoLike';
+import ComboModal from './ComboModal/ComboModal';
 
 function CartItem() {
     const navigate = useNavigate();
@@ -17,12 +17,14 @@ function CartItem() {
     const { table } = useSelector((state) => state?.table);
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0); 
-    const [show, setShow] = useState(false); 
+    const [show, setShow] = useState(false);
+    const [showCombo, setShowCombo] = useState(false); 
     const handleClose = () => {setShow(false);}
+    const handleCloseCombo = () => {setShowCombo(false);}
     const [itemdata,setItemdata] = useState([]);
+    const [comboitemdata,setComboItemdata] = useState([]);
     const dispatch = useDispatch()
     const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
-    
     const { channel } = useChannel('punched_sub_order', (message) => {
         const response = JSON.parse(message.data)
         let pastOrders = []
@@ -56,7 +58,6 @@ function CartItem() {
     const updateCartItemsInLocalStorage = (updatedCartItems) => {
         dispatch(addItemToCart(updatedCartItems))
         localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
-        // setCartItems(updatedCartItems);
     };
 
     const addquantity = (item) => {
@@ -96,8 +97,7 @@ function CartItem() {
                             items: cartItems,
                         }
                         if(checkOrder?.order){
-                            const response = await Updateplaceorder(updatedata)
-                            console.log(response.data)
+                            const response = await Updateplaceorder(updatedata)                         
                             if(response?.data){
                                 navigate('/success')
                                 setCartItems()
@@ -124,7 +124,6 @@ function CartItem() {
         }
 
         const handleQuickbiteClick = (quickbite) => {
-            
             const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
             const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             const optionsGrouped = Object.values(itemOptions
@@ -165,8 +164,9 @@ function CartItem() {
             setItemdata(data);
             setShow(true);
         };
+
         const handleComboClick = (quickbite) => {
-            console.log({ quickbite })
+            console.log({combo:quickbite})
             const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
             const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             let itemsdata = []
@@ -202,7 +202,6 @@ function CartItem() {
                 }, {}));
                 rest.addOnsGrouped = addOnsGrouped;
                 rest.optionsGrouped = optionsGrouped;
-                console.log({ rest  })
                 itemsdata.push(rest)
             })
             const data = {
@@ -211,9 +210,8 @@ function CartItem() {
                 item_name: quickbite.item_name,
                 items: itemsdata
             }
-            console.log({data})
-            
-            // setItemdata(data);
+            setComboItemdata(data);
+            setShowCombo(true)
         };
 
     return (
@@ -223,16 +221,16 @@ function CartItem() {
                     <Accordion.Header>Order summary</Accordion.Header>
                     <Accordion.Body>
                         <ul>
-                        {console.log({ cartItems })}
                         {cartItems?.length > 0 && cartItems?.map((item,index)=> item.combo === 'None' ? (
-                            <li key={index}>
-                                <div className="itemmaindetail" onClick={() => handleQuickbiteClick(item)}>
+                            <li key={index}>  
+                            {console.log(item)}                            
+                                <div className="itemmaindetail" onClick={() => handleQuickbiteClick(item)}> 
                                     <span>
                                         <Image src='Images/makhniimg.png'></Image>
                                     </span>
                                     <div className="itemsubdetail">
                                         <Link to=""><Image src='Images/veg.svg'></Image>{item?.item_name}</Link>
-                                        <span>₹{item.price}</span>
+                                        <span>₹{item?.price}</span>
                                     </div>
                                 </div>
                                 <div className="itemaddremove">
@@ -241,7 +239,7 @@ function CartItem() {
                                         <span>{item.qty}</span>
                                         <Link to="#" onClick={() => addquantity(item)}>+</Link>
                                     </div>
-                                    <p>₹{item.price * item.qty}</p>
+                                    <p>₹{item?.items[0]?.price * item.qty}</p>
                                     {/* <p>₹{item.price}</p> */}
                                 </div>
                             </li>
@@ -281,6 +279,7 @@ function CartItem() {
             <PastOrder pastOrdersList={pastOrdersList}/>
             <Link className='btn-green placeorder' onClick={handleCartItem}>{!JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
             <CartModal show={show} onHide={handleClose} item={itemdata} setCartItems={setCartItems}/>
+            <ComboModal show={showCombo} onHide={handleCloseCombo} item={comboitemdata} setCartItems={setCartItems}/>
         </>
     );
 }

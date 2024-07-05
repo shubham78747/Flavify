@@ -17,10 +17,8 @@ function Modals({
     const [count, setCount] = useState(1);
     const [adonPrice,setAdonPrice] = useState(0)
     const [optionPrice,setOptionPrice] = useState(0)
-
     // Calculate total price of selected items
     useEffect(() => {
-        // Calculate the total prices of add-ons and options when they change
         const newAdonPrice = adon.reduce((acc, addon) => acc + addon.price, 0);
         const newOptionPrice = option.reduce((acc, opt) => acc + opt.price, 0);
         setAdonPrice(newAdonPrice);
@@ -44,7 +42,7 @@ function Modals({
     const handleAddToCart = (itemId) => {
         const selectedItem = {
             item_id: itemId,
-            combo:"None / Checkout",
+            combo:"None",
             item_name: item.item_name,
             discount:0,
             price: item.price,
@@ -62,8 +60,6 @@ function Modals({
                 })),
             }],
         };
-
-        console.log({ selectedItem })
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);
         if (existingItemIndex >= 0) {
@@ -84,6 +80,7 @@ function Modals({
 
     const handleAdonChange = (e, addon) => {
         const isChecked = e.target.checked;
+        console.log(isChecked)
         if (isChecked) {
             setAdon([...adon, addon]);
         } else {

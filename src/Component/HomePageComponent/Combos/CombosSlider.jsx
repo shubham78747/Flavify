@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import {addComboItemToCart} from '../../../Pages/CartPage/Cartslice/Cartslice'
 function CombosSlider() {
-
     const options = {
         margin: 24,
         responsiveClass: true,
@@ -53,7 +52,7 @@ function CombosSlider() {
     //     }
     // }, [comboList])
     useEffect(() => {
-        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
         if (comboList) {
             setAllCombos(comboList);
         }
@@ -114,8 +113,6 @@ function CombosSlider() {
         setOptionPrice(0)
         setAdonPrice(0)
     }
-
-    console.log({ filtereItem })
   
 
     // Event handler to toggle the filled state

@@ -7,28 +7,11 @@ import Modals from '../../CommonComponent/Modal/Modal';
 function QuickBites({menu,quickBites}) {
         const [show, setShow] = useState(false);   
         const [isFilled, setIsFilled] = useState(false);
-        // const [count, setCount] = useState(1);
         const [quickbileFirst,setQuickBitefirst] = useState([])
         const [quickbileSecond,setQuickBiteSecond] = useState([])
         const [item,setItem] = useState([]);
         const [loader,setLoader] = useState(true)
         const handleClose = () => {setShow(false);}
-
-        // const handleAddClick = () => {
-        //     if (item) {
-        //         setCount(prevCount => prevCount + 1);
-        //     }
-        // };
-
-        // const handleRemoveClick = () => {
-        //     if (item && count > 1) {
-        //         setCount(prevCount => prevCount - 1);
-        //     }
-        // };
-        
-        // const calculateTotalPrice = () => {
-        // return item.price*count;
-        // };
 
         const handleData = (data) => {
             const filteredData = [...data]

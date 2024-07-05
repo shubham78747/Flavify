@@ -59,7 +59,7 @@ h2.accordion-header {
 }
 
 .accordion-body ul li {
-    /* display: flex; */
+    display: flex;
     align-items: center;
 }
 
