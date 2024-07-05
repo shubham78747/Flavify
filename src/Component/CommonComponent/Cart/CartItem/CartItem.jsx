@@ -124,7 +124,7 @@ function CartItem() {
         }
 
         const handleQuickbiteClick = (quickbite) => {
-            setShow(true);
+            
             const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
             const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             const optionsGrouped = Object.values(itemOptions
@@ -163,6 +163,7 @@ function CartItem() {
                 optionsGrouped: optionsGrouped,
             }
             setItemdata(data);
+            setShow(true);
         };
         const handleComboClick = (quickbite) => {
             console.log({ quickbite })
@@ -211,6 +212,7 @@ function CartItem() {
                 items: itemsdata
             }
             console.log({data})
+            
             // setItemdata(data);
         };
 
