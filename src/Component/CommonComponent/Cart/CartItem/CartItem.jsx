@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import CartModal from './CartModal/CartModal';
 import { useChannel } from 'ably/react';
 import { addItemToCart, setAllPastOrders } from '../../../../Pages/CartPage/Cartslice/Cartslice';
+import YouMayAlsoLike from './YouMayAlsoLike';
 
 function CartItem() {
     const navigate = useNavigate();
@@ -163,6 +164,55 @@ function CartItem() {
             }
             setItemdata(data);
         };
+        const handleComboClick = (quickbite) => {
+            console.log({ quickbite })
+            const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
+            const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
+            let itemsdata = []
+            quickbite.items.map(ele => {
+                const { add_ons, options, ...rest} = ele
+                const optionsGrouped = Object.values(itemOptions
+                .filter((option) => option.item_id === rest.item_id)
+                .reduce((groups, itemOption) => {
+                    const groupName = itemOption.option_group_name;
+                    if (!groups[groupName]) {
+                    groups[groupName] = { groupName, itemList: [] };
+                    }
+                    const optionDetails = menu.options.find(
+                    (option) => option.option_id === itemOption.option_id
+                    );
+                    groups[groupName].itemList.push(optionDetails);
+                    return groups;
+                }, {}));
+    
+                // Find related add-ons and group by addon_group_name
+                const addOnsGrouped = Object.values(itemAddOns
+                .filter((addon) => addon.item_id === rest.item_id)
+                .reduce((groups, itemAddon) => {
+                    const groupName = itemAddon.addon_group_name;
+                    if (!groups[groupName]) {
+                    groups[groupName] = { groupName, itemList: [] };
+                    }
+                    const addonDetails = menu.addOns.find(
+                    (addon) => addon.addon_id === itemAddon.addon_id
+                    );
+                    groups[groupName].itemList.push(addonDetails);
+                    return groups;
+                }, {}));
+                rest.addOnsGrouped = addOnsGrouped;
+                rest.optionsGrouped = optionsGrouped;
+                console.log({ rest  })
+                itemsdata.push(rest)
+            })
+            const data = {
+                item_id: quickbite.item_id,
+                price: quickbite.price,
+                item_name: quickbite.item_name,
+                items: itemsdata
+            }
+            console.log({data})
+            // setItemdata(data);
+        };
 
     return (
         <>
@@ -171,7 +221,8 @@ function CartItem() {
                     <Accordion.Header>Order summary</Accordion.Header>
                     <Accordion.Body>
                         <ul>
-                        {cartItems?.length > 0 && cartItems?.map((item,index)=>(
+                        {console.log({ cartItems })}
+                        {cartItems?.length > 0 && cartItems?.map((item,index)=> item.combo === 'None' ? (
                             <li key={index}>
                                 <div className="itemmaindetail" onClick={() => handleQuickbiteClick(item)}>
                                     <span>
@@ -192,8 +243,34 @@ function CartItem() {
                                     {/* <p>₹{item.price}</p> */}
                                 </div>
                             </li>
-                        ))}
-                           
+                        ) : 
+                        <li className='comboBox' onClick={() => handleComboClick(item)}>
+                            <ul>
+                                {item.items.map((i, ix) => (
+                                    <li key={ix}>
+                                        <div className="itemmaindetail">
+                                            <span>
+                                                <Image src='Images/makhniimg.png'></Image>
+                                            </span>
+                                            <div className="itemsubdetail">
+                                                <Link to=""><Image src='Images/veg.svg'></Image>{i?.item_name}</Link>
+                                                <span>₹{i.price}</span>
+                                            </div>
+                                        </div>
+                                    </li>   
+                                ))}
+                            </ul>
+                            <div className="itemaddremove">
+                                <div className="addremove">
+                                    <Link to="#" onClick={() => removequantity(item)}>-</Link>
+                                    <span>{item.qty}</span>
+                                    <Link to="#" onClick={() => addquantity(item)}>+</Link>
+                                </div>
+                                {/* <p>₹{item.price * item.qty}</p> */}
+                                {/* <p>₹{item.price}</p> */}
+                            </div>
+                        </li>
+                        )}
                         </ul>
                     </Accordion.Body>
                 </Accordion.Item>

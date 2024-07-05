@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import './CartItem.css';
 import { Button, Image, Modal } from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { useSelector } from 'react-redux';
 
 
 
@@ -23,6 +24,38 @@ function CartItemSlider() {
 
     };
     const [show, setShow] = useState(false);
+    const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
+    const {menu} = useSelector((state)=>state?.food);
+    const { table } = useSelector((state) => state?.table);
+    const filterAllItemsFromCart = (data) => {
+      const cartItemsForSimiller = [];
+      const itemSet = new Set();
+      data.map((element) => {
+        element.items.map((ele) => {
+          const item = menu.items.find((i) => i.item_id === ele.item_id);
+          console.log({ item });
+
+          if (item && !itemSet.has(item.item_id)) {
+            const returmData = {
+              item_id: item.item_id,
+              item_subcategory: item.item_subcategory,
+              qty: element.qty ? element.qty : ele.qty,
+            };
+            cartItemsForSimiller.push(returmData);
+            itemSet.add(item.item_id);
+          }
+        });
+    });
+    console.log({ cartItemsForSimiller });
+    };
+    useEffect(() => {
+      if(pastOrdersList.length > 0 || cartItemsList.length > 0) {
+        const data = [...pastOrdersList, ...cartItemsList]
+        console.log({ data, pastOrdersList, cartItemsList, table })
+        filterAllItemsFromCart(data)
+      }
+    }, [pastOrdersList, cartItemsList])
+    
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);

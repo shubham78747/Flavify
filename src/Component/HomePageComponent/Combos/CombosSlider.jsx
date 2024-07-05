@@ -114,6 +114,8 @@ function CombosSlider() {
         setOptionPrice(0)
         setAdonPrice(0)
     }
+
+    console.log({ filtereItem })
   
 
     // Event handler to toggle the filled state

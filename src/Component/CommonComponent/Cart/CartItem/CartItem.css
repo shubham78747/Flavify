@@ -320,3 +320,9 @@ a.btn-green.order {
     transform: translateX(-50%);
     max-width: 440px;
 }
+
+li.comboBox {
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 10px;
+}

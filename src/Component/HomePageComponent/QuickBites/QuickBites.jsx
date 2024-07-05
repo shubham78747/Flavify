@@ -64,6 +64,7 @@ function QuickBites({menu,quickBites}) {
 
         const handleQuickbiteClick = (quickbite) => {
             setShow(true);
+            console.log({ itemOptions :menu.itemOptions })
             const optionsGrouped = Object.values(menu.itemOptions
             .filter((option) => option.item_id === quickbite.item_id)
             .reduce((groups, itemOption) => {
@@ -99,6 +100,7 @@ function QuickBites({menu,quickBites}) {
                 addOnsGrouped: addOnsGrouped,
                 optionsGrouped: optionsGrouped,
             }
+
             setItem(data);
             // setRelatedOptions(data);
             // setRelatedAddOns(addOns);

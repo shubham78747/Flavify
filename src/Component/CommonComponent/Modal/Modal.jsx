@@ -62,6 +62,8 @@ function Modals({
                 })),
             }],
         };
+
+        console.log({ selectedItem })
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);
         if (existingItemIndex >= 0) {
