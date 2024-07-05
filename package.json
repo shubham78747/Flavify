@@ -17,6 +17,7 @@
     "dotenv": "^16.4.5",
     "iconify-icon": "^2.0.0-beta.1",
     "jquery": "^3.7.1",
+    "lodash": "^4.17.21",
     "node-modules": "^1.0.1",
     "owl.carousel": "^2.3.4",
     "primereact": "^10.6.3",

@@ -124,6 +124,7 @@ function CartItem() {
         }
 
         const handleQuickbiteClick = (quickbite) => {
+            console.log({combo:quickbite})
             const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
             const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             const optionsGrouped = Object.values(itemOptions
@@ -166,7 +167,7 @@ function CartItem() {
         };
 
         const handleComboClick = (quickbite) => {
-            console.log({combo:quickbite})
+            console.log({quickbite})
             const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
             const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             let itemsdata = []
@@ -202,13 +203,16 @@ function CartItem() {
                 }, {}));
                 rest.addOnsGrouped = addOnsGrouped;
                 rest.optionsGrouped = optionsGrouped;
+                console.log({rest})
                 itemsdata.push(rest)
             })
             const data = {
-                item_id: quickbite.item_id,
+                // item_id: quickbite.item_id,
                 price: quickbite.price,
-                item_name: quickbite.item_name,
-                items: itemsdata
+                // item_name: quickbite.item_name,
+                qty: quickbite.qty,
+                items: itemsdata,
+                discount: quickbite.discount,
             }
             setComboItemdata(data);
             setShowCombo(true)
@@ -222,8 +226,7 @@ function CartItem() {
                     <Accordion.Body>
                         <ul>
                         {cartItems?.length > 0 && cartItems?.map((item,index)=> item.combo === 'None' ? (
-                            <li key={index}>  
-                            {console.log(item)}                            
+                            <li key={index}>                            
                                 <div className="itemmaindetail" onClick={() => handleQuickbiteClick(item)}> 
                                     <span>
                                         <Image src='Images/makhniimg.png'></Image>
@@ -244,8 +247,8 @@ function CartItem() {
                                 </div>
                             </li>
                         ) : 
-                        <li className='comboBox' onClick={() => handleComboClick(item)}>
-                            <ul>
+                        <li className='comboBox' >
+                            <ul onClick={() => handleComboClick(item)}>
                                 {item.items.map((i, ix) => (
                                     <li key={ix}>
                                         <div className="itemmaindetail">

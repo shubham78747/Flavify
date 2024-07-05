@@ -175,12 +175,13 @@ function CombosSlider() {
             });
           };
         const handleAddToCart = () => {
+            console.log({option})
             const cartItemsAdd = filtereItem.items.map((item) => ({
                 item_id: item.item_id,
                 item_name:item.item_name,
                 price: item.price,
-                add_ons: adon[item.item_id] ? [adon[item.item_id]] : [],
-                options: option[item.item_id] ? [option[item.item_id]] : []
+                add_ons: adon[item.item_id] ? [...adon[item.item_id]] : [],
+                options: option[item.item_id] ? [...option[item.item_id]] : []
               }));
               const cartData = {
                 combo: "LandingPage / Menu",

@@ -47,7 +47,7 @@ function Modals({
             discount:0,
             price: item.price,
             qty: count,
-            items:[{
+            items: [{
                 item_id: itemId,
                 price: calculateItemPrice(),
                 add_ons: adon.map(addon => ({

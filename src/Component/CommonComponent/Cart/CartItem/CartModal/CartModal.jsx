@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { addItemToCart } from '../../../../../Pages/CartPage/Cartslice/Cartslice';
-
+import {isEmpty} from "lodash"
 function Modals({ 
     isFilled, 
     item, 
@@ -18,9 +18,13 @@ function Modals({
     const [filtereddata,setFiltereddata] = useState([]);
     const dispatch = useDispatch()
     const calculateItemPrice = () => {
-        const basePrice = filtereddata?.price || 0;
-        const totalPrice = basePrice * filtereddata?.qty;
-        return totalPrice;
+        if(!isEmpty(filtereddata)) {
+            const basePrice = filtereddata?.items?.length > 0 && filtereddata?.items[0]?.price || 0;
+            const totalPrice = basePrice * filtereddata?.qty;
+            return totalPrice;
+        } else {
+            return 0
+        }
     };
 
     const handleAddToCart = (itemId) => {
@@ -37,17 +41,15 @@ function Modals({
         onHide();
         toast.success(`Item added successfully`);
     };
-      console.log('demo',filtereddata)
         const handleAdonChange = (e, addon) => {
             const tempWorkingHours = [...filtereddata?.items];
             const isChecked = e.target.checked;
-            console.log(isChecked)
             if (isChecked) {
                 tempWorkingHours[0].add_ons = [...tempWorkingHours[0].add_ons, {addon_id: addon.addon_id, price:addon.price}]
                 setFiltereddata((prev) => ({
                     ...prev,
                     items: tempWorkingHours,
-                    price: prev.price + addon.price,
+                    price: prev.price+addon.price,
                 }))
             } 
             else {
@@ -55,7 +57,7 @@ function Modals({
                 setFiltereddata((prev) => ({
                     ...prev,
                     items: tempWorkingHours,
-                    price: prev.price - addon.price,
+                    price: prev.price-addon.price,
                 }))
                 }
             }
@@ -68,7 +70,7 @@ function Modals({
                 setFiltereddata((prev) => ({
                     ...prev,
                     options: tempWorkingHours,
-                    price: prev.price + opt.price,
+                    price: prev.price+opt.price,
                 }))
             } else {
                 tempWorkingHours[0].options = tempWorkingHours[0].options.filter(ad => ad.option_id !== opt.option_id)
@@ -101,7 +103,6 @@ function Modals({
         if (item) {
             const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             const data = Array.isArray(cartItems) ? cartItems.find(cartItem => cartItem.item_id === item.item_id) : {};
-        console.log({ data, item })
             if (data) {
                 setFiltereddata(data);
             }
@@ -110,7 +111,6 @@ function Modals({
             }
         }
     }, [item]);
-    
 
     return (
         <>
@@ -151,10 +151,8 @@ function Modals({
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((addon, addonIndex) => (            
-                                                        <li key={`addon-${addonIndex}`}>
-                                                          {/* {console.log('filtereddata?.items[0]',filtereddata?.items[0].add_ons)} */}
+                                                        <li key={`addon-${addonIndex}`}>                                                         
                                                             <h5>{addon.addon_name}</h5>
-                                                            {console.log({ filtereddata })}
                                                             <label className="custom-checkbox" htmlFor={`selectaddonoption${addonIndex}`}>
                                                                 <span className="checkbox-label">₹{addon.price}</span>
                                                                 <input
@@ -162,7 +160,7 @@ function Modals({
                                                                     id={`selectaddonoption${addonIndex}`}
                                                                     value={addon}
                                                                     onChange={(e) => handleAdonChange(e, addon)}
-                                                                    // checked={filtereddata?.items[0]?.add_ons?.length > 0 && filtereddata?.items[0]?.add_ons?.some(item => item.addon_id === addon.addon_id)}
+                                                                    checked={!isEmpty(filtereddata) && filtereddata?.items[0]?.add_ons?.some(item => item.addon_id === addon.addon_id)}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>
@@ -195,7 +193,7 @@ function Modals({
                                                                     id={`selectaddonoptionMeat${optionIndex}`}
                                                                     value={opt}
                                                                     onChange={(e) => handleOptionChange(e, opt)}
-                                                                    // checked={filtereddata?.items[0]?.options?.length > 0 && filtereddata?.items[0]?.options?.some(item => item.option_id === opt.option_id)}
+                                                                    checked={!isEmpty(filtereddata) && filtereddata?.items[0]?.options?.some(item => item.option_id === opt.option_id)}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>
