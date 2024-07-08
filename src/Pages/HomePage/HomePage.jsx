@@ -120,8 +120,9 @@ function HomePage() {
 
     useEffect(() => {
         if(activeCategory) {
-            const filtermenu = quickBites.filter((item) => item?.diet === activeCategory);
+            const filtermenu = quickBites?.filter((item) => activeCategory === 'N' ? item?.diet === 'V' || item?.diet === 'N' || item?.diet === 'E' : activeCategory === 'E' ? item?.diet === 'V' || item?.diet === 'E' : item?.diet === 'V');
             setSelectedFilter(filtermenu)
+            console.log({lpCombos: table?.lp_combos, table, activeCategory})
             if(table) {
                 createCombos(table?.lp_combos[activeCategory], activeCategory)
             }

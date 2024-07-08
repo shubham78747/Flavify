@@ -62,12 +62,40 @@ function MenuPage() {
   };
 
   const filterMenu = (category, preference) => {
+    console.log({ preference })
       const data = menu?.items?.filter(item => { 
        if(category !== 'All') {
-          if(item.item_category === category.item_name && item.diet === preference) {
+        if(preference === 'N') {
+          if(item.item_category === category.item_name && (item.diet === 'V' || item.diet === 'N' || item.diet === 'E')) {
             return item;
           }
+        }
+        if(preference === 'E') {
+          if(item.item_category === category.item_name && (item.diet === 'V' || item.diet === 'E')) {
+            return item;
+          }
+        }
+        if(preference === 'V') {
+          if(item.item_category === category.item_name && item.diet === 'V') {
+            return item;
+          }
+        }
         } else {
+          if(preference === 'N') {
+            if(item.diet === 'V' || item.diet === 'N' || item.diet === 'E') {
+              return item;
+            }
+          }
+          if(preference === 'E') {
+            if(item.diet === 'V' || item.diet === 'E') {
+              return item;
+            }
+          }
+          if(preference === 'V') {
+            if(item.diet === 'V') {
+              return item;
+            }
+          }
           if(item.diet === preference) {
             return item;
           }
