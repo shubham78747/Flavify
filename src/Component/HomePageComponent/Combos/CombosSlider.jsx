@@ -184,7 +184,7 @@ function CombosSlider() {
                 options: option[item.item_id] ? [...option[item.item_id]] : []
               }));
               const cartData = {
-                combo: "LandingPage / Menu",
+                combo: "LandingPage",
                 qty: 1,
                 price: calculateTotalPrice(),
                 discount: filtereItem.discount,

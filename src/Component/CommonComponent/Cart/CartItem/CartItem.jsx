@@ -10,6 +10,7 @@ import CartModal from './CartModal/CartModal';
 import { useChannel } from 'ably/react';
 import { addItemToCart, setAllPastOrders } from '../../../../Pages/CartPage/Cartslice/Cartslice';
 import ComboModal from './ComboModal/ComboModal';
+import YouMayAlsoLike from './YouMayAlsoLike';
 
 function CartItem() {
     const navigate = useNavigate();
@@ -278,7 +279,7 @@ function CartItem() {
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
-            {/* <YouMayAlsoLike /> */}
+            <YouMayAlsoLike />
             <PastOrder pastOrdersList={pastOrdersList}/>
             <Link className='btn-green placeorder' onClick={handleCartItem}>{!JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
             <CartModal show={show} onHide={handleClose} item={itemdata} setCartItems={setCartItems}/>

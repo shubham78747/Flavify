@@ -6,6 +6,8 @@ import { Button, Image, Modal } from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useSelector } from 'react-redux';
+import predictCheckout from '../../../../Helper/checkout';
+import filterItemAddonOption from '../../../../Helper/filterItemAddonOption';
 
 
 
@@ -24,37 +26,51 @@ function CartItemSlider() {
 
     };
     const [show, setShow] = useState(false);
-    const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
     const {menu} = useSelector((state)=>state?.food);
     const { table } = useSelector((state) => state?.table);
+    const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
+    const [productsList, setProductsList] = useState([])
+
     const filterAllItemsFromCart = (data) => {
       const cartItemsForSimiller = [];
       const itemSet = new Set();
-      data.map((element) => {
-        element.items.map((ele) => {
-          const item = menu.items.find((i) => i.item_id === ele.item_id);
-          console.log({ item });
+      if (menu && menu?.items) {
+        data.map((element) => {
+          element.items.map((ele) => {
+            const item = menu?.items?.find((i) => i.item_id === ele.item_id);
+            console.log({ item });
 
-          if (item && !itemSet.has(item.item_id)) {
-            const returmData = {
-              item_id: item.item_id,
-              item_subcategory: item.item_subcategory,
-              qty: element.qty ? element.qty : ele.qty,
-            };
-            cartItemsForSimiller.push(returmData);
-            itemSet.add(item.item_id);
-          }
+            if (item && !itemSet.has(item.item_id)) {
+              const returmData = {
+                item_id: item.item_id,
+                item_subcategory: item.item_subcategory,
+                qty: element.qty ? element.qty : ele.qty,
+              };
+              cartItemsForSimiller.push(returmData);
+              itemSet.add(item.item_id);
+            }
+          });
         });
-    });
-    console.log({ cartItemsForSimiller });
+        const youMayLike = predictCheckout(
+          menu,
+          table?.pax,
+          cartItemsForSimiller,
+          table?.diet
+        );
+        console.log({ cartItemsForSimiller, youMayLike });
+        const predictedItems = youMayLike.map((ele) => {
+          const item = menu.items.find((i) => i.item_id === ele);
+          return item;
+        });
+        setProductsList(predictedItems);
+      }
     };
     useEffect(() => {
-      if(pastOrdersList.length > 0 || cartItemsList.length > 0) {
+      if(pastOrdersList?.length > 0 || cartItemsList?.length > 0) {
         const data = [...pastOrdersList, ...cartItemsList]
-        console.log({ data, pastOrdersList, cartItemsList, table })
         filterAllItemsFromCart(data)
       }
-    }, [pastOrdersList, cartItemsList])
+    }, [pastOrdersList, cartItemsList, menu])
     
 
     const handleClose = () => setShow(false);
@@ -111,7 +127,7 @@ function CartItemSlider() {
         if (checked) {
             setSelectedOptions([...selectedOptions, id]);
         } else {
-            setSelectedOptions(selectedOptions.filter(option => option !== id));
+            setSelectedOptions(selectedOptions?.filter(option => option !== id));
         }
     };
 
@@ -123,7 +139,42 @@ function CartItemSlider() {
     const [count, setCount] = useState(1);
     return (
         <div className="Combomain">
-            <OwlCarousel className="owl-theme mb-3" {...options}>
+            {productsList.length > 0 && <OwlCarousel className="owl-theme mb-3" {...options}>
+                {productsList.map((ele, index) => (
+                    <div className="item" key={index}>
+                        <div className="combodetail">
+                            <ul className='saladimgs gap-1 mb-0'>
+                                <li><Image src='Images/manchurianimg.png'></Image></li>
+                            </ul>
+                            <div className="combosubdetail">
+
+                                <h3>{ele.item_name}</h3>
+                                <div className="comboprice d-flex">
+                                    <p>₹{ele.price} </p>
+                                    <Link onClick={handleShow}>+ Add</Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+                {/* <div className="item">
+                    <div className="combodetail">
+                        <ul className='saladimgs gap-1 mb-0'>
+                            <li><Image src='Images/manchurianimg.png'></Image></li>
+                        </ul>
+                        <div className="combosubdetail">
+
+                            <h3>Manchurian gravy</h3>
+                            <div className="comboprice d-flex">
+                                <p>₹920 </p>
+                                <Link onClick={handleShow}>+ Add</Link>
+                            </div>
+                        </div>
+                    </div>
+                </div> */}
+
+            </OwlCarousel>}
+            {/* <OwlCarousel className="owl-theme mb-3" {...options}>
                 <div className="item">
                     <div className="combodetail">
                         <ul className='saladimgs gap-1 mb-0'>
@@ -156,41 +207,7 @@ function CartItemSlider() {
                     </div>
                 </div>
 
-            </OwlCarousel>
-            <OwlCarousel className="owl-theme mb-3" {...options}>
-                <div className="item">
-                    <div className="combodetail">
-                        <ul className='saladimgs gap-1 mb-0'>
-                            <li><Image src='Images/manchurianimg.png'></Image></li>
-
-                        </ul>
-                        <div className="combosubdetail">
-
-                            <h3>Manchurian gravy</h3>
-                            <div className="comboprice d-flex">
-                                <p>₹920 </p>
-                                <Link onClick={handleShow}>+ Add</Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="item">
-                    <div className="combodetail">
-                        <ul className='saladimgs gap-1 mb-0'>
-                            <li><Image src='Images/manchurianimg.png'></Image></li>
-                        </ul>
-                        <div className="combosubdetail">
-
-                            <h3>Manchurian gravy</h3>
-                            <div className="comboprice d-flex">
-                                <p>₹920 </p>
-                                <Link onClick={handleShow}>+ Add</Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </OwlCarousel>
+            </OwlCarousel> */}
 
             {/* <Modal show={show} onHide={handleClose} className="singleitem combomodal">
                 <Modal.Header closeButton>

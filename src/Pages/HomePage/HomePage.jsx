@@ -86,6 +86,8 @@ function HomePage() {
             }
             if(!table?.fresh_order) {
                 const getitemdata = JSON.parse(localStorage.getItem('category'));
+                dispatch(setUserRegistered(true))
+                localStorage.setItem('isRegistered', true);
                 let pastOrder = []
                 let currecntOrder = []
                 for (const order of table?.order_info) {
@@ -120,8 +122,9 @@ function HomePage() {
         if(activeCategory) {
             const filtermenu = quickBites.filter((item) => item?.diet === activeCategory);
             setSelectedFilter(filtermenu)
+            console.log({lpCombos: table?.lp_combos, table})
             if(table) {
-                createCombos(table?.lpCombos[activeCategory], activeCategory)
+                createCombos(table?.lp_combos[activeCategory], activeCategory)
             }
         }
     }, [activeCategory, quickBites, table]);
@@ -130,7 +133,7 @@ function HomePage() {
         const tableDataStr = localStorage.getItem('tableData');
         const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false};
         const isRegistered = JSON.parse(localStorage.getItem('isRegistered'))
-        dispatch(setUserRegistered(isRegistered))
+        dispatch(setUserRegistered(isRegistered ? isRegistered : false))
         // dispatch(addItemToCart(cart))
         if(tableData.isfirst) {
             const getitemdata = JSON.parse(localStorage.getItem('category'));
@@ -213,7 +216,7 @@ function HomePage() {
                           />
                         <QuickBites menu={menu} quickBites={selectedFilter} />
                         <OfferBanner />
-                        {table?.lpCombos ? <Combos/> : ''}
+                        {table?.lp_combos ? <Combos/> : ''}
                         <MobileBar />
                     </div>
                 </div>
