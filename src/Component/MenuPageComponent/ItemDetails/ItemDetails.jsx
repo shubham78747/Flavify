@@ -19,6 +19,7 @@ function ItemDetails({ items, selectedCategory }) {
     const handleClose = () => setShow(false);
     const [item, setItem] = useState([]);
     const [isFilled, setIsFilled] = useState(false);
+    const [flag, setFlag] = useState(null);
     // Function to handle the click and toggle the slider visibility
     const handleViewCombosClick = (itemKey, e) => {
         e.preventDefault();
@@ -40,7 +41,7 @@ function ItemDetails({ items, selectedCategory }) {
     };
 
     const handleQuickbiteClick = (quickbite) => {
-        setShow(true);
+        setFlag('Qickbitepage');
         const optionsGrouped = Object.values(menu.itemOptions
             .filter((option) => option.item_id === quickbite.item_id)
             .reduce((groups, itemOption) => {
@@ -54,8 +55,8 @@ function ItemDetails({ items, selectedCategory }) {
                 groups[groupName].itemList.push(optionDetails);
                 return groups;
             }, {}));
-
-        // Find related add-ons and group by addon_group_name
+            
+            // Find related add-ons and group by addon_group_name
         const addOnsGrouped = Object.values(menu.itemAddOns
             .filter((addon) => addon.item_id === quickbite.item_id)
             .reduce((groups, itemAddon) => {
@@ -69,14 +70,15 @@ function ItemDetails({ items, selectedCategory }) {
                 groups[groupName].itemList.push(addonDetails);
                 return groups;
             }, {}));
-        const data = {
-            item_id: quickbite.item_id,
-            price: quickbite.price,
-            item_name: quickbite.item_name,
-            addOnsGrouped: addOnsGrouped,
-            optionsGrouped: optionsGrouped,
-        }
-        setItem(data);
+            const data = {
+                item_id: quickbite.item_id,
+                price: quickbite.price,
+                item_name: quickbite.item_name,
+                addOnsGrouped: addOnsGrouped,
+                optionsGrouped: optionsGrouped,
+            }
+            setItem(data);
+            setShow(true);
     };
     
 
@@ -140,6 +142,7 @@ function ItemDetails({ items, selectedCategory }) {
                 onHide={handleClose}
                 handleIconClick={() => setIsFilled(!isFilled)}
                 isFilled={isFilled}
+                flag={flag}
             />
         </>
     );

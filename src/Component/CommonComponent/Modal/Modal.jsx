@@ -11,7 +11,9 @@ function Modals({
     show, 
     onHide, 
     handleIconClick,
+    flag
  }) {
+    console.log(flag)
     const [adon, setAdon] = useState([]);
     const [option, setOption] = useState([]);
     const [count, setCount] = useState(1);
@@ -42,7 +44,7 @@ function Modals({
     const handleAddToCart = (itemId) => {
         const selectedItem = {
             item_id: itemId,
-            combo:"None",
+            combo: flag === 'Likespage'? 'Checkout' : "None",
             item_name: item.item_name,
             discount:0,
             price: item.price,
