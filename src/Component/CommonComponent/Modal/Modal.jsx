@@ -13,12 +13,12 @@ function Modals({
     handleIconClick,
     flag
  }) {
-    console.log(flag)
     const [adon, setAdon] = useState([]);
     const [option, setOption] = useState([]);
     const [count, setCount] = useState(1);
     const [adonPrice,setAdonPrice] = useState(0)
     const [optionPrice,setOptionPrice] = useState(0)
+    console.log(adon,option)
     // Calculate total price of selected items
     useEffect(() => {
         const newAdonPrice = adon.reduce((acc, addon) => acc + addon.price, 0);
@@ -84,7 +84,7 @@ function Modals({
         const isChecked = e.target.checked;
         console.log(isChecked)
         if (isChecked) {
-            setAdon([...adon, addon]);
+                setAdon([...adon, addon]);
         } else {
             setAdon(adon.filter(ad => ad.addon_id !== addon.addon_id));
         }
@@ -93,7 +93,7 @@ function Modals({
     const handleOptionChange = (e, opt) => {
         const isChecked = e.target.checked;
         if (isChecked) {
-            setOption([...option, opt]);
+                setOption([...option, opt]);
         } else {
             setOption(option.filter(op => op.option_id !== opt.option_id));
         }
@@ -180,11 +180,11 @@ function Modals({
                                 <ul className='selectvariantGroup'>
                                     {item && item.optionsGrouped && item.optionsGrouped.length > 0 ? (
                                         item.optionsGrouped.map((group, index) => (
-                                            <li key={`addon-option-${index}`}>
+                                            <li key={`option-${index}`}>
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((option, optionIndex) => (
-                                                        <li key={`option-${optionIndex}`}>
+                                                        <li key={`option-${optionIndex}`}>                                                          
                                                             <h5>{option.option_name}</h5>
                                                             <label className="custom-checkbox" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
                                                                 <span className="checkbox-label">₹{option.price}</span>
@@ -193,6 +193,7 @@ function Modals({
                                                                     id={`selectaddonoptionMeat${optionIndex}`}
                                                                     value={option}
                                                                     onChange={(e) => handleOptionChange(e, option)}
+                                                                    // checked={console.log()}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>

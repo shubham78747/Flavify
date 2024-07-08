@@ -77,7 +77,7 @@ function CartItem() {
 
     const calculateTotalPrice = (items) => {
         if (Array.isArray(items) && items.length > 0) {
-            const total = items.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            const total = items?.map(item=>item?.items).map(item=>item[0]).reduce((acc, item) => acc + (item.price * items[0].qty), 0);
             setTotalPrice(total);
         } else {
             setTotalPrice(0); 
@@ -125,7 +125,6 @@ function CartItem() {
         }
 
         const handleQuickbiteClick = (quickbite) => {
-            console.log({combo:quickbite})
             const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
             const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             const optionsGrouped = Object.values(itemOptions
@@ -227,7 +226,7 @@ function CartItem() {
                     <Accordion.Body>
                         <ul>
                         {cartItems?.length > 0 && cartItems?.map((item,index)=> item.combo === 'None' ? (
-                            <li key={index}>                            
+                            <li key={index}>                          
                                 <div className="itemmaindetail" onClick={() => handleQuickbiteClick(item)}> 
                                     <span>
                                         <Image src='Images/makhniimg.png'></Image>
@@ -243,7 +242,7 @@ function CartItem() {
                                         <span>{item.qty}</span>
                                         <Link to="#" onClick={() => addquantity(item)}>+</Link>
                                     </div>
-                                    <p>₹{item?.items[0]?.price * item.qty}</p>
+                                    <p>₹{item?.price * item.qty}</p>
                                     {/* <p>₹{item.price}</p> */}
                                 </div>
                             </li>

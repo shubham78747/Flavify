@@ -42,8 +42,6 @@ function CartItemSlider() {
         data.map((element) => {
           element.items.map((ele) => {
             const item = menu?.items?.find((i) => i.item_id === ele.item_id);
-            console.log({ item });
-
             if (item && !itemSet.has(item.item_id)) {
               const returmData = {
                 item_id: item.item_id,
@@ -74,6 +72,7 @@ function CartItemSlider() {
         filterAllItemsFromCart(data)
       }
     }, [pastOrdersList, cartItemsList, menu])
+
     const handleClose = () => setShow(false);
 
     const handleQuickbiteClick = (quickbite) => {

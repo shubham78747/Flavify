@@ -14,7 +14,6 @@ function QuickBites({menu,quickBites}) {
 
         const [loader,setLoader] = useState(true)
         const handleClose = () => {setShow(false);}
-        console.log({item})
 
         const handleData = (data) => {
             const filteredData = [...data]

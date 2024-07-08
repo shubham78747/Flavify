@@ -29,6 +29,7 @@ function Modals({
 
     const handleAddToCart = (itemId) => {
         const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        console.log({cartItems})
         const existingItemIndex = cartItems.findIndex(item => item.item_id === itemId);
         if (existingItemIndex !== -1) {
             cartItems[existingItemIndex] = { ...filtereddata, item_id: itemId };
@@ -41,23 +42,30 @@ function Modals({
         onHide();
         toast.success(`Item added successfully`);
     };
+
         const handleAdonChange = (e, addon) => {
             const tempWorkingHours = [...filtereddata?.items];
             const isChecked = e.target.checked;
             if (isChecked) {
-                tempWorkingHours[0].add_ons = [...tempWorkingHours[0].add_ons, {addon_id: addon.addon_id, price:addon.price}]
+                tempWorkingHours[0].add_ons = [...tempWorkingHours[0].add_ons, {addon_id: addon.addon_id, price: addon.price}]
+                tempWorkingHours[0].price = tempWorkingHours[0].price + addon.price;
                 setFiltereddata((prev) => ({
                     ...prev,
                     items: tempWorkingHours,
-                    price: prev.price+addon.price,
+                    price: prev.price + addon.price,
                 }))
             } 
             else {
                 tempWorkingHours[0].add_ons = tempWorkingHours[0].add_ons.filter(ad => ad.addon_id !== addon.addon_id)
+                tempWorkingHours[0].price = tempWorkingHours[0].price - addon.price;
                 setFiltereddata((prev) => ({
                     ...prev,
                     items: tempWorkingHours,
-                    price: prev.price-addon.price,
+                    price: prev.price - addon.price,
+                }))
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    price: prev.price - addon.price,
                 }))
                 }
             }
@@ -67,17 +75,19 @@ function Modals({
             const isChecked = e.target.checked;
             if (isChecked) {
                 tempWorkingHours[0].options = [...tempWorkingHours[0].options, {option_id: opt.option_id, price:opt.price}]
+                tempWorkingHours[0].price = tempWorkingHours[0].price + opt.price;
                 setFiltereddata((prev) => ({
                     ...prev,
-                    options: tempWorkingHours,
-                    price: prev.price+opt.price,
+                    items: tempWorkingHours,
+                    price: tempWorkingHours[0].price,
                 }))
             } else {
                 tempWorkingHours[0].options = tempWorkingHours[0].options.filter(ad => ad.option_id !== opt.option_id)
+                tempWorkingHours[0].price = tempWorkingHours[0].price - opt.price;
                 setFiltereddata((prev) => ({
                     ...prev,
-                    options: tempWorkingHours,
-                    price: prev.price-opt.price,
+                    items: tempWorkingHours,
+                    price: tempWorkingHours[0].price,
                 }))
             }
     };

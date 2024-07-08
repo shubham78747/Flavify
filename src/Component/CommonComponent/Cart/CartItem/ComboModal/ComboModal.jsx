@@ -16,7 +16,6 @@ function Modals({
     setCartItems,
  }) {
     const [filtereddata,setFiltereddata] = useState([]);
-    console.log({filtereddata})
     const dispatch = useDispatch()
     const calculateItemPrice = () => {
         const basePrice = filtereddata?.price || 0;
@@ -38,6 +37,7 @@ function Modals({
         onHide();
         toast.success(`Item added successfully`);
     };
+    
         const handleAdonChange = (e,index, addon) => {
             console.log(index)
             const isChecked = e.target.checked;

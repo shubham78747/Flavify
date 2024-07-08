@@ -122,7 +122,6 @@ function HomePage() {
         if(activeCategory) {
             const filtermenu = quickBites.filter((item) => item?.diet === activeCategory);
             setSelectedFilter(filtermenu)
-            console.log({lpCombos: table?.lp_combos, table})
             if(table) {
                 createCombos(table?.lp_combos[activeCategory], activeCategory)
             }

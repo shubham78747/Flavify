@@ -175,7 +175,6 @@ function CombosSlider() {
             });
           };
         const handleAddToCart = () => {
-            console.log({option})
             const cartItemsAdd = filtereItem.items.map((item) => ({
                 item_id: item.item_id,
                 item_name:item.item_name,
