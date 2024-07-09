@@ -47,14 +47,15 @@ function CartItem() {
             calculateTotalPrice(cartItemsList);
         // }
     }, [cartItemsList]);
+
     useEffect(() => {
         const cart = JSON.parse(localStorage.getItem('cartItems'))
         dispatch(addItemToCart(cart))
     }, [0]);
 
-    useEffect(() => {
-        calculateTotalPrice(cartItems);
-    }, [cartItems]);
+    // useEffect(() => {
+    //     calculateTotalPrice(cartItems);
+    // }, [cartItems]);
 
     const updateCartItemsInLocalStorage = (updatedCartItems) => {
         dispatch(addItemToCart(updatedCartItems))
@@ -101,16 +102,16 @@ function CartItem() {
                             const response = await Updateplaceorder(updatedata)                         
                             if(response?.data){
                                 navigate('/success')
-                                setCartItems()
-                                setTotalPrice()
+                                setCartItems([])
+                                setTotalPrice(0)
                             }
                             toast.success("Order Updated successfully!");
                         }else{
                             const response = await placeorder(header)
                             if(response?.data){
                                 navigate('/success')
-                                setCartItems()
-                                setTotalPrice()
+                                setCartItems([])
+                                setTotalPrice(0)
 
                                 localStorage.setItem('custorder',JSON.stringify({order:true}))
                             }

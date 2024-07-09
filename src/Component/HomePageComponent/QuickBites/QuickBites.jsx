@@ -3,15 +3,17 @@ import './QuickBites.css';
 import Title from '../../CommonComponent/Title/Title';
 import Carousel from '../../CommonComponent/OwlCarousel/OwlCarousel';
 import Modals from '../../CommonComponent/Modal/Modal';
+import { handelAdons, handleoption,addOnsGrouped,optionsGrouped } from '../../../Helper/CommanAction';
+import { useSelector } from 'react-redux';
 
-function QuickBites({menu,quickBites}) {
+function QuickBites() {
         const [show, setShow] = useState(false);   
         const [isFilled, setIsFilled] = useState(false);
         const [quickbileFirst,setQuickBitefirst] = useState([])
         const [quickbileSecond,setQuickBiteSecond] = useState([])
         const [item,setItem] = useState([]);
         const [flag, setFlag] = useState(null);
-
+        const { quickBites,menu  } = useSelector((state) => state.food);
         const [loader,setLoader] = useState(true)
         const handleClose = () => {setShow(false);}
 
@@ -49,6 +51,9 @@ function QuickBites({menu,quickBites}) {
 
         const handleQuickbiteClick = (quickbite) => {
             setFlag('Qickbitepage');
+            console.log({menu})
+            // const groupedOptions = optionsGrouped(menu, quickbite);
+            // const groupedAddOns = addOnsGrouped(menu, quickbite);
             const optionsGrouped = Object.values(menu.itemOptions
                 .filter((option) => option.item_id === quickbite.item_id)
                 .reduce((groups, itemOption) => {
@@ -84,7 +89,7 @@ function QuickBites({menu,quickBites}) {
                 addOnsGrouped: addOnsGrouped,
                 optionsGrouped: optionsGrouped,
             }
-            
+            console.log({data})
             setItem(data);
             setShow(true);
         };

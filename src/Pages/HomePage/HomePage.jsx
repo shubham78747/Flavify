@@ -1,37 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css';
-import TableHeaderTitle from '../../Component/HomePageComponent/TableTitle/TableHeaderTitle';
+import TableHeaderTitle from '../../Component/CommonComponent/TableTitle/TableHeaderTitle';
 import QuickBites from '../../Component/HomePageComponent/QuickBites/QuickBites';
 import OfferBanner from '../../Component/HomePageComponent/OfferBanner/OfferBanner';
 import Combos from '../../Component/HomePageComponent/Combos/Combos';
 import { Image, Modal } from 'react-bootstrap';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
-import { tables } from './Tablejson/Tablejson';
+// import { tables } from './Tablejson/Tablejson';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchtable, setComboList } from './Tableslice/Tableslice';
+import { fetchtable, setComboList, setLpComboList } from './Tableslice/Tableslice';
 import { postcustomerpreference } from './action';
 import Search from '../../Component/CommonComponent/Search/Search';
 import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
 import { addItemToCart, setAllPastOrders, setUserRegistered } from '../CartPage/Cartslice/Cartslice';
 import { useChannel } from 'ably/react';
+import { tables } from './Tablejson/Tablejson';
+import { isEmpty } from 'lodash';
 
 
-function HomePage() {
-    const [show, setShow] = useState(false);
+function HomePage({setShow,setTableNom,show,tablenom}) {
+    // const [show, setShow] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
-    const [tablenom, setTableNom] = useState();
+    // const [tablenom, setTableNom] = useState();
     const [activeCategory, setActiveCategory] = useState('V');
     const [selectedFilter, setSelectedFilter] = useState([]);
     const dispatch = useDispatch();
     const { quickBites,menu  } = useSelector((state) => state.food);
     const { cartItems, pastOrdersList  } = useSelector((state) => state.cart);
-    const { table } = useSelector((state) => state?.table);
     const [isImageShown, setIsImageShown] = useState(false);
+    const { table, comboList, allCombos } = useSelector((state) => state?.table);
     const toggleImage = () => {
         setIsImageShown(!isImageShown);
     };
+//   const handleShow = () => {
+//     setTableNom(table.table_id)
+//     setShow(true)
+// };
+console.log('pavan',tablenom)
+   
 
     const { channel } = useChannel('punched_sub_order', (message) => {
         const response = JSON.parse(message.data)
@@ -56,6 +64,7 @@ function HomePage() {
     }, [0]);
 
     const createCombos = (combos, diet) => {
+        console.log({ combos })
         let comboslist = []
         for (const combo of combos) {
             let comboItems = []
@@ -77,8 +86,6 @@ function HomePage() {
         const tableDataStr = localStorage.getItem('tableData');
         const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false};
         if(table) {
-
-
             if(table?.fresh_order && !tableData.isfirst) {
                 setShow(true)
                 localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
@@ -119,15 +126,26 @@ function HomePage() {
     
 
     useEffect(() => {
+
         if(activeCategory) {
+            
             const filtermenu = quickBites?.filter((item) => activeCategory === 'N' ? item?.diet === 'V' || item?.diet === 'N' || item?.diet === 'E' : activeCategory === 'E' ? item?.diet === 'V' || item?.diet === 'E' : item?.diet === 'V');
             setSelectedFilter(filtermenu)
-            console.log({lpCombos: table?.lp_combos, table, activeCategory})
-            if(table) {
-                createCombos(table?.lp_combos[activeCategory], activeCategory)
+            // console.log({lpCombos: table?.lp_combos , table, activeCategory})
+            if(table?.lpCombos) {
+                console.log(table)
+                dispatch(setLpComboList(table?.lpCombos))
+                // createCombos(table?.lpCombos[activeCategory], activeCategory)
             }
         }
     }, [activeCategory, quickBites, table]);
+
+    useEffect(() => {
+        console.log({ allCombos })
+        if(!isEmpty(allCombos)) {
+            createCombos(allCombos[activeCategory], activeCategory)
+        }
+    }, [allCombos]);
     
     useEffect(() => {
         const tableDataStr = localStorage.getItem('tableData');
@@ -142,10 +160,10 @@ function HomePage() {
     }, [0]);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => {
-        setTableNom(table.table_id)
-        setShow(true)
-    };
+    // const handleShow = () => {
+    //     setTableNom(table.table_id)
+    //     setShow(true)
+    // };
 
     const senddata = async () => {
         try {
@@ -186,6 +204,7 @@ function HomePage() {
     }, [tablenom])
 
     const handletable = (table_id) => {
+        console.log(table_id)
         dispatch(fetchtable(table_id))
     }
 
@@ -206,7 +225,7 @@ function HomePage() {
             <section>
                 <div className="container">
                     <div className="tabledetail">
-                        <TableHeaderTitle titleicon="/Images/table.svg" title={`Table Number : ${table?.table_number ? table?.table_number : '' }`} className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}></TableHeaderTitle>
+                        {/* <TableHeaderTitle titleicon="/Images/table.svg" title={`Table Number : ${table?.table_number ? table?.table_number : '' }`} className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}></TableHeaderTitle> */}
                         <Search 
                           selectedOption={activeCategory} 
                           handleCategoryClick={handleCategoryClick}  
@@ -216,7 +235,7 @@ function HomePage() {
                           />
                         <QuickBites menu={menu} quickBites={selectedFilter} />
                         <OfferBanner />
-                        {table?.lp_combos ? <Combos/> : ''}
+                        {comboList.length > 0 ? <Combos/> : ''}
                         <MobileBar />
                     </div>
                 </div>

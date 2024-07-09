@@ -101,3 +101,7 @@ ul.selectvariantGroup h3 {
 ul.selectvariantmain {
   padding: 0;
 }
+.maintitle.d-flex {
+  max-width: 480px !important;
+  margin: auto !important;
+}

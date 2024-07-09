@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './SuccessPage.css';
-import TableHeaderTitle from '../../Component/MenuPageComponent/TableTitle/TableHeaderTitle';
+import TableHeaderTitle from '../../Component/CommonComponent/TableTitle/TableHeaderTitle';
 import { Image } from 'react-bootstrap';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
 import Search from '../../Component/CommonComponent/Search/Search';
@@ -54,7 +54,7 @@ function SuccessPage() {
             <section>
                 <div className="container">
                     <div className="tabledetail">
-                        <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
+                        {/* <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle> */}
                         <Search />
                         <MobileBar />
                         <div className="successimg">

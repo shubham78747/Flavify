@@ -36,10 +36,6 @@ function ItemDetails({ items, selectedCategory }) {
         }
     }, [items]);
 
-    const handleIconClick = () => {
-        setIsFilled(!isFilled);
-    };
-
     const handleQuickbiteClick = (quickbite) => {
         setFlag('Qickbitepage');
         const optionsGrouped = Object.values(menu.itemOptions

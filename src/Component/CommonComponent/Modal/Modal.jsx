@@ -18,7 +18,6 @@ function Modals({
     const [count, setCount] = useState(1);
     const [adonPrice,setAdonPrice] = useState(0)
     const [optionPrice,setOptionPrice] = useState(0)
-    console.log(adon,option)
     // Calculate total price of selected items
     useEffect(() => {
         const newAdonPrice = adon.reduce((acc, addon) => acc + addon.price, 0);
