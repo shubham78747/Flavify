@@ -17,20 +17,22 @@ function SuccessPage() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const dispatch = useDispatch();
-    const { channel } = useChannel('punched_sub_order', (message) => {
-        const response = JSON.parse(message.data)
-        let pastOrders = []
+    
+    // const { channel } = useChannel('punched_sub_order', (message) => {
+    //     const response = JSON.parse(message.data)
+    //     let pastOrders = []
         
-        const data = {
-            is_punched: true,
-            items: cartItemsList,
-            sub_order_id: response.sub_order_id
-        }
-        pastOrders = [...pastOrdersList, data]
-        dispatch(setAllPastOrders(pastOrders))
-        dispatch(addItemToCart([]))
-        localStorage.setItem('cartItems', JSON.stringify([]))
-    });
+    //     const data = {
+    //         is_punched: true,
+    //         items: cartItemsList,
+    //         sub_order_id: response.sub_order_id
+    //     }
+    //     pastOrders = [...pastOrdersList, data]
+    //     dispatch(setAllPastOrders(pastOrders))
+    //     dispatch(addItemToCart([]))
+    //     localStorage.setItem('cartItems', JSON.stringify([]))
+    // });
+
     const [activeCategory, setActiveCategory] = useState('veg');
 
     // Handler to set the active category

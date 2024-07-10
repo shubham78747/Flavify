@@ -18,6 +18,7 @@ import { addItemToCart, setAllPastOrders, setUserRegistered } from '../CartPage/
 import { useChannel } from 'ably/react';
 import { tables } from './Tablejson/Tablejson';
 import { isEmpty } from 'lodash';
+import { createCombos } from '../../Helper/Coman';
 
 
 function HomePage({setShow,setTableNom,show,tablenom}) {
@@ -28,122 +29,112 @@ function HomePage({setShow,setTableNom,show,tablenom}) {
     const [selectedFilter, setSelectedFilter] = useState([]);
     const dispatch = useDispatch();
     const { quickBites,menu  } = useSelector((state) => state.food);
-    const { cartItems, pastOrdersList  } = useSelector((state) => state.cart);
+    const { cartItemsList, pastOrdersList  } = useSelector((state) => state.cart);
     const [isImageShown, setIsImageShown] = useState(false);
     const { table, comboList, allCombos } = useSelector((state) => state?.table);
     const toggleImage = () => {
         setIsImageShown(!isImageShown);
     };
+    console.log('tablenom',{cartItemsList})
 //   const handleShow = () => {
 //     setTableNom(table.table_id)
 //     setShow(true)
 // };
-console.log('pavan',tablenom)
-   
 
-    const { channel } = useChannel('punched_sub_order', (message) => {
-        const response = JSON.parse(message.data)
-        let pastOrders = []
+    // const { channel } = useChannel('punched_sub_order', (message) => {
+    //     const response = JSON.parse(message.data)
+    //     let pastOrders = []
         
-        const data = {
-            is_punched: true,
-            items: cartItems,
-            sub_order_id: response.sub_order_id
-        }
-        pastOrders = [...pastOrdersList, data]
-        dispatch(setAllPastOrders(pastOrders))
-        dispatch(addItemToCart([]))
+    //     const data = {
+    //         is_punched: true,
+    //         items: cartItemsList,
+    //         sub_order_id: response.sub_order_id
+    //     }
+    //     pastOrders = [...pastOrdersList, data]
+    //     dispatch(setAllPastOrders(pastOrders))
+    //     dispatch(addItemToCart([]))
 
-        localStorage.setItem('cartItems', JSON.stringify([]))
-    });
+    //     localStorage.setItem('cartItems', JSON.stringify([]))
+    // });
 
-    useEffect(() => {
-        dispatch(fetchtable(tables[2].table_id))       
-        dispatch(fetchQuickBites());
-        dispatch(fetchMenu());
-    }, [0]);
+    // useEffect(() => {
+    //     dispatch(fetchtable(tables[2].table_id))       
+    //     dispatch(fetchQuickBites());
+    //     dispatch(fetchMenu());
+    // }, [0]);
 
-    const createCombos = (combos, diet) => {
-        console.log({ combos })
-        let comboslist = []
-        for (const combo of combos) {
-            let comboItems = []
-            combo.items.map((item) => {
-                const i = menu.items.find((i) => i.item_id === item)
-                comboItems.push(i)
-            })
-            const data = {
-                ...combo,
-                diet: diet,
-                items: comboItems
-            }
-            comboslist.push(data)
-        }
-        dispatch(setComboList(comboslist))
-    }
+    // const createCombos = (combos, diet) => {
+    //     let comboslist = []
+    //     for (const combo of combos) {
+    //         let comboItems = []
+    //         combo.items.map((item) => {
+    //             const i = menu.items.find((i) => i.item_id === item)
+    //             comboItems.push(i)
+    //         })
+    //         const data = {
+    //             ...combo,
+    //             diet: diet,
+    //             items: comboItems
+    //         }
+    //         comboslist.push(data)
+    //     }
+    //     dispatch(setComboList(comboslist))
+    // }
 
-    useEffect(() => {
-        const tableDataStr = localStorage.getItem('tableData');
-        const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false};
-        if(table) {
-            if(table?.fresh_order && !tableData.isfirst) {
-                setShow(true)
-                localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
-                setActiveCategory('V')
-            }
-            if(!table?.fresh_order) {
-                const getitemdata = JSON.parse(localStorage.getItem('category'));
-                dispatch(setUserRegistered(true))
-                localStorage.setItem('isRegistered', true);
-                let pastOrder = []
-                let currecntOrder = []
-                for (const order of table?.order_info) {
-                    if(order?.is_punched) {
-                        pastOrder.push(order)
+        useEffect(() => {
+            const tableDataStr = localStorage.getItem('tableData');
+            const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false};
+            if(table) {
+                if(table?.fresh_order && !tableData.isfirst) {
+                    setShow(true)
+                    localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
+                    setActiveCategory('V')
+                }
+                if(!table?.fresh_order) {
+                    const getitemdata = JSON.parse(localStorage.getItem('category'));
+                    dispatch(setUserRegistered(true))
+                    localStorage.setItem('isRegistered', true);
+                    let pastOrder = []
+                    let currecntOrder = []
+                    for (const order of table?.order_info) {
+                        if(order?.is_punched) {
+                            pastOrder.push(order)
+                        } else {
+                            currecntOrder = order.items
+                        }
+                    }
+                    if(table?.diet) {
+                        localStorage.setItem('category', JSON.stringify({ diet: table?.diet }));
+                        setActiveCategory(table?.diet)
+                    }
+                    if(currecntOrder.length > 0) {
+                        const data = {"order":true}
+                        localStorage.setItem('custorder', JSON.stringify(data))
+                        dispatch(addItemToCart(currecntOrder))
+                        localStorage.setItem('cartItems', JSON.stringify(currecntOrder))
                     } else {
-                        currecntOrder = order.items
+                        const data = {"order":false}
+                        localStorage.setItem('custorder', JSON.stringify(data));
                     }
                 }
-                dispatch(setAllPastOrders(pastOrder))
-                // localStorage.setItem('placeorder', JSON.stringify(pastOrder))
-                if(table?.diet) {
-                    localStorage.setItem('category', JSON.stringify({ diet: table?.diet }));
-                    setActiveCategory(table?.diet)
-                }
-                if(currecntOrder.length > 0) {
-                    const data = {"order":true}
-                    localStorage.setItem('custorder', JSON.stringify(data))
-                    dispatch(addItemToCart(currecntOrder))
-                    localStorage.setItem('cartItems', JSON.stringify(currecntOrder))
-                } else {
-                    const data = {"order":false}
-                    localStorage.setItem('custorder', JSON.stringify(data));
-                }
             }
-        }
-    }, [table])
+        }, [table])
     
     
 
     useEffect(() => {
-
         if(activeCategory) {
-            
             const filtermenu = quickBites?.filter((item) => activeCategory === 'N' ? item?.diet === 'V' || item?.diet === 'N' || item?.diet === 'E' : activeCategory === 'E' ? item?.diet === 'V' || item?.diet === 'E' : item?.diet === 'V');
             setSelectedFilter(filtermenu)
-            // console.log({lpCombos: table?.lp_combos , table, activeCategory})
-            if(table?.lpCombos) {
-                console.log(table)
-                dispatch(setLpComboList(table?.lpCombos))
-                // createCombos(table?.lpCombos[activeCategory], activeCategory)
+            if(table?.lp_combos) {
+                dispatch(setLpComboList(table?.lp_combos))
             }
         }
     }, [activeCategory, quickBites, table]);
 
     useEffect(() => {
-        console.log({ allCombos })
         if(!isEmpty(allCombos)) {
-            createCombos(allCombos[activeCategory], activeCategory)
+            createCombos(menu,dispatch,setComboList,allCombos[activeCategory], activeCategory)
         }
     }, [allCombos]);
     
@@ -174,7 +165,7 @@ console.log('pavan',tablenom)
             }
             const response = await postcustomerpreference(header)
             if (response?.data) {
-                setTableNom();
+                // setTableNom();
                 handleClose();
                 setShow(false)
                 updateIsFirst(true);
@@ -197,16 +188,15 @@ console.log('pavan',tablenom)
     };
 
 
-    useEffect(() => {
-        if (tablenom) {
-            handletable(tablenom)
-        }
-    }, [tablenom])
+    // useEffect(() => {
+    //     if (tablenom) {
+    //         handletable(tablenom)
+    //     }
+    // }, [tablenom])
 
-    const handletable = (table_id) => {
-        console.log(table_id)
-        dispatch(fetchtable(table_id))
-    }
+    // const handletable = (table_id) => {
+    //     dispatch(fetchtable(table_id))
+    // }
 
     const steps = 10; 
 

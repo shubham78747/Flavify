@@ -1,5 +1,4 @@
 const filterItemAddonOption = (menu, itemOptions, itemAddOns, item_id) => {
-    console.log({ menu, itemAddOns, itemOptions, item_id})
     const optionsGrouped = Object.values(itemOptions
     .filter((option) => option.item_id === item_id)
     .reduce((groups, itemOption) => {

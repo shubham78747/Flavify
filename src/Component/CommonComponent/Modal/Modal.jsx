@@ -179,7 +179,7 @@ function Modals({
                                 <ul className='selectvariantGroup'>
                                     {item && item.optionsGrouped && item.optionsGrouped.length > 0 ? (
                                         item.optionsGrouped.map((group, index) => (
-                                            <li key={`option-${index}`}>
+                                            <li key={`option-${index}`} className='home-list'>
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((option, optionIndex) => (

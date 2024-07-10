@@ -6,6 +6,7 @@ import OwlCarousel from 'react-owl-carousel';
 import { useSelector } from 'react-redux';
 import predictCheckout from '../../../../Helper/checkout';
 import Modals from '../../Modal/Modal';
+import { addOnsGroupeds, getGroupedOptionsAndAddOns, optionsGroupeds } from '../../../../Helper/Coman';
 
 function CartItemSlider() {
 
@@ -29,7 +30,6 @@ function CartItemSlider() {
     const [isFilled, setIsFilled] = useState(false);
     const [show, setShow] = useState(false);
     const [flag, setFlag] = useState(null);
-    console.log(productsList,cartItemsList)
 
     const filterAllItemsFromCart = (data) => {
       const cartItemsForSimiller = [];
@@ -59,7 +59,6 @@ function CartItemSlider() {
           const item = menu.items.find((i) => i.item_id === ele);
           return item;
         });
-        console.log({predictedItems})
         setProductsList(predictedItems);
       }
     };
@@ -71,43 +70,43 @@ function CartItemSlider() {
     }, [pastOrdersList, cartItemsList, menu])
 
     const handleClose = () => setShow(false);
-
-    const handleCardSlide = (quickbite) => {
+       const handleCardSlide = (quickbite) => {
         setFlag('Likespage');
-        const optionsGrouped = Object.values(menu.itemOptions
-        .filter((option) => option.item_id === quickbite.item_id)
-        .reduce((groups, itemOption) => {
-            const groupName = itemOption.option_group_name;
-            if (!groups[groupName]) {
-            groups[groupName] = { groupName, itemList: [] };
-            }
-            const optionDetails = menu.options.find(
-            (option) => option.option_id === itemOption.option_id
-            );
-            groups[groupName].itemList.push(optionDetails);
-            return groups;
-        }, {}));
+        const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite);
+        // const optionsGrouped = Object.values(menu.itemOptions
+        // .filter((option) => option.item_id === quickbite.item_id)
+        // .reduce((groups, itemOption) => {
+        //     const groupName = itemOption.option_group_name;
+        //     if (!groups[groupName]) {
+        //     groups[groupName] = { groupName, itemList: [] };
+        //     }
+        //     const optionDetails = menu.options.find(
+        //     (option) => option.option_id === itemOption.option_id
+        //     );
+        //     groups[groupName].itemList.push(optionDetails);
+        //     return groups;
+        // }, {}));
 
-        // Find related add-ons and group by addon_group_name
-        const addOnsGrouped = Object.values(menu.itemAddOns
-        .filter((addon) => addon.item_id === quickbite.item_id)
-        .reduce((groups, itemAddon) => {
-            const groupName = itemAddon.addon_group_name;
-            if (!groups[groupName]) {
-            groups[groupName] = { groupName, itemList: [] };
-            }
-            const addonDetails = menu.addOns.find(
-            (addon) => addon.addon_id === itemAddon.addon_id
-            );
-            groups[groupName].itemList.push(addonDetails);
-            return groups;
-        }, {}));
+        // // Find related add-ons and group by addon_group_name
+        // const addOnsGrouped = Object.values(menu.itemAddOns
+        // .filter((addon) => addon.item_id === quickbite.item_id)
+        // .reduce((groups, itemAddon) => {
+        //     const groupName = itemAddon.addon_group_name;
+        //     if (!groups[groupName]) {
+        //     groups[groupName] = { groupName, itemList: [] };
+        //     }
+        //     const addonDetails = menu.addOns.find(
+        //     (addon) => addon.addon_id === itemAddon.addon_id
+        //     );
+        //     groups[groupName].itemList.push(addonDetails);
+        //     return groups;
+        // }, {}));
         const data = {
             item_id: quickbite.item_id,
             price: quickbite.price,
             item_name: quickbite.item_name,
-            addOnsGrouped: addOnsGrouped,
-            optionsGrouped: optionsGrouped,
+            addOnsGrouped: groupedAddOns,
+            optionsGrouped:  groupedOptions,
         }
         console.log(data)
         setItem(data);
