@@ -11,6 +11,7 @@ import { useChannel } from 'ably/react';
 import { addItemToCart, setAllPastOrders } from '../../../../Pages/CartPage/Cartslice/Cartslice';
 import ComboModal from './ComboModal/ComboModal';
 import YouMayAlsoLike from './YouMayAlsoLike';
+import { getGroupedOptionsAndAddOns } from '../../../../Helper/Coman';
 
 function CartItem() {
     const navigate = useNavigate();
@@ -26,20 +27,21 @@ function CartItem() {
     const [comboitemdata,setComboItemdata] = useState([]);
     const dispatch = useDispatch()
     const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
-    const { channel } = useChannel('punched_sub_order', (message) => {
-        const response = JSON.parse(message.data)
-        let pastOrders = []
+
+    // const { channel } = useChannel('punched_sub_order', (message) => {
+    //     const response = JSON.parse(message.data)
+    //     let pastOrders = []
         
-        const data = {
-            is_punched: true,
-            items: cartItemsList,
-            sub_order_id: response.sub_order_id
-        }
-        pastOrders = [...pastOrdersList, data]
-        dispatch(setAllPastOrders(pastOrders))
-        dispatch(addItemToCart([]))
-        localStorage.setItem('cartItems', JSON.stringify([]))
-    });
+    //     const data = {
+    //         is_punched: true,
+    //         items: cartItemsList,
+    //         sub_order_id: response.sub_order_id
+    //     }
+    //     pastOrders = [...pastOrdersList, data]
+    //     dispatch(setAllPastOrders(pastOrders))
+    //     dispatch(addItemToCart([]))
+    //     localStorage.setItem('cartItems', JSON.stringify([]))
+    // });
 
     useEffect(() => {
         // if (cartItemsList) {
@@ -47,14 +49,15 @@ function CartItem() {
             calculateTotalPrice(cartItemsList);
         // }
     }, [cartItemsList]);
+
     useEffect(() => {
         const cart = JSON.parse(localStorage.getItem('cartItems'))
         dispatch(addItemToCart(cart))
     }, [0]);
 
-    useEffect(() => {
-        calculateTotalPrice(cartItems);
-    }, [cartItems]);
+    // useEffect(() => {
+    //     calculateTotalPrice(cartItems);
+    // }, [cartItems]);
 
     const updateCartItemsInLocalStorage = (updatedCartItems) => {
         dispatch(addItemToCart(updatedCartItems))
@@ -101,16 +104,16 @@ function CartItem() {
                             const response = await Updateplaceorder(updatedata)                         
                             if(response?.data){
                                 navigate('/success')
-                                setCartItems()
-                                setTotalPrice()
+                                setCartItems([])
+                                setTotalPrice(0)
                             }
                             toast.success("Order Updated successfully!");
                         }else{
                             const response = await placeorder(header)
                             if(response?.data){
                                 navigate('/success')
-                                setCartItems()
-                                setTotalPrice()
+                                setCartItems([])
+                                setTotalPrice(0)
 
                                 localStorage.setItem('custorder',JSON.stringify({order:true}))
                             }
@@ -125,85 +128,87 @@ function CartItem() {
         }
 
         const handleQuickbiteClick = (quickbite) => {
-            const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
-            const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
-            const optionsGrouped = Object.values(itemOptions
-            .filter((option) => option.item_id === quickbite.item_id)
-            .reduce((groups, itemOption) => {
-                const groupName = itemOption.option_group_name;
-                if (!groups[groupName]) {
-                groups[groupName] = { groupName, itemList: [] };
-                }
-                const optionDetails = menu.options.find(
-                (option) => option.option_id === itemOption.option_id
-                );
-                groups[groupName].itemList.push(optionDetails);
-                return groups;
-            }, {}));
+            const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite);
+            // const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
+            // const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
+            // const optionsGrouped = Object.values(itemOptions
+            // .filter((option) => option.item_id === quickbite.item_id)
+            // .reduce((groups, itemOption) => {
+            //     const groupName = itemOption.option_group_name;
+            //     if (!groups[groupName]) {
+            //     groups[groupName] = { groupName, itemList: [] };
+            //     }
+            //     const optionDetails = menu.options.find(
+            //     (option) => option.option_id === itemOption.option_id
+            //     );
+            //     groups[groupName].itemList.push(optionDetails);
+            //     return groups;
+            // }, {}));
 
-            // Find related add-ons and group by addon_group_name
-            const addOnsGrouped = Object.values(itemAddOns
-            .filter((addon) => addon.item_id === quickbite.item_id)
-            .reduce((groups, itemAddon) => {
-                const groupName = itemAddon.addon_group_name;
-                if (!groups[groupName]) {
-                groups[groupName] = { groupName, itemList: [] };
-                }
-                const addonDetails = menu.addOns.find(
-                (addon) => addon.addon_id === itemAddon.addon_id
-                );
-                groups[groupName].itemList.push(addonDetails);
-                return groups;
-            }, {}));
+            // // Find related add-ons and group by addon_group_name
+            // const addOnsGrouped = Object.values(itemAddOns
+            // .filter((addon) => addon.item_id === quickbite.item_id)
+            // .reduce((groups, itemAddon) => {
+            //     const groupName = itemAddon.addon_group_name;
+            //     if (!groups[groupName]) {
+            //     groups[groupName] = { groupName, itemList: [] };
+            //     }
+            //     const addonDetails = menu.addOns.find(
+            //     (addon) => addon.addon_id === itemAddon.addon_id
+            //     );
+            //     groups[groupName].itemList.push(addonDetails);
+            //     return groups;
+            // }, {}));
             const data = {
                 item_id: quickbite.item_id,
                 price: quickbite.price,
                 item_name: quickbite.item_name,
-                addOnsGrouped: addOnsGrouped,
-                optionsGrouped: optionsGrouped,
+                addOnsGrouped: groupedAddOns,
+                optionsGrouped:  groupedOptions,
             }
+            console.log(data,'565656565')
             setItemdata(data);
             setShow(true);
-        };
+        };  
 
         const handleComboClick = (quickbite) => {
-            console.log({quickbite})
-            const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
-            const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
+            const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite);
+            // const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
+            // const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             let itemsdata = []
             quickbite.items.map(ele => {
                 const { add_ons, options, ...rest} = ele
-                const optionsGrouped = Object.values(itemOptions
-                .filter((option) => option.item_id === rest.item_id)
-                .reduce((groups, itemOption) => {
-                    const groupName = itemOption.option_group_name;
-                    if (!groups[groupName]) {
-                    groups[groupName] = { groupName, itemList: [] };
-                    }
-                    const optionDetails = menu.options.find(
-                    (option) => option.option_id === itemOption.option_id
-                    );
-                    groups[groupName].itemList.push(optionDetails);
-                    return groups;
-                }, {}));
+                // const optionsGrouped = Object.values(itemOptions
+                // .filter((option) => option.item_id === rest.item_id)
+                // .reduce((groups, itemOption) => {
+                //     const groupName = itemOption.option_group_name;
+                //     if (!groups[groupName]) {
+                //     groups[groupName] = { groupName, itemList: [] };
+                //     }
+                //     const optionDetails = menu.options.find(
+                //     (option) => option.option_id === itemOption.option_id
+                //     );
+                //     groups[groupName].itemList.push(optionDetails);
+                //     return groups;
+                // }, {}));
     
-                // Find related add-ons and group by addon_group_name
-                const addOnsGrouped = Object.values(itemAddOns
-                .filter((addon) => addon.item_id === rest.item_id)
-                .reduce((groups, itemAddon) => {
-                    const groupName = itemAddon.addon_group_name;
-                    if (!groups[groupName]) {
-                    groups[groupName] = { groupName, itemList: [] };
-                    }
-                    const addonDetails = menu.addOns.find(
-                    (addon) => addon.addon_id === itemAddon.addon_id
-                    );
-                    groups[groupName].itemList.push(addonDetails);
-                    return groups;
-                }, {}));
-                rest.addOnsGrouped = addOnsGrouped;
-                rest.optionsGrouped = optionsGrouped;
-                console.log({rest})
+                // // Find related add-ons and group by addon_group_name
+                // const addOnsGrouped = Object.values(itemAddOns
+                // .filter((addon) => addon.item_id === rest.item_id)
+                // .reduce((groups, itemAddon) => {
+                //     const groupName = itemAddon.addon_group_name;
+                //     if (!groups[groupName]) {
+                //     groups[groupName] = { groupName, itemList: [] };
+                //     }
+                //     const addonDetails = menu.addOns.find(
+                //     (addon) => addon.addon_id === itemAddon.addon_id
+                //     );
+                //     groups[groupName].itemList.push(addonDetails);
+                //     return groups;
+                // }, {}));
+
+                rest.addOnsGrouped = groupedAddOns;
+                rest.optionsGrouped =  groupedOptions;
                 itemsdata.push(rest)
             })
             const data = {

@@ -8,6 +8,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import {addComboItemToCart} from '../../../Pages/CartPage/Cartslice/Cartslice'
+import { addOnsGroupeds, getGroupedOptionsAndAddOns, optionsGroupeds } from '../../../Helper/Coman';
 function CombosSlider() {
     const options = {
         margin: 24,
@@ -46,11 +47,6 @@ function CombosSlider() {
         setOptionPrice(newOptionPrice);
       }, [adon, option]);
 
-    // useEffect(() => {
-    //     if(comboList){
-    //         setAllCombos(comboList)
-    //     }
-    // }, [comboList])
     useEffect(() => {
         const cartItems = JSON.parse(localStorage.getItem('cartItems')) || []
         if (comboList) {
@@ -60,40 +56,41 @@ function CombosSlider() {
 
     const handleQuickbiteClick = (combo) => {
         const menuItem = menu.items.find((i) => i.item_id === combo.item_id)
-        const optionsGrouped = Object.values(menu.itemOptions
-        .filter((option) => option.item_id === combo.item_id)
-        .reduce((groups, itemOption) => {
-            const groupName = itemOption.option_group_name;
-            if (!groups[groupName]) {
-            groups[groupName] = { groupName, itemList: [] };
-            }
-            const optionDetails = menu.options.find(
-            (option) => option.option_id === itemOption.option_id
-            );
-            groups[groupName].itemList.push(optionDetails);
-            return groups;
-        }, {}));
+        const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, combo);
+        // const optionsGrouped = Object.values(menu.itemOptions
+        // .filter((option) => option.item_id === combo.item_id)
+        // .reduce((groups, itemOption) => {
+        //     const groupName = itemOption.option_group_name;
+        //     if (!groups[groupName]) {
+        //     groups[groupName] = { groupName, itemList: [] };
+        //     }
+        //     const optionDetails = menu.options.find(
+        //     (option) => option.option_id === itemOption.option_id
+        //     );
+        //     groups[groupName].itemList.push(optionDetails);
+        //     return groups;
+        // }, {}));
 
-        // Find related add-ons and group by addon_group_name
-        const addOnsGrouped = Object.values(menu.itemAddOns
-        .filter((addon) => addon.item_id === combo.item_id)
-        .reduce((groups, itemAddon) => {
-            const groupName = itemAddon.addon_group_name;
-            if (!groups[groupName]) {
-            groups[groupName] = { groupName, itemList: [] };
-            }
-            const addonDetails = menu.addOns.find(
-            (addon) => addon.addon_id === itemAddon.addon_id
-            );
-            groups[groupName].itemList.push(addonDetails);
-            return groups;
-        }, {}));
+        // // Find related add-ons and group by addon_group_name
+        // const addOnsGrouped = Object.values(menu.itemAddOns
+        // .filter((addon) => addon.item_id === combo.item_id)
+        // .reduce((groups, itemAddon) => {
+        //     const groupName = itemAddon.addon_group_name;
+        //     if (!groups[groupName]) {
+        //     groups[groupName] = { groupName, itemList: [] };
+        //     }
+        //     const addonDetails = menu.addOns.find(
+        //     (addon) => addon.addon_id === itemAddon.addon_id
+        //     );
+        //     groups[groupName].itemList.push(addonDetails);
+        //     return groups;
+        // }, {}));
         const data = {
             item_id: menuItem.item_id,
             price: menuItem.price,
             item_name: menuItem.item_name,
-            addOnsGrouped: addOnsGrouped,
-            optionsGrouped: optionsGrouped,
+            addOnsGrouped: groupedAddOns,
+            optionsGrouped:  groupedOptions,
         }
         return data
       
@@ -305,7 +302,7 @@ function CombosSlider() {
                                 <ul className='selectvariantGroup'>
                                     {mainitem && mainitem.optionsGrouped && mainitem.optionsGrouped.length > 0 ? (
                                         mainitem.optionsGrouped.map((group, index) => (
-                                            <li key={`option-group-${index}`}>
+                                            <li key={`option-group-${index}`} className='combo-option-list'>
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((option, optionIndex) => (

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './SuccessPage.css';
-import TableHeaderTitle from '../../Component/MenuPageComponent/TableTitle/TableHeaderTitle';
+import TableHeaderTitle from '../../Component/CommonComponent/TableTitle/TableHeaderTitle';
 import { Image } from 'react-bootstrap';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
 import Search from '../../Component/CommonComponent/Search/Search';
@@ -17,20 +17,22 @@ function SuccessPage() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const dispatch = useDispatch();
-    const { channel } = useChannel('punched_sub_order', (message) => {
-        const response = JSON.parse(message.data)
-        let pastOrders = []
+    
+    // const { channel } = useChannel('punched_sub_order', (message) => {
+    //     const response = JSON.parse(message.data)
+    //     let pastOrders = []
         
-        const data = {
-            is_punched: true,
-            items: cartItemsList,
-            sub_order_id: response.sub_order_id
-        }
-        pastOrders = [...pastOrdersList, data]
-        dispatch(setAllPastOrders(pastOrders))
-        dispatch(addItemToCart([]))
-        localStorage.setItem('cartItems', JSON.stringify([]))
-    });
+    //     const data = {
+    //         is_punched: true,
+    //         items: cartItemsList,
+    //         sub_order_id: response.sub_order_id
+    //     }
+    //     pastOrders = [...pastOrdersList, data]
+    //     dispatch(setAllPastOrders(pastOrders))
+    //     dispatch(addItemToCart([]))
+    //     localStorage.setItem('cartItems', JSON.stringify([]))
+    // });
+
     const [activeCategory, setActiveCategory] = useState('veg');
 
     // Handler to set the active category
@@ -54,7 +56,7 @@ function SuccessPage() {
             <section>
                 <div className="container">
                     <div className="tabledetail">
-                        <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle>
+                        {/* <TableHeaderTitle titleicon="/Images/table.svg" title="Table Number : 5" className="d-flex" profileimg="/Images/profile.svg" link="#"></TableHeaderTitle> */}
                         <Search />
                         <MobileBar />
                         <div className="successimg">

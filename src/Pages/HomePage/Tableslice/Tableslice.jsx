@@ -17,7 +17,8 @@ const initialState = {
   table: null, 
   loading: false,
   error: null,
-  comboList: []
+  comboList: [],
+  allCombos: {}
 };
 
 const tableSlice = createSlice({
@@ -26,6 +27,9 @@ const tableSlice = createSlice({
   reducers: {
     setComboList(state, action) {
           state.comboList = action.payload
+    },
+    setLpComboList(state, action) {
+          state.allCombos = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -46,6 +50,6 @@ const tableSlice = createSlice({
 });
 
 
-export const {setComboList} = tableSlice.actions;
+export const {setComboList, setLpComboList} = tableSlice.actions;
 
 export default tableSlice.reducer;

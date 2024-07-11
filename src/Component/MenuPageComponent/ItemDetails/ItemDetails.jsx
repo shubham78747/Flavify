@@ -8,6 +8,7 @@ import './ItemDetails.css';
 import Loader from '../../CommonComponent/Loader/Loader';
 import { useSelector } from 'react-redux';
 import Modals from '../../CommonComponent/Modal/Modal';
+import { addOnsGroupeds, getGroupedOptionsAndAddOns, optionsGroupeds } from '../../../Helper/Coman';
 
 function ItemDetails({ items, selectedCategory }) {
     const { menu } = useSelector((state) => state.food);
@@ -36,46 +37,44 @@ function ItemDetails({ items, selectedCategory }) {
         }
     }, [items]);
 
-    const handleIconClick = () => {
-        setIsFilled(!isFilled);
-    };
-
     const handleQuickbiteClick = (quickbite) => {
         setFlag('Qickbitepage');
-        const optionsGrouped = Object.values(menu.itemOptions
-            .filter((option) => option.item_id === quickbite.item_id)
-            .reduce((groups, itemOption) => {
-                const groupName = itemOption.option_group_name;
-                if (!groups[groupName]) {
-                    groups[groupName] = { groupName, itemList: [] };
-                }
-                const optionDetails = menu.options.find(
-                    (option) => option.option_id === itemOption.option_id
-                );
-                groups[groupName].itemList.push(optionDetails);
-                return groups;
-            }, {}));
+        const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite);
+        // const optionsGrouped = Object.values(menu.itemOptions
+        //     .filter((option) => option.item_id === quickbite.item_id)
+        //     .reduce((groups, itemOption) => {
+        //         const groupName = itemOption.option_group_name;
+        //         if (!groups[groupName]) {
+        //             groups[groupName] = { groupName, itemList: [] };
+        //         }
+        //         const optionDetails = menu.options.find(
+        //             (option) => option.option_id === itemOption.option_id
+        //         );
+        //         groups[groupName].itemList.push(optionDetails);
+        //         return groups;
+        //     }, {}));
             
-            // Find related add-ons and group by addon_group_name
-        const addOnsGrouped = Object.values(menu.itemAddOns
-            .filter((addon) => addon.item_id === quickbite.item_id)
-            .reduce((groups, itemAddon) => {
-                const groupName = itemAddon.addon_group_name;
-                if (!groups[groupName]) {
-                    groups[groupName] = { groupName, itemList: [] };
-                }
-                const addonDetails = menu.addOns.find(
-                    (addon) => addon.addon_id === itemAddon.addon_id
-                );
-                groups[groupName].itemList.push(addonDetails);
-                return groups;
-            }, {}));
+        //     // Find related add-ons and group by addon_group_name
+        // const addOnsGrouped = Object.values(menu.itemAddOns
+        //     .filter((addon) => addon.item_id === quickbite.item_id)
+        //     .reduce((groups, itemAddon) => {
+        //         const groupName = itemAddon.addon_group_name;
+        //         if (!groups[groupName]) {
+        //             groups[groupName] = { groupName, itemList: [] };
+        //         }
+        //         const addonDetails = menu.addOns.find(
+        //             (addon) => addon.addon_id === itemAddon.addon_id
+        //         );
+        //         groups[groupName].itemList.push(addonDetails);
+        //         return groups;
+        //     }, {}));
+
             const data = {
                 item_id: quickbite.item_id,
                 price: quickbite.price,
                 item_name: quickbite.item_name,
-                addOnsGrouped: addOnsGrouped,
-                optionsGrouped: optionsGrouped,
+                addOnsGrouped: groupedAddOns,
+                optionsGrouped:  groupedOptions,
             }
             setItem(data);
             setShow(true);

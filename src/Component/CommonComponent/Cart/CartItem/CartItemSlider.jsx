@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
 import './CartItem.css';
-import { Button, Image, Modal } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import OwlCarousel from 'react-owl-carousel';
-import { Icon } from '@iconify/react/dist/iconify.js';
 import { useSelector } from 'react-redux';
 import predictCheckout from '../../../../Helper/checkout';
-import filterItemAddonOption from '../../../../Helper/filterItemAddonOption';
 import Modals from '../../Modal/Modal';
-
-
-
+import { addOnsGroupeds, getGroupedOptionsAndAddOns, optionsGroupeds } from '../../../../Helper/Coman';
 
 function CartItemSlider() {
 
@@ -29,6 +24,7 @@ function CartItemSlider() {
     const {menu} = useSelector((state)=>state?.food);
     const { table } = useSelector((state) => state?.table);
     const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
+
     const [productsList, setProductsList] = useState([])
     const [item,setItem] = useState([]);
     const [isFilled, setIsFilled] = useState(false);
@@ -74,44 +70,45 @@ function CartItemSlider() {
     }, [pastOrdersList, cartItemsList, menu])
 
     const handleClose = () => setShow(false);
-
-    const handleQuickbiteClick = (quickbite) => {
+       const handleCardSlide = (quickbite) => {
         setFlag('Likespage');
-        const optionsGrouped = Object.values(menu.itemOptions
-        .filter((option) => option.item_id === quickbite.item_id)
-        .reduce((groups, itemOption) => {
-            const groupName = itemOption.option_group_name;
-            if (!groups[groupName]) {
-            groups[groupName] = { groupName, itemList: [] };
-            }
-            const optionDetails = menu.options.find(
-            (option) => option.option_id === itemOption.option_id
-            );
-            groups[groupName].itemList.push(optionDetails);
-            return groups;
-        }, {}));
+        const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite);
+        // const optionsGrouped = Object.values(menu.itemOptions
+        // .filter((option) => option.item_id === quickbite.item_id)
+        // .reduce((groups, itemOption) => {
+        //     const groupName = itemOption.option_group_name;
+        //     if (!groups[groupName]) {
+        //     groups[groupName] = { groupName, itemList: [] };
+        //     }
+        //     const optionDetails = menu.options.find(
+        //     (option) => option.option_id === itemOption.option_id
+        //     );
+        //     groups[groupName].itemList.push(optionDetails);
+        //     return groups;
+        // }, {}));
 
-        // Find related add-ons and group by addon_group_name
-        const addOnsGrouped = Object.values(menu.itemAddOns
-        .filter((addon) => addon.item_id === quickbite.item_id)
-        .reduce((groups, itemAddon) => {
-            const groupName = itemAddon.addon_group_name;
-            if (!groups[groupName]) {
-            groups[groupName] = { groupName, itemList: [] };
-            }
-            const addonDetails = menu.addOns.find(
-            (addon) => addon.addon_id === itemAddon.addon_id
-            );
-            groups[groupName].itemList.push(addonDetails);
-            return groups;
-        }, {}));
+        // // Find related add-ons and group by addon_group_name
+        // const addOnsGrouped = Object.values(menu.itemAddOns
+        // .filter((addon) => addon.item_id === quickbite.item_id)
+        // .reduce((groups, itemAddon) => {
+        //     const groupName = itemAddon.addon_group_name;
+        //     if (!groups[groupName]) {
+        //     groups[groupName] = { groupName, itemList: [] };
+        //     }
+        //     const addonDetails = menu.addOns.find(
+        //     (addon) => addon.addon_id === itemAddon.addon_id
+        //     );
+        //     groups[groupName].itemList.push(addonDetails);
+        //     return groups;
+        // }, {}));
         const data = {
             item_id: quickbite.item_id,
             price: quickbite.price,
             item_name: quickbite.item_name,
-            addOnsGrouped: addOnsGrouped,
-            optionsGrouped: optionsGrouped,
+            addOnsGrouped: groupedAddOns,
+            optionsGrouped:  groupedOptions,
         }
+        console.log(data)
         setItem(data);
         setShow(true);
     };
@@ -130,7 +127,7 @@ function CartItemSlider() {
                                 <h3>{ele.item_name}</h3>
                                 <div className="comboprice d-flex">
                                     <p>₹{ele.price} </p>
-                                    <Link onClick={() => handleQuickbiteClick(ele)}>+ Add</Link>
+                                    <Link onClick={() => handleCardSlide(ele)}>+ Add</Link>
                                 </div>
                             </div>
                         </div>
