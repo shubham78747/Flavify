@@ -21,7 +21,7 @@ import { isEmpty } from 'lodash';
 import { createCombos } from '../../Helper/Coman';
 
 
-function HomePage({setShow,setTableNom,show,tablenom}) {
+function HomePage() {
     // const [show, setShow] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
     // const [tablenom, setTableNom] = useState();
@@ -32,14 +32,15 @@ function HomePage({setShow,setTableNom,show,tablenom}) {
     const { cartItemsList, pastOrdersList  } = useSelector((state) => state.cart);
     const [isImageShown, setIsImageShown] = useState(false);
     const { table, comboList, allCombos } = useSelector((state) => state?.table);
+    console.log({ comboList, allCombos })
     const toggleImage = () => {
         setIsImageShown(!isImageShown);
     };
     console.log('tablenom',{cartItemsList})
-//   const handleShow = () => {
-//     setTableNom(table.table_id)
-//     setShow(true)
-// };
+    //   const handleShow = () => {
+    //     setTableNom(table.table_id)
+    //     setShow(true)
+    // };
 
     // const { channel } = useChannel('punched_sub_order', (message) => {
     //     const response = JSON.parse(message.data)
@@ -86,12 +87,12 @@ function HomePage({setShow,setTableNom,show,tablenom}) {
             const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false};
             if(table) {
                 if(table?.fresh_order && !tableData.isfirst) {
-                    setShow(true)
-                    localStorage.setItem('category', JSON.stringify({ diet: 'V' }));
+                    // setShow(true)
+                    localStorage.setItem('custPref', JSON.stringify({ diet: 'V', pax: 1 }));
                     setActiveCategory('V')
                 }
                 if(!table?.fresh_order) {
-                    const getitemdata = JSON.parse(localStorage.getItem('category'));
+                    const getitemdata = JSON.parse(localStorage.getItem('custPref'));
                     dispatch(setUserRegistered(true))
                     localStorage.setItem('isRegistered', true);
                     let pastOrder = []
@@ -104,7 +105,7 @@ function HomePage({setShow,setTableNom,show,tablenom}) {
                         }
                     }
                     if(table?.diet) {
-                        localStorage.setItem('category', JSON.stringify({ diet: table?.diet }));
+                        localStorage.setItem('custPref', JSON.stringify({ diet: table?.diet, pax: table?.pax }));
                         setActiveCategory(table?.diet)
                     }
                     if(currecntOrder.length > 0) {
@@ -126,17 +127,8 @@ function HomePage({setShow,setTableNom,show,tablenom}) {
         if(activeCategory) {
             const filtermenu = quickBites?.filter((item) => activeCategory === 'N' ? item?.diet === 'V' || item?.diet === 'N' || item?.diet === 'E' : activeCategory === 'E' ? item?.diet === 'V' || item?.diet === 'E' : item?.diet === 'V');
             setSelectedFilter(filtermenu)
-            if(table?.lp_combos) {
-                dispatch(setLpComboList(table?.lp_combos))
-            }
         }
-    }, [activeCategory, quickBites, table]);
-
-    useEffect(() => {
-        if(!isEmpty(allCombos)) {
-            createCombos(menu,dispatch,setComboList,allCombos[activeCategory], activeCategory)
-        }
-    }, [allCombos]);
+    }, [activeCategory, quickBites]);
     
     useEffect(() => {
         const tableDataStr = localStorage.getItem('tableData');
@@ -145,70 +137,23 @@ function HomePage({setShow,setTableNom,show,tablenom}) {
         dispatch(setUserRegistered(isRegistered ? isRegistered : false))
         // dispatch(addItemToCart(cart))
         if(tableData.isfirst) {
-            const getitemdata = JSON.parse(localStorage.getItem('category'));
+            const getitemdata = JSON.parse(localStorage.getItem('custPref'));
             setActiveCategory(getitemdata?.diet || 'V')
         }
     }, [0]);
 
-    const handleClose = () => setShow(false);
-    // const handleShow = () => {
-    //     setTableNom(table.table_id)
-    //     setShow(true)
-    // };
-
-    const senddata = async () => {
-        try {
-            const header = {
-                order_id: table?.order_id,
-                pax: currentStep,
-                diet: activeCategory,
-            }
-            const response = await postcustomerpreference(header)
-            if (response?.data) {
-                // setTableNom();
-                handleClose();
-                setShow(false)
-                updateIsFirst(true);
-            }
-        } catch (error) {
-            console.error('Error sending data:', error);
-        }
-    };
-
-    const updateIsFirst = (value) => {
-        const tableData = JSON.parse(localStorage.getItem('tableData')) || {};
-        tableData.isfirst = value;
-        localStorage.setItem('tableData', JSON.stringify(tableData));
-    };
-    
     const handleCategoryClick = (category) => {
-            localStorage.setItem('category', JSON.stringify({ diet: category }));
+        const getitemdata = JSON.parse(localStorage.getItem('custPref'));
+            localStorage.setItem('custPref', JSON.stringify({ diet: category, pax: getitemdata?.pax || 1 }));
             setActiveCategory(category);
             setIsImageShown(false)
     };
 
-
-    // useEffect(() => {
-    //     if (tablenom) {
-    //         handletable(tablenom)
-    //     }
-    // }, [tablenom])
-
-    // const handletable = (table_id) => {
-    //     dispatch(fetchtable(table_id))
-    // }
-
-    const steps = 10; 
-
-    const handleSliderChange = (event) => {
-        setCurrentStep(Number(event.target.value));
-    };
     const handleSearchchnage = (e) => {
         const serach = e.target.value;
         const filtermenu = quickBites.filter((item) => item?.item_name.toLowerCase().includes(serach.toLowerCase()));
         setSelectedFilter(filtermenu) 
     }
-    const maxStep = Math.min(steps, 10);
 
     return (
         <>
@@ -230,49 +175,6 @@ function HomePage({setShow,setTableNom,show,tablenom}) {
                     </div>
                 </div>
             </section>
-            <Modal show={show}  className='automodal'>
-              
-                <Modal.Body className="pt-5 p-3">
-                    <div className="guestselectmodalmain">
-                        <h3>Number of guests for dining?</h3>                       
-                        <div className="progress-container">
-                            <div className="progress-number">{currentStep >= 10 ? '10+' : currentStep}</div>
-                            <input
-                                type="range"
-                                min="1"
-                                max={steps}
-                                value={currentStep}
-                                onChange={handleSliderChange}
-                                className="progress-slider"
-                            />
-                        </div>
-                        <ul className='selectcategories'>
-                            <li className={activeCategory === 'V' ? 'active' : ''}>
-                                <Link href="#" onClick={() => handleCategoryClick('V')}>
-                                    <span><Image src='/Images/veg.svg' alt="Veg" /></span>
-                                    Veg
-                                </Link>
-                            </li>
-                            <li className={activeCategory === 'N' ? 'active' : ''}>
-                                <Link href="#" onClick={() => handleCategoryClick('N')}>
-                                    <span><Image src='/Images/nonveg.svg' alt="Non-Veg" /></span>
-                                    Non-Veg
-                                </Link>
-                            </li>
-                            <li className={activeCategory === 'E' ? 'active' : ''}>
-                                <Link href="#" onClick={() => handleCategoryClick('E')}>
-                                    <span><Image src='/Images/egg.svg' alt="Egg" /></span>
-                                    Egg
-                                </Link>
-                            </li>
-                        </ul>
-                        <Link href="#" className='btngreen continue' onClick={senddata}>
-                            Continue <Icon icon="formkit:right" width="16px" height="16px" />
-                        </Link>
-                    </div>
-                </Modal.Body>
-            </Modal>
-
         </>
     );
 }

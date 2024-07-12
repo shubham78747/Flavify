@@ -1,11 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import Axios from "../../../Helper/axiosHelper";
 
 export const fetchtable = createAsyncThunk(
   'table/fetchtable',
   async (table_id) => {
     try {
-      const response = await axios.get(`https://flavify-test-caa8d1ec1c7d.herokuapp.com/api/v1/table/${table_id}`)
+      const response = await Axios({
+        method: "get",
+        url: `/table/${table_id}`,
+      })
       return response.data.response;
     } catch (error) {
       console.error("Error fetching table data:", error);

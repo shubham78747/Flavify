@@ -10,22 +10,11 @@ import TableHeaderTitle from './Component/CommonComponent/TableTitle/TableHeader
 import { useSelector } from 'react-redux';
 function App() {
   const { table } = useSelector((state) => state?.table);
-  const [tablenom, setTableNom] = useState();
-  const [show, setShow] = useState(false);
-  const handleShow = () => {
-    setTableNom(table.table_id)
-    setShow(true)
-};
   return (
     <>
-      <TableHeaderTitle titleicon="/Images/table.svg" title={`Table Number : ${table?.table_number ? table?.table_number : '' }`} className="d-flex" profileimg="/Images/profile.svg" link="#" handleShow={handleShow}/>
+      <TableHeaderTitle titleicon="/Images/table.svg" title={`Table Number : ${table?.table_number ? table?.table_number : '' }`} className="d-flex" profileimg="/Images/profile.svg" link="#"/>
       <Routes>
-        <Route path="/" element={<HomePage 
-          setShow={setShow}
-          setTableNom={setTableNom}
-          show={show}
-          tablenom={tablenom}
-        />} /> 
+        <Route path="/" element={<HomePage />} /> 
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/signUp" element={<SignUp />} /> 
         <Route path="/cart" element={<CartPage />} /> 

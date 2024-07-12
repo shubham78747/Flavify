@@ -109,6 +109,7 @@ function Modals({
         console.log(data)
         
         const tempWorkingHours = [...filtereddata?.items];
+        console.log({ tempWorkingHours })
             tempWorkingHours[0].options = [...tempWorkingHours[0].options, {option_id: opt.option_id, price:opt.price}]
             tempWorkingHours[0].price = tempWorkingHours[0].price + opt.price;
             console.log(tempWorkingHours,tempWorkingHours[0].options,  tempWorkingHours[0].price)

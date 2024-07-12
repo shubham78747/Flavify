@@ -1,10 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import Axios from "../../../../Helper/axiosHelper";
 
 export const fetchQuickBites = createAsyncThunk(
   'food/fetchQuickBites',
   async () => {
-    const response = await axios.get('https://flavify-test-caa8d1ec1c7d.herokuapp.com/api/v1/quickbites');
+    const response = await Axios({
+      method: "get",
+      url: `/quickbites`,
+    })
+    // const response = await axios.get('https://flavify-test-caa8d1ec1c7d.herokuapp.com/api/v1/quickbites');
     return response.data.data;
   }
 );
@@ -13,7 +18,11 @@ export const fetchQuickBites = createAsyncThunk(
 export const fetchMenu = createAsyncThunk(
   'food/fetchMenu',
   async () => {
-    const response = await axios.get('https://flavify-test-caa8d1ec1c7d.herokuapp.com/api/v1/menu');
+    const response = await Axios({
+      method: "get",
+      url: `/menu`,
+    })
+    // const response = await axios.get('https://flavify-test-caa8d1ec1c7d.herokuapp.com/api/v1/menu');
     return response.data;
   }
 );

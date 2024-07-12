@@ -10,7 +10,7 @@ import { useChannel } from 'ably/react';
 import { addItemToCart, setAllPastOrders } from '../CartPage/Cartslice/Cartslice';
 
 function MenuPage() {
-  const getitemdata = JSON.parse(localStorage.getItem('category'));
+  const getitemdata = JSON.parse(localStorage.getItem('custPref'));
   const { menu, categories } = useSelector((state) => state.food);
   const [activePref, setActivePref] = useState(getitemdata?.diet || 'V');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -40,7 +40,7 @@ function MenuPage() {
   }, [selectedCategory, activePref]);
 
   useEffect(() => {
-    const getitemdata = JSON.parse(localStorage.getItem('category'));
+    const getitemdata = JSON.parse(localStorage.getItem('custPref'));
     setActivePref(getitemdata?.diet)
   }, [0]);
 
