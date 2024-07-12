@@ -81,8 +81,8 @@ span.bluetag {
 
 .comboprice a {
     border-radius: 58.802px;
-    border: 0.817px solid var(--primary-500-main, #71917F);
-    background: var(--primary-500-main, #71917F);
+    border: 0.817px solid var(--primary-500-main, #5a0226);
+    background: var(--primary-500-main, #5a0226);
     box-shadow: 0px 0.817px 1.633px 0px rgba(16, 24, 40, 0.04), 0px 0.817px 1.633px 0px rgba(16, 24, 40, 0.04);
     padding: 6px 10px;
     display: inline-flex;
@@ -197,7 +197,7 @@ a.vegicon {
 
 .bg-white.bg-green {
     /* background: transparent !important; */
-    border: 1px solid #71917f;
+    border: 1px solid #5a0226;
 }
 
 .bg-white {

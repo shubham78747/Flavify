@@ -286,6 +286,7 @@ function CartItem() {
             <YouMayAlsoLike />
             <PastOrder pastOrdersList={pastOrdersList}/>
             <Link className='btn-green placeorder' onClick={handleCartItem}>{!JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
+            {console.log({ itemdata })}
             <CartModal show={show} onHide={handleClose} item={itemdata} setCartItems={setCartItems}/>
             <ComboModal show={showCombo} onHide={handleCloseCombo} item={comboitemdata} setCartItems={setCartItems}/>
         </>

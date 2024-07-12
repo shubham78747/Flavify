@@ -22,7 +22,7 @@ function CartItemSlider() {
 
     };
     const {menu} = useSelector((state)=>state?.food);
-    const { table } = useSelector((state) => state?.table);
+    const { customerPref } = useSelector((state) => state?.table);
     const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
 
     const [productsList, setProductsList] = useState([])
@@ -51,9 +51,9 @@ function CartItemSlider() {
         });
         const youMayLike = predictCheckout(
           menu,
-          table?.pax,
+          customerPref?.pax,
           cartItemsForSimiller,
-          table?.diet
+          customerPref?.diet
         );
         const predictedItems = youMayLike.map((ele) => {
           const item = menu.items.find((i) => i.item_id === ele);
@@ -67,7 +67,7 @@ function CartItemSlider() {
         const data = [...pastOrdersList, ...cartItemsList]
         filterAllItemsFromCart(data)
       }
-    }, [pastOrdersList, cartItemsList, menu])
+    }, [pastOrdersList, cartItemsList, menu, customerPref])
 
     const handleClose = () => setShow(false);
        const handleCardSlide = (quickbite) => {

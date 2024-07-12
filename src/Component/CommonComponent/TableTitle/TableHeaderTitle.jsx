@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchtable,
   setComboList,
+  setCustomerPreference,
   setLpComboList,
 } from "../../../Pages/HomePage/Tableslice/Tableslice";
 import {
@@ -30,7 +31,7 @@ function TableHeaderTitle(props) {
   const [activeCategory, setActiveCategory] = useState("V");
   const [isImageShown, setIsImageShown] = useState(false);
   const { menu } = useSelector((state) => state.food);
-  const { table, comboList, allCombos } = useSelector((state) => state?.table);
+  const { table, comboList, allCombos, customerPref } = useSelector((state) => state?.table);
 
   const { cartItemsList, pastOrdersList } = useSelector((state) => state.cart);
 
@@ -79,7 +80,6 @@ function TableHeaderTitle(props) {
       if (table?.fresh_order && !tableData.isfirst) {
         setShow(true);
         localStorage.setItem("custRef", JSON.stringify({ diet: "V", pax: 1 }));
-        setActiveCategory("V");
       }
       if (!table?.fresh_order) {
         const getitemdata = JSON.parse(localStorage.getItem("custPref"));
@@ -99,7 +99,7 @@ function TableHeaderTitle(props) {
             "custPref",
             JSON.stringify({ diet: table?.diet, pax: table?.pax || 1 })
           );
-          setActiveCategory(table?.diet);
+          dispatch(setCustomerPreference({ diet: table?.diet, pax: table?.pax }))
         }
         if (currecntOrder.length > 0) {
           const data = { order: true };
@@ -126,7 +126,7 @@ function TableHeaderTitle(props) {
     // dispatch(addItemToCart(cart))
     if (tableData.isfirst) {
       const getitemdata = JSON.parse(localStorage.getItem("custPref"));
-      setActiveCategory(getitemdata?.diet || "V");
+      dispatch(setCustomerPreference({ diet: getitemdata?.diet, pax: getitemdata?.pax }))
     }
   }, [0]);
 
@@ -150,7 +150,7 @@ function TableHeaderTitle(props) {
   const handleCategoryClick = (category) => {
     const getitemdata = JSON.parse(localStorage.getItem('custPref'));
     localStorage.setItem("custPref", JSON.stringify({ diet: category, pax: getitemdata?.pax || 1 }));
-    setActiveCategory(category);
+    dispatch(setCustomerPreference({ diet: category, pax: currentStep }))
     setIsImageShown(false);
   };
 
@@ -170,6 +170,7 @@ function TableHeaderTitle(props) {
       const response = await postcustomerpreference(header);
       if (response?.data) {
         localStorage.setItem("custPref", JSON.stringify({ diet: activeCategory, pax: currentStep }));
+        dispatch(setCustomerPreference({ diet: activeCategory, pax: currentStep }))
         handleClose();
         setShow(false);
         updateIsFirst(true);
@@ -210,6 +211,13 @@ function TableHeaderTitle(props) {
       createCombos(allCombos[activeCategory], activeCategory);
     }
   }, [allCombos]);
+
+  useEffect(() => {
+    if (!isEmpty(customerPref)) {
+      setCurrentStep(customerPref?.pax)
+      setActiveCategory(customerPref?.diet)
+    }
+  }, [customerPref]);
 
   return (
     <>

@@ -5,7 +5,7 @@
 }
 
 .bggreen h3 {
-    color: var(--primary-500-main, #71917F);
+    color: var(--primary-500-main, #5a0226);
 
     /* Heading / H2 / Extrabold / Mobile */
     font-family: Inter;
@@ -99,8 +99,8 @@
 
 button.btn-green.btn.btn-primary {
     border-radius: 8px;
-    border: 1px solid var(--primary-500-main, #71917F);
-    background: var(--primary-500-main, #71917F);
+    border: 1px solid var(--primary-500-main, #5a0226);
+    background: var(--primary-500-main, #5a0226);
 
     /* Drop shadow/Small */
     box-shadow: 0px 2px 6px 0px rgba(16, 24, 40, 0.06);

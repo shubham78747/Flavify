@@ -22,7 +22,11 @@ const initialState = {
   loading: false,
   error: null,
   comboList: [],
-  allCombos: {}
+  allCombos: {},
+  customerPref: {
+    diet: 'V',
+    pax: 1
+  }
 };
 
 const tableSlice = createSlice({
@@ -34,6 +38,9 @@ const tableSlice = createSlice({
     },
     setLpComboList(state, action) {
           state.allCombos = action.payload
+    },
+    setCustomerPreference(state, action) {
+          state.customerPref = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -54,6 +61,6 @@ const tableSlice = createSlice({
 });
 
 
-export const {setComboList, setLpComboList} = tableSlice.actions;
+export const {setComboList, setLpComboList, setCustomerPreference} = tableSlice.actions;
 
 export default tableSlice.reducer;

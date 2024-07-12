@@ -123,7 +123,7 @@
     transform: translate(-50%, -50%);
     width: 35px;
     height: 35px;
-    background: #71917f;
+    background: #5a0226;
     border-radius: 100%;
     opacity: 0;
 }
@@ -274,7 +274,7 @@ body .modal-content {
     appearance: none;
     width: 35px;
     height: 35px;
-    background: #71917f;
+    background: #5a0226;
     border-radius: 50%;
     margin-top: -5px;
     /* Center the thumb vertically with the circles */

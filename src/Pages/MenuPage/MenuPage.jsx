@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './MenuPage.css';
-import TableHeaderTitle from '../../Component/CommonComponent/TableTitle/TableHeaderTitle';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
 import ItemDetails from '../../Component/MenuPageComponent/ItemDetails/ItemDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import Search from '../../Component/CommonComponent/Search/Search';
 import Carousel from '../../Component/CommonComponent/OwlCarousel/OwlCarousel';
-import { useChannel } from 'ably/react';
-import { addItemToCart, setAllPastOrders } from '../CartPage/Cartslice/Cartslice';
+import { isEmpty } from 'lodash';
 
 function MenuPage() {
   const getitemdata = JSON.parse(localStorage.getItem('custPref'));
@@ -15,7 +13,7 @@ function MenuPage() {
   const [activePref, setActivePref] = useState(getitemdata?.diet || 'V');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [filteredItems, setFilteredItems] = useState([]);
-  const {pastOrdersList, cartItemsList} = useSelector(state => state.cart)
+  const { customerPref } = useSelector((state) => state?.table);
   const dispatch = useDispatch()
 
   // const { channel } = useChannel('punched_sub_order', (message) => {
@@ -119,6 +117,11 @@ function MenuPage() {
     );
     setFilteredItems(filteredData);
   };  
+  useEffect(() => {
+    if (!isEmpty(customerPref)) {
+      setActivePref(customerPref?.diet)
+    }
+  }, [customerPref]);
 
   return (
     <>

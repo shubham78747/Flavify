@@ -30,7 +30,7 @@
 
 a.viewcombomain {
     overflow: hidden;
-    color: var(--primary-500-main, #71917F);
+    color: var(--primary-500-main, #5a0226);
     text-overflow: ellipsis;
     font-family: Inter;
     font-size: 10px;
@@ -55,7 +55,7 @@ a.viewcombomain {
 body {}
 
 .tabledetail {
-    background: var(--Neutral-50, #F9FAFB) !important;
+    background: var(--Neutral-50, #ffffff) !important;
 }
 
 .itemaddimg a {
@@ -67,7 +67,7 @@ body {}
     margin: auto;
     display: inline-flex;
     justify-content: center;
-    color: var(--primary-500-main, #71917F);
+    color: var(--primary-500-main, #5a0226);
     text-align: center;
     font-family: Inter;
     font-size: 10.972px;
@@ -92,7 +92,7 @@ body {}
 
 .bg-white.bg-green {
     /* background: transparent !important; */
-    border: 1px solid #71917f;
+    border: 1px solid #5a0226;
 }
 
 .bg-white {
@@ -102,8 +102,8 @@ body {}
 
 a.viewcombomain.mb-3 {
     border-radius: 6.269px;
-    border: 0.784px solid var(--primary-500-main, #71917F);
-    background: var(--primary-500-main, #71917F);
+    border: 0.784px solid var(--primary-500-main, #5a0226);
+    background: var(--primary-500-main, #5a0226);
     box-shadow: 0px 0.784px 1.567px 0px rgba(16, 24, 40, 0.04), 0px 0.784px 1.567px 0px rgba(16, 24, 40, 0.04);
     max-width: 80px;
     display: flex;

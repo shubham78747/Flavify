@@ -51,8 +51,8 @@ a.btngreen.continue {
     /* 112.5% */
     padding: 14px;
     border-radius: 8px;
-    border: 1px solid var(--primary-500-main, #71917F);
-    background: var(--primary-500-main, #71917F);
+    border: 1px solid var(--primary-500-main, #5a0226);
+    background: var(--primary-500-main, #5a0226);
 
     /* Drop shadow/Small */
     box-shadow: 0px 2px 6px 0px rgba(16, 24, 40, 0.06);
@@ -348,18 +348,18 @@ ul.selectvariantmain:after {
 .addremoveitem {
     padding: 10px 16px;
     border-radius: 8px;
-    border: 1px solid var(--primary-500-main, #71917F);
+    border: 1px solid var(--primary-500-main, #5a0226);
 
     /* Drop shadow/XSmall */
     box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.04), 0px 1px 2px 0px rgba(16, 24, 40, 0.04);
 }
 
 .addremoveitem span {
-    color: #71917F;
+    color: #5a0226;
 }
 
 .addremoveitem h5 {
-    color: var(--primary-500-main, #71917F);
+    color: var(--primary-500-main, #5a0226);
     text-align: center;
 
     /* Label/Medium/Medium */
@@ -398,7 +398,7 @@ ul.selectvariantmain:after {
 }
 
 .custom-checkbox input[type="checkbox"]:checked+.checkbox-indicator {
-    background-color: var(--primary-500-main, #71917F);
+    background-color: var(--primary-500-main, #5a0226);
     ;
     /* Background color when checked */
 }
@@ -447,7 +447,7 @@ ul.selectvariantmain:after {
 }
 
 .custom-radio input[type="radio"]:checked+.radio-indicator {
-    /* border-color: #71917F; */
+    /* border-color: #5a0226; */
 }
 
 .custom-radio .radio-indicator::after {
@@ -467,7 +467,7 @@ ul.selectvariantmain:after {
 
 .custom-radio input[type="radio"]:checked+.radio-indicator::after {
     opacity: 1;
-    background: #71917F;
+    background: #5a0226;
     /* Show the inner circle when checked */
 }
 

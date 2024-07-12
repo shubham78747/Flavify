@@ -104,4 +104,5 @@ ul.selectvariantmain {
 .maintitle.d-flex {
   max-width: 480px !important;
   margin: auto !important;
+  background: white;
 }

@@ -10,7 +10,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import MobileBar from '../../Component/CommonComponent/MobileBar/MobileBar';
 // import { tables } from './Tablejson/Tablejson';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchtable, setComboList, setLpComboList } from './Tableslice/Tableslice';
+import { fetchtable, setComboList, setCustomerPreference, setLpComboList } from './Tableslice/Tableslice';
 import { postcustomerpreference } from './action';
 import Search from '../../Component/CommonComponent/Search/Search';
 import { fetchMenu, fetchQuickBites } from '../../Component/HomePageComponent/QuickBites/QuickBiteSlice/QuickBiteSlice';
@@ -31,7 +31,7 @@ function HomePage() {
     const { quickBites,menu  } = useSelector((state) => state.food);
     const { cartItemsList, pastOrdersList  } = useSelector((state) => state.cart);
     const [isImageShown, setIsImageShown] = useState(false);
-    const { table, comboList, allCombos } = useSelector((state) => state?.table);
+    const { table, comboList, allCombos, customerPref } = useSelector((state) => state?.table);
     console.log({ comboList, allCombos })
     const toggleImage = () => {
         setIsImageShown(!isImageShown);
@@ -81,46 +81,6 @@ function HomePage() {
     //     }
     //     dispatch(setComboList(comboslist))
     // }
-
-        useEffect(() => {
-            const tableDataStr = localStorage.getItem('tableData');
-            const tableData = tableDataStr ? JSON.parse(tableDataStr) : {isfirst : false};
-            if(table) {
-                if(table?.fresh_order && !tableData.isfirst) {
-                    // setShow(true)
-                    localStorage.setItem('custPref', JSON.stringify({ diet: 'V', pax: 1 }));
-                    setActiveCategory('V')
-                }
-                if(!table?.fresh_order) {
-                    const getitemdata = JSON.parse(localStorage.getItem('custPref'));
-                    dispatch(setUserRegistered(true))
-                    localStorage.setItem('isRegistered', true);
-                    let pastOrder = []
-                    let currecntOrder = []
-                    for (const order of table?.order_info) {
-                        if(order?.is_punched) {
-                            pastOrder.push(order)
-                        } else {
-                            currecntOrder = order.items
-                        }
-                    }
-                    if(table?.diet) {
-                        localStorage.setItem('custPref', JSON.stringify({ diet: table?.diet, pax: table?.pax }));
-                        setActiveCategory(table?.diet)
-                    }
-                    if(currecntOrder.length > 0) {
-                        const data = {"order":true}
-                        localStorage.setItem('custorder', JSON.stringify(data))
-                        dispatch(addItemToCart(currecntOrder))
-                        localStorage.setItem('cartItems', JSON.stringify(currecntOrder))
-                    } else {
-                        const data = {"order":false}
-                        localStorage.setItem('custorder', JSON.stringify(data));
-                    }
-                }
-            }
-        }, [table])
-    
     
 
     useEffect(() => {
@@ -144,10 +104,17 @@ function HomePage() {
 
     const handleCategoryClick = (category) => {
         const getitemdata = JSON.parse(localStorage.getItem('custPref'));
-            localStorage.setItem('custPref', JSON.stringify({ diet: category, pax: getitemdata?.pax || 1 }));
-            setActiveCategory(category);
+            localStorage.setItem('custPref', JSON.stringify({ diet: category, pax: getitemdata?.pax }));
+            dispatch(setCustomerPreference({ diet: getitemdata?.diet, pax: currentStep }))
             setIsImageShown(false)
     };
+
+    useEffect(() => {
+        if (!isEmpty(customerPref)) {
+          setCurrentStep(customerPref?.pax)
+          setActiveCategory(customerPref?.diet)
+        }
+      }, [customerPref]);
 
     const handleSearchchnage = (e) => {
         const serach = e.target.value;

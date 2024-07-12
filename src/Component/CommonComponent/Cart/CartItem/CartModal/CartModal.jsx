@@ -144,6 +144,7 @@ function Modals({
         if (item) {
             const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             const data = Array.isArray(cartItems) ? cartItems.find(cartItem => cartItem.item_id === item.item_id) : {};
+            console.log({ data })
             if (data) {
                 setFiltereddata(data);
             }
@@ -230,7 +231,8 @@ function Modals({
                                                            {console.log(opt,optionIndex,index)}
                                                             <h5>{opt.option_name}</h5>
                                                             <label className="custom" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
-                                                                <span className="checkbox-label">₹{opt.price}</span>                                                            
+                                                                <span className="checkbox-label">₹{opt.price}</span>
+                                                                {console.log({ opt, filtereddata })}
                                                                 <input
                                                                     type="radio"
                                                                     id={`selectaddonoptionMeat${opt.option_id}`}                                                                    
