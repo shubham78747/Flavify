@@ -4,7 +4,7 @@ export const getGroupedOptionsAndAddOns = (menu, quickbite) => {
   
     const groupedOptions = Object.values(
       itemOptions
-        .filter((option) => option.item_id === quickbite.item_id)
+        .filter((option) => option.item_id === quickbite)
         .reduce((groups, itemOption) => {
           const groupName = itemOption.option_group_name;
           if (!groups[groupName]) {
@@ -20,7 +20,7 @@ export const getGroupedOptionsAndAddOns = (menu, quickbite) => {
   
     const groupedAddOns = Object.values(
       itemAddOns
-        .filter((addon) => addon.item_id === quickbite.item_id)
+        .filter((addon) => addon.item_id === quickbite)
         .reduce((groups, itemAddon) => {
           const groupName = itemAddon.addon_group_name;
           if (!groups[groupName]) {

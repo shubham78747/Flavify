@@ -84,8 +84,10 @@ function HomePage() {
     
 
     useEffect(() => {
+        console.log({ activeCategory })
         if(activeCategory) {
             const filtermenu = quickBites?.filter((item) => activeCategory === 'N' ? item?.diet === 'V' || item?.diet === 'N' || item?.diet === 'E' : activeCategory === 'E' ? item?.diet === 'V' || item?.diet === 'E' : item?.diet === 'V');
+            console.log({ filtermenu })
             setSelectedFilter(filtermenu)
         }
     }, [activeCategory, quickBites]);
@@ -105,11 +107,12 @@ function HomePage() {
     const handleCategoryClick = (category) => {
         const getitemdata = JSON.parse(localStorage.getItem('custPref'));
             localStorage.setItem('custPref', JSON.stringify({ diet: category, pax: getitemdata?.pax }));
-            dispatch(setCustomerPreference({ diet: getitemdata?.diet, pax: currentStep }))
+            dispatch(setCustomerPreference({ diet: category, pax: currentStep }))
             setIsImageShown(false)
     };
 
     useEffect(() => {
+        console.log({ customerPref })
         if (!isEmpty(customerPref)) {
           setCurrentStep(customerPref?.pax)
           setActiveCategory(customerPref?.diet)
@@ -121,6 +124,8 @@ function HomePage() {
         const filtermenu = quickBites.filter((item) => item?.item_name.toLowerCase().includes(serach.toLowerCase()));
         setSelectedFilter(filtermenu) 
     }
+
+    console.log({ selectedFilter })
 
     return (
         <>

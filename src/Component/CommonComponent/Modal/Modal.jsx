@@ -4,6 +4,8 @@ import { Image } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { addItemToCart } from '../../../Pages/CartPage/Cartslice/Cartslice';
+import { useDispatch } from 'react-redux';
 
 function Modals({ 
     isFilled, 
@@ -14,21 +16,25 @@ function Modals({
     flag
  }) {
     const [adon, setAdon] = useState([]);
-    const [option, setOption] = useState([]);
+    const [option, setOption] = useState({});
     const [count, setCount] = useState(1);
     const [adonPrice,setAdonPrice] = useState(0)
     const [optionPrice,setOptionPrice] = useState(0)
+    // const [totalAllItemPrice,setTotalAllItemPrice] = useState(0)
+    const dispatch = useDispatch();
     // Calculate total price of selected items
     useEffect(() => {
         const newAdonPrice = adon.reduce((acc, addon) => acc + addon.price, 0);
-        const newOptionPrice = option.reduce((acc, opt) => acc + opt.price, 0);
+        const newOptionPrice = Object.values(option).reduce((acc, opt) => acc + opt.price, 0);
         setAdonPrice(newAdonPrice);
         setOptionPrice(newOptionPrice);
     }, [adon, option]);
+    
 
     const calculateItemPrice = () => {
         const basePrice = item.price || 0;
         const totalPrice = (basePrice + adonPrice + optionPrice) * count;
+        console.log({totalPrice})
         return totalPrice;
     };
 
@@ -37,65 +43,66 @@ function Modals({
             setCount(1);
         }
     }, [show]);
-
-    
-
+    console.log(item)
     const handleAddToCart = (itemId) => {
         const selectedItem = {
             item_id: itemId,
             combo: flag === 'Likespage'? 'Checkout' : "None",
             item_name: item.item_name,
             discount:0,
-            price: item.price,
+            price: calculateItemPrice(),
             qty: count,
             items: [{
                 item_id: itemId,
-                price: calculateItemPrice(),
+                price: item.price,
                 add_ons: adon.map(addon => ({
                     addon_id: addon.addon_id,
                     price: addon.price,
                 })),
-                options: option.map(opt => ({
-                    option_id: opt.option_id,
-                    price: opt.price,
-                })),
+                options: option,
             }],
         };
+        console.log({selectedItem})
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);
         if (existingItemIndex >= 0) {
             cartItems[existingItemIndex].qty += selectedItem.qty;
-            cartItems[existingItemIndex].price += selectedItem.price;
+            // cartItems[existingItemIndex].price += selectedItem.price;
+            console.log(cartItems[existingItemIndex])
         } else {
             cartItems.push(selectedItem);
         }
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        dispatch(addItemToCart(cartItems))
         setOptionPrice(0)
         setAdonPrice(0)
+        calculateItemPrice(0)
         setAdon([])
-        setOption([])
+        setOption({})
         toast.success(`Add Item SuccessFully`);
         onHide();
         setCount(1)
     };
-
     const handleAdonChange = (e, addon) => {
         const isChecked = e.target.checked;
-        console.log(isChecked)
         if (isChecked) {
                 setAdon([...adon, addon]);
         } else {
             setAdon(adon.filter(ad => ad.addon_id !== addon.addon_id));
         }
         }
-
-    const handleOptionChange = (e, opt) => {
-        const isChecked = e.target.checked;
-        if (isChecked) {
-                setOption([...option, opt]);
-        } else {
-            setOption(option.filter(op => op.option_id !== opt.option_id));
-        }
+        console.log({ option    })
+    const handleOptionChange = (e,groupName,opt) => {
+        setOption({
+            ...option,
+            [groupName]: opt
+        })
+        // const isChecked = e.target.checked;
+        // if (isChecked) {
+        //         setOption([...option, opt]);
+        // } else {
+        //     setOption(option.filter(op => op.option_id !== opt.option_id));
+        // }
     };
 
     const handleAddClick = () => {
@@ -109,6 +116,16 @@ function Modals({
             setCount(prevCount => prevCount - 1);
         }
     };
+    useEffect(() => {
+        if (!show) {
+            setCount(1);
+            setAdon([]);
+            setOption({});
+            setAdonPrice(0);
+            setOptionPrice(0);
+            // setTotalAllItemPrice(0)
+        }
+    }, [show]);
 
     return (
         <>
@@ -158,6 +175,7 @@ function Modals({
                                                                     type="checkbox"
                                                                     id={`selectaddonoption${addonIndex}`}
                                                                     value={addon}
+                                                                    // name={`addon-${index}`}
                                                                     onChange={(e) => handleAdonChange(e, addon)}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
@@ -185,13 +203,14 @@ function Modals({
                                                     {group.itemList.map((option, optionIndex) => (
                                                         <li key={`option-${optionIndex}`}>                                                          
                                                             <h5>{option.option_name}</h5>
-                                                            <label className="custom-checkbox" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
+                                                            <label className="custom" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
                                                                 <span className="checkbox-label">₹{option.price}</span>
                                                                 <input
-                                                                    type="checkbox"
-                                                                    id={`selectaddonoptionMeat${optionIndex}`}
-                                                                    value={option}
-                                                                    onChange={(e) => handleOptionChange(e, option)}
+                                                                    type="radio"
+                                                                    id={`selectaddonoptionMeat${option.option_id}`}
+                                                                    // value={option}
+                                                                    name={`option-${index}`} 
+                                                                    onChange={(e) => handleOptionChange(e,group.groupName, option)}
                                                                     // checked={console.log()}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>

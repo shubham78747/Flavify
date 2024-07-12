@@ -39,7 +39,7 @@ function Modals({
     };
     
         const handleAdonChange = (e,index, addon) => {
-            console.log(index)
+            console.log(index,addon)
             const isChecked = e.target.checked;
             const tempWorkingHours = [...filtereddata.items];
             if (isChecked) {
@@ -59,13 +59,16 @@ function Modals({
                 }))
                 }
             }
-
-        const handleOptionChange = (e,index,opt) => {
-            console.log('sdhkiahsda',index)
+            console.log(filtereddata)
+        const handleOptionChange = (e,index,opt, groupName) => {
+            console.log(index)
+            // console.log('sdhkiahsda',index,opt)
             const isChecked = e.target.checked;
             const tempWorkingHours = [...filtereddata.items];
+            console.log({tempWorkingHours})
             if (isChecked) {
-                tempWorkingHours[index].options = [...tempWorkingHours[index].options, {option_id: opt.option_id, price:opt.price}]
+                tempWorkingHours[index].options[groupName] = {option_id: opt.option_id, price:opt.price}
+                console.log(tempWorkingHours[index].options)
                  setFiltereddata((prev) => ({
                     ...prev,
                     items: tempWorkingHours,
@@ -73,15 +76,16 @@ function Modals({
 
                 }))
               }
-             else {
-                tempWorkingHours[index].options = tempWorkingHours[index].options.filter(ad => ad.option_id !== opt.option_id)
-                setFiltereddata((prev) => ({
-                    ...prev,
-                    items: tempWorkingHours,
-                    price: prev.price-opt.price,
-                }))
-            }
+            //  else {
+            //     tempWorkingHours[index].options = tempWorkingHours[index].options.filter(ad => ad.option_id !== opt.option_id)
+            //     setFiltereddata((prev) => ({
+            //         ...prev,
+            //         items: tempWorkingHours,
+            //         price: prev.price-opt.price,
+            //     }))
+            // }
     };
+    
     const handleAddClick = () => {
         if (item) {
             setFiltereddata((prev) => ({
@@ -193,16 +197,16 @@ function Modals({
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((option, optionIndex) => (
                                                         <li key={`option-${option.option_id}`}>  
-                                                          {console.log('9898989865321===>',filtereddata,option)}                                                          
+                                                          {console.log({filtereddataca: filtereddata?.items[mainindex], groupName: group.groupName})}                                                          
                                                             <h5>{option.option_name}</h5>
-                                                            <label className="custom-checkbox" htmlFor={`selectaddonoptionMeat${option.option_id}`}>
-                                                                <span className="checkbox-label">₹{option.price}</span>
+                                                            <label className="custom" htmlFor={`selectaddonoptionMeat${option.option_id}`}>
+                                                                <span className="checkbox-label">₹{option.price}</span>                                                              
                                                                 <input
-                                                                    type="checkbox"
-                                                                    id={`selectaddonoptionMeat${option.option_id}`}
-                                                                    value={option}
-                                                                    onChange={(e) => handleOptionChange(e,mainindex,option)} 
-                                                                    checked={!isEmpty(filtereddata) && filtereddata.items.some(item => item.options?.some(opt => opt.option_id === option.option_id))}
+                                                                    type="radio"
+                                                                    id={`selectaddonoptionMeat${option.option_id}`}                                                                   
+                                                                    name={`option-${mainitem.item_name}-${index}`}
+                                                                    onChange={(e) => handleOptionChange(e,mainindex,option, group.groupName)} 
+                                                                    checked={!isEmpty(filtereddata) && filtereddata?.items[mainindex]?.options[group.groupName]?.option_id === option.option_id}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>

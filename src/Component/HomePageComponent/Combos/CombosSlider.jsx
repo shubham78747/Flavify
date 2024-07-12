@@ -7,7 +7,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import Accordion from 'react-bootstrap/Accordion';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import {addComboItemToCart} from '../../../Pages/CartPage/Cartslice/Cartslice'
+import {addComboItemToCart, addItemToCart} from '../../../Pages/CartPage/Cartslice/Cartslice'
 import { addOnsGroupeds, getGroupedOptionsAndAddOns, optionsGroupeds } from '../../../Helper/Coman';
 function CombosSlider() {
     const options = {
@@ -23,7 +23,7 @@ function CombosSlider() {
     };
     const [show, setShow] = useState(false);
     const [filtereItem,setFilteredItem] = useState([])
-    const [adon, setAdon] = useState({});
+    const [adon, setAdon] = useState([]);
     const [option, setOption] = useState({});
     const [isFilled, setIsFilled] = useState(false);
     const [allCombos, setAllCombos] = useState([])
@@ -31,7 +31,6 @@ function CombosSlider() {
     const [optionPrice,setOptionPrice] = useState(0)
     const { comboList } = useSelector((state) => state?.table);
     const { menu  } = useSelector((state) => state.food);
-    const { cartcomboItemsList } = useSelector(state => state.cart)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -40,7 +39,7 @@ function CombosSlider() {
           return acc + totalAddOnPrice;
         }, 0);
         const newOptionPrice = Object.values(option).reduce((acc, options) => {
-          const totalOptionPrice = options.reduce((sum, option) => sum + option.price, 0);
+          const totalOptionPrice = Object.values(options).reduce((sum, option) => sum + option.price, 0);
           return acc + totalOptionPrice;
         }, 0);
         setAdonPrice(newAdonPrice);
@@ -56,35 +55,7 @@ function CombosSlider() {
 
     const handleQuickbiteClick = (combo) => {
         const menuItem = menu.items.find((i) => i.item_id === combo.item_id)
-        const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, combo);
-        // const optionsGrouped = Object.values(menu.itemOptions
-        // .filter((option) => option.item_id === combo.item_id)
-        // .reduce((groups, itemOption) => {
-        //     const groupName = itemOption.option_group_name;
-        //     if (!groups[groupName]) {
-        //     groups[groupName] = { groupName, itemList: [] };
-        //     }
-        //     const optionDetails = menu.options.find(
-        //     (option) => option.option_id === itemOption.option_id
-        //     );
-        //     groups[groupName].itemList.push(optionDetails);
-        //     return groups;
-        // }, {}));
-
-        // // Find related add-ons and group by addon_group_name
-        // const addOnsGrouped = Object.values(menu.itemAddOns
-        // .filter((addon) => addon.item_id === combo.item_id)
-        // .reduce((groups, itemAddon) => {
-        //     const groupName = itemAddon.addon_group_name;
-        //     if (!groups[groupName]) {
-        //     groups[groupName] = { groupName, itemList: [] };
-        //     }
-        //     const addonDetails = menu.addOns.find(
-        //     (addon) => addon.addon_id === itemAddon.addon_id
-        //     );
-        //     groups[groupName].itemList.push(addonDetails);
-        //     return groups;
-        // }, {}));
+        const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, combo.item_id);
         const data = {
             item_id: menuItem.item_id,
             price: menuItem.price,
@@ -154,31 +125,28 @@ function CombosSlider() {
             });
           };
 
-          const handleOptionChange = (e, itemId, optionId, price) => {
-            const isChecked = e.target.checked;
+          const handleOptionChange = (e, itemId, optionId, price, groupName) => {
+            console.log({ itemId, optionId, price, groupName })
             setOption((prev) => {
-              const itemOptions = prev[itemId] || [];
-              if (isChecked) {
-                return {
-                  ...prev,
-                  [itemId]: [...itemOptions, { option_id: optionId, price }]
-                };
-              } else {
-                return {
-                  ...prev,
-                  [itemId]: itemOptions.filter(option => option.option_id !== optionId)
-                };
-              }
+                    return {
+                        ...prev,
+                        [itemId]: {
+                            ...prev[itemId],
+                            [groupName]: {option_id: optionId, price: price}
+                        }
+                      };
             });
           };
+          console.log({ option })
         const handleAddToCart = () => {
             const cartItemsAdd = filtereItem.items.map((item) => ({
+                // console.log({ item, adon, option, item_id: option[item.item_id]})
                 item_id: item.item_id,
                 item_name:item.item_name,
                 price: item.price,
-                add_ons: adon[item.item_id] ? [...adon[item.item_id]] : [],
-                options: option[item.item_id] ? [...option[item.item_id]] : []
-              }));
+                add_ons: adon[item?.item_id] ? [...adon[item?.item_id]] : [],
+                options: option[item?.item_id] ? option[item?.item_id] : {}
+            }));
               const cartData = {
                 combo: "LandingPage",
                 qty: 1,
@@ -188,7 +156,7 @@ function CombosSlider() {
               };
               let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
               cartItems.push(cartData);
-              dispatch(addComboItemToCart(cartItems))
+              dispatch(addItemToCart(cartItems))
               localStorage.setItem('cartItems', JSON.stringify(cartItems));
               toast.success(`Add Item SuccessFully`);
 
@@ -280,8 +248,9 @@ function CombosSlider() {
                                                                 <input
                                                                     type="checkbox"
                                                                     id={`selectaddonoption${addonIndex}`}
+                                                                    // name={`addon-${index}`}
                                                                     value={addon}
-                                                                    onChange={(e) => handleAdonChange(e, mainitem.item_id, addon.addon_id, addon.price)}
+                                                                    onChange={(e) => handleAdonChange(e, mainitem.item_id, addon.addon_id, addon.price, index)}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>
@@ -308,13 +277,14 @@ function CombosSlider() {
                                                     {group.itemList.map((option, optionIndex) => (
                                                         <li key={`option-${option.option_id}`}>                                                       
                                                             <h5>{option.option_name}</h5>
-                                                            <label className="custom-checkbox" htmlFor={`selectaddonoptionMeat${option.option_id}`}>
+                                                            <label className="custom" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
                                                                 <span className="checkbox-label">₹{option.price}</span>
                                                                 <input
-                                                                    type="checkbox"
+                                                                    type="radio"
                                                                     id={`selectaddonoptionMeat${option.option_id}`}
                                                                     value={option}
-                                                                    onChange={(e) => handleOptionChange(e, mainitem.item_id, option.option_id, option.price)}                                                            
+                                                                    name={`option-${index}`}
+                                                                    onChange={(e) => handleOptionChange(e, mainitem.item_id, option.option_id, option.price, group.groupName)}                                                            
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>
@@ -345,7 +315,7 @@ function CombosSlider() {
                                         <Icon icon="ic:round-plus" width="24px" height="24px" />
                                     </span>
                                 </div>
-                                <Link className='btngreen continue' onClick={handleAddToCart}>
+                                <Link className='btngreen continue' to="#" onClick={handleAddToCart}>
                                     Add Item - ₹{calculateTotalPrice().toFixed(2)}
                                 </Link>
 

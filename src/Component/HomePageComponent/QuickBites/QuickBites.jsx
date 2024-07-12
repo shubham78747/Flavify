@@ -5,14 +5,14 @@ import Carousel from '../../CommonComponent/OwlCarousel/OwlCarousel';
 import Modals from '../../CommonComponent/Modal/Modal';
 import { useSelector } from 'react-redux';
 import {getGroupedOptionsAndAddOns} from '../../../Helper/Coman'
-function QuickBites() {
+function QuickBites(props) {
         const [show, setShow] = useState(false);   
         const [isFilled, setIsFilled] = useState(false);
         const [quickbileFirst,setQuickBitefirst] = useState([])
         const [quickbileSecond,setQuickBiteSecond] = useState([])
         const [item,setItem] = useState([]);
         const [flag, setFlag] = useState(null);
-        const { quickBites,menu  } = useSelector((state) => state.food);
+        const { quickBites, menu } = useSelector((state) => state.food);
         const [loader,setLoader] = useState(true)
         const handleClose = () => {setShow(false);}
 
@@ -39,19 +39,19 @@ function QuickBites() {
         
 
         useEffect(()=>{
-            if(quickBites.length > 0){
-                handleData(quickBites)  
+            if(props?.quickBites.length > 0){
+                handleData(props?.quickBites)  
                 setLoader(false)    
             } else {
                 setQuickBitefirst([])
                 setQuickBiteSecond([])
             }
-        },[quickBites])
+        },[props?.quickBites])
 
 
         const handleQuickbiteClick = (quickbite) => {
             setFlag('Qickbitepage');
-            const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite);
+            const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite.item_id);
             // const optionsGrouped = Object.values(menu.itemOptions
             //     .filter((option) => option.item_id === quickbite.item_id)
             //     .reduce((groups, itemOption) => {

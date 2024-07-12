@@ -21,6 +21,7 @@ function Modals({
     const calculateItemPrice = () => {
         if(!isEmpty(filtereddata)) {
             const basePrice = filtereddata?.items?.length > 0 && filtereddata?.items[0]?.price || 0;
+            console.log(    {basePrice,filtereddata}  )
             const totalPrice = basePrice * filtereddata?.qty;
             return totalPrice;
         } else {
@@ -44,32 +45,32 @@ function Modals({
         toast.success(`Item added successfully`);
     };
 
-        // const handleAdonChange = (e, addon) => {
-        //     const tempWorkingHours = [...filtereddata?.items];
-        //     const isChecked = e.target.checked;
-        //     if (isChecked) {
-        //         tempWorkingHours[0].add_ons = [...tempWorkingHours[0].add_ons, {addon_id: addon.addon_id, price: addon.price}]
-        //         tempWorkingHours[0].price = tempWorkingHours[0].price + addon.price;
-        //         setFiltereddata((prev) => ({
-        //             ...prev,
-        //             items: tempWorkingHours,
-        //             price: prev.price + addon.price,
-        //         }))
-        //     } 
-        //     else {
-        //         tempWorkingHours[0].add_ons = tempWorkingHours[0].add_ons.filter(ad => ad.addon_id !== addon.addon_id)
-        //         tempWorkingHours[0].price = tempWorkingHours[0].price - addon.price;
-        //         setFiltereddata((prev) => ({
-        //             ...prev,
-        //             items: tempWorkingHours,
-        //             price: prev.price - addon.price,
-        //         }))
-        //         setFiltereddata((prev) => ({
-        //             ...prev,
-        //             price: prev.price - addon.price,
-        //         }))
-        //         }
-        //     }
+        const handleAdonChange = (e, addon) => {
+            const tempWorkingHours = [...filtereddata?.items];
+            const isChecked = e.target.checked;
+            if (isChecked) {
+                tempWorkingHours[0].add_ons = [...tempWorkingHours[0].add_ons, {addon_id: addon.addon_id, price: addon.price}]
+                tempWorkingHours[0].price = tempWorkingHours[0].price + addon.price;
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    items: tempWorkingHours,
+                    price: prev.price + addon.price,
+                }))
+            } 
+            else {
+                tempWorkingHours[0].add_ons = tempWorkingHours[0].add_ons.filter(ad => ad.addon_id !== addon.addon_id)
+                tempWorkingHours[0].price = tempWorkingHours[0].price - addon.price;
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    items: tempWorkingHours,
+                    price: prev.price - addon.price,
+                }))
+                setFiltereddata((prev) => ({
+                    ...prev,
+                    price: prev.price - addon.price,
+                }))
+                }
+            }
 
     //     const handleOptionChange = (e, opt) => {
     //         console.log(opt)
@@ -93,24 +94,26 @@ function Modals({
     //             }))
     //         }
     // };
-    const handleAdonChange = (e, addon) => {
-        const tempWorkingHours = [...filtereddata?.items];
-        tempWorkingHours[0].add_ons = [...tempWorkingHours[0].add_ons, {addon_id: addon.addon_id, price: addon.price}]
-        tempWorkingHours[0].price = tempWorkingHours[0].price + addon.price;
-        setFiltereddata((prev) => ({
-            ...prev,
-            items: tempWorkingHours,
-            price: prev.price + addon.price,
-        }))
-    } 
-    const handleOptionChange = (e,groupName,opt) => {
-        console.log({opt,groupName, filtereddata})
+    // const handleAdonChange = (e, addon) => {
+    //     const tempWorkingHours = [...filtereddata?.items];
+    //     tempWorkingHours[0].add_ons = [...tempWorkingHours[0].add_ons, {addon_id: addon.addon_id, price: addon.price}]
+    //     tempWorkingHours[0].price = tempWorkingHours[0].price + addon.price;
+    //     setFiltereddata((prev) => ({
+    //         ...prev,
+    //         items: tempWorkingHours,
+    //         price: prev.price + addon.price,
+    //     }))
+    // } 
+    const handleOptionChange = (e,groupName,opt, groupIndex) => {
+        console.log({opt,groupName, filtereddata, groupIndex})
         const data = {[groupName]:opt}
         console.log(data)
         
         const tempWorkingHours = [...filtereddata?.items];
-        console.log({ tempWorkingHours })
-            tempWorkingHours[0].options = [...tempWorkingHours[0].options, {option_id: opt.option_id, price:opt.price}]
+        // console.log({ tempWorkingHours })
+        // const filterOpt = tempWorkingHours[0].options.filter(op => op.option_id === opt.option_id)
+        // console.log({filterOpt })
+            tempWorkingHours[0].options[groupName] = {option_id: opt.option_id, price:opt.price}
             tempWorkingHours[0].price = tempWorkingHours[0].price + opt.price;
             console.log(tempWorkingHours,tempWorkingHours[0].options,  tempWorkingHours[0].price)
             setFiltereddata((prev) => ({
@@ -153,6 +156,7 @@ function Modals({
             }
         }
     }, [item]);
+    console.log({ filtereddata })
 
     return (
         <>
@@ -191,17 +195,18 @@ function Modals({
                                         item.addOnsGrouped.map((group, index) => (
                                             <li key={`addon-group-${index}`}>
                                                 <h3>{group.groupName}</h3>
+                                                {console.log({ group })}
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((addon, addonIndex) => (            
                                                         <li key={`addon-${addonIndex}`}>                                                                                                                
                                                             <h5>{addon.addon_name}</h5>
-                                                            <label className="custom" htmlFor={`selectaddonoption${addonIndex}`}>
+                                                            <label className="custom-checkbox" htmlFor={`selectaddonoption${addonIndex}`}>
                                                                 <span className="checkbox-label">₹{addon.price}</span>
                                                                 <input
-                                                                    type="radio"
-                                                                    id={`selectaddonoption${addon.addon_id}`}
-                                                                    // value={addon}
-                                                                    name={`adon-${addonIndex}`}
+                                                                    type="checkbox"
+                                                                    id={`selectaddonoption${addonIndex}`}
+                                                                    value={addon}
+                                                                    // name={`adon-${index}`}
                                                                     onChange={(e) => handleAdonChange(e, addon)}
                                                                     checked={!isEmpty(filtereddata) && filtereddata?.items[0]?.add_ons?.some(item => item.addon_id === addon.addon_id)}
                                                                 />
@@ -237,8 +242,8 @@ function Modals({
                                                                     type="radio"
                                                                     id={`selectaddonoptionMeat${opt.option_id}`}                                                                    
                                                                     name={`option-${index}`}
-                                                                    onChange={(e) => handleOptionChange(e,group.groupName,opt)}
-                                                                    checked={!isEmpty(filtereddata) && filtereddata?.items[0]?.options?.some(item => item.option_id === opt.option_id)}
+                                                                    onChange={(e) => handleOptionChange(e,group.groupName,opt, index)}
+                                                                    checked={!isEmpty(filtereddata) && filtereddata?.items[0]?.options[group.groupName]?.option_id === opt.option_id}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>

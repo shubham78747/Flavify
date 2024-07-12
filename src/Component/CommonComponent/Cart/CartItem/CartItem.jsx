@@ -55,9 +55,9 @@ function CartItem() {
         dispatch(addItemToCart(cart))
     }, [0]);
 
-    // useEffect(() => {
-    //     calculateTotalPrice(cartItems);
-    // }, [cartItems]);
+    useEffect(() => {
+        calculateTotalPrice(cartItems);
+    }, [cartItems]);
 
     const updateCartItemsInLocalStorage = (updatedCartItems) => {
         dispatch(addItemToCart(updatedCartItems))
@@ -79,8 +79,10 @@ function CartItem() {
     };
 
     const calculateTotalPrice = (items) => {
+        console.log('items',{items})
         if (Array.isArray(items) && items.length > 0) {
-            const total = items?.map(item=>item?.items).map(item=>item[0]).reduce((acc, item) => acc + (item.price * items[0].qty), 0);
+            const total = items.reduce((itemAcc, subItem) => itemAcc + subItem.price, 0)
+            console.log(total)
             setTotalPrice(total);
         } else {
             setTotalPrice(0); 
@@ -90,7 +92,21 @@ function CartItem() {
             const handleCartItem = async() =>{
                 if(cartItems && cartItems.length > 0){
                     try {
+                        let tempCart = [...cartItems]
                         const checkOrder = JSON.parse(localStorage.getItem('custorder'));
+                        let changedCartJson = tempCart.map(item => {
+                            let tempItem =  {...item}
+                            tempItem.items = tempItem.items.map(i => {
+                                let tempi = {...i}
+                                tempi.options = Object.values(tempi.options).map(option => ({
+                                    option_id: option.option_id,
+                                    price: option.price
+                                }))
+                                return tempi
+                            })
+                            return tempItem
+                        })
+
                         const header = {
                             table_id: table?.table_id,
                             order_id: table?.order_id,
@@ -100,6 +116,8 @@ function CartItem() {
                             order_id: table?.order_id,
                             items: cartItems,
                         }
+                        console.log({ header, changedCartJson })
+                        return
                         if(checkOrder?.order){
                             const response = await Updateplaceorder(updatedata)                         
                             if(response?.data){
@@ -128,7 +146,7 @@ function CartItem() {
         }
 
         const handleQuickbiteClick = (quickbite) => {
-            const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite);
+            const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite.item_id);
             // const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
             // const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             // const optionsGrouped = Object.values(itemOptions
@@ -166,18 +184,18 @@ function CartItem() {
                 addOnsGrouped: groupedAddOns,
                 optionsGrouped:  groupedOptions,
             }
-            console.log(data,'565656565')
             setItemdata(data);
             setShow(true);
         };  
 
         const handleComboClick = (quickbite) => {
-            const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite);
             // const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
             // const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             let itemsdata = []
             quickbite.items.map(ele => {
                 const { add_ons, options, ...rest} = ele
+                console.log({ quickbite, ele })
+                const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, ele.item_id);
                 // const optionsGrouped = Object.values(itemOptions
                 // .filter((option) => option.item_id === rest.item_id)
                 // .reduce((groups, itemOption) => {
@@ -219,6 +237,7 @@ function CartItem() {
                 items: itemsdata,
                 discount: quickbite.discount,
             }
+            // console.log(data,'565656565')
             setComboItemdata(data);
             setShowCombo(true)
         };
@@ -230,7 +249,7 @@ function CartItem() {
                     <Accordion.Header>Order summary</Accordion.Header>
                     <Accordion.Body>
                         <ul>
-                        {cartItems?.length > 0 && cartItems?.map((item,index)=> item.combo === 'None' ? (
+                        {cartItems?.length > 0 && cartItems?.map((item,index)=> item.combo === 'None' || item.combo === 'Checkout' ? (
                             <li key={index}>                          
                                 <div className="itemmaindetail" onClick={() => handleQuickbiteClick(item)}> 
                                     <span>
@@ -256,6 +275,7 @@ function CartItem() {
                             <ul onClick={() => handleComboClick(item)}>
                                 {item.items.map((i, ix) => (
                                     <li key={ix}>
+                                    {console.log({i})}
                                         <div className="itemmaindetail">
                                             <span>
                                                 <Image src='Images/makhniimg.png'></Image>
@@ -275,7 +295,7 @@ function CartItem() {
                                     <Link to="#" onClick={() => addquantity(item)}>+</Link>
                                 </div>
                                 {/* <p>₹{item.price * item.qty}</p> */}
-                                {/* <p>₹{item.price}</p> */}
+                                <p>₹{item.price}</p>
                             </div>
                         </li>
                         )}
@@ -285,8 +305,7 @@ function CartItem() {
             </Accordion>
             <YouMayAlsoLike />
             <PastOrder pastOrdersList={pastOrdersList}/>
-            <Link className='btn-green placeorder' onClick={handleCartItem}>{!JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
-            {console.log({ itemdata })}
+            <Link className='btn-green placeorder' onClick={handleCartItem}>{JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
             <CartModal show={show} onHide={handleClose} item={itemdata} setCartItems={setCartItems}/>
             <ComboModal show={showCombo} onHide={handleCloseCombo} item={comboitemdata} setCartItems={setCartItems}/>
         </>

@@ -72,7 +72,7 @@ function CartItemSlider() {
     const handleClose = () => setShow(false);
        const handleCardSlide = (quickbite) => {
         setFlag('Likespage');
-        const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite);
+        const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite.item_id);
         // const optionsGrouped = Object.values(menu.itemOptions
         // .filter((option) => option.item_id === quickbite.item_id)
         // .reduce((groups, itemOption) => {
