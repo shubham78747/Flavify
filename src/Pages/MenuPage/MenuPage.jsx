@@ -90,7 +90,6 @@ function MenuPage() {
   };
 
   const handleCategoryClick = (pref) => {
-    console.log(pref)
     if (activePref !== pref) {
       filterMenu(selectedCategory, pref)
       setActivePref(pref);

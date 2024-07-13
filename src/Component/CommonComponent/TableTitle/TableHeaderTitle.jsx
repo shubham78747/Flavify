@@ -180,9 +180,7 @@ function TableHeaderTitle(props) {
     }
   };
 
-  console.log({});
   useEffect(() => {
-    console.log({ activeCategory, table })
       if (table?.lp_combos) {
         dispatch(setLpComboList(table?.lp_combos));
       }

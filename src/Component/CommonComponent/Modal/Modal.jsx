@@ -34,7 +34,6 @@ function Modals({
     const calculateItemPrice = () => {
         const basePrice = item.price || 0;
         const totalPrice = (basePrice + adonPrice + optionPrice) * count;
-        console.log({totalPrice})
         return totalPrice;
     };
 
@@ -43,7 +42,6 @@ function Modals({
             setCount(1);
         }
     }, [show]);
-    console.log(item)
     const handleAddToCart = (itemId) => {
         const selectedItem = {
             item_id: itemId,
@@ -62,13 +60,11 @@ function Modals({
                 options: option,
             }],
         };
-        console.log({selectedItem})
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         const existingItemIndex = cartItems.findIndex(cartItem => cartItem.item_id === selectedItem.item_id);
         if (existingItemIndex >= 0) {
             cartItems[existingItemIndex].qty += selectedItem.qty;
             // cartItems[existingItemIndex].price += selectedItem.price;
-            console.log(cartItems[existingItemIndex])
         } else {
             cartItems.push(selectedItem);
         }
@@ -91,7 +87,6 @@ function Modals({
             setAdon(adon.filter(ad => ad.addon_id !== addon.addon_id));
         }
         }
-        console.log({ option    })
     const handleOptionChange = (e,groupName,opt) => {
         setOption({
             ...option,

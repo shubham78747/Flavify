@@ -32,11 +32,9 @@ function HomePage() {
     const { cartItemsList, pastOrdersList  } = useSelector((state) => state.cart);
     const [isImageShown, setIsImageShown] = useState(false);
     const { table, comboList, allCombos, customerPref } = useSelector((state) => state?.table);
-    console.log({ comboList, allCombos })
     const toggleImage = () => {
         setIsImageShown(!isImageShown);
     };
-    console.log('tablenom',{cartItemsList})
     //   const handleShow = () => {
     //     setTableNom(table.table_id)
     //     setShow(true)
@@ -84,10 +82,8 @@ function HomePage() {
     
 
     useEffect(() => {
-        console.log({ activeCategory })
         if(activeCategory) {
             const filtermenu = quickBites?.filter((item) => activeCategory === 'N' ? item?.diet === 'V' || item?.diet === 'N' || item?.diet === 'E' : activeCategory === 'E' ? item?.diet === 'V' || item?.diet === 'E' : item?.diet === 'V');
-            console.log({ filtermenu })
             setSelectedFilter(filtermenu)
         }
     }, [activeCategory, quickBites]);
@@ -112,7 +108,6 @@ function HomePage() {
     };
 
     useEffect(() => {
-        console.log({ customerPref })
         if (!isEmpty(customerPref)) {
           setCurrentStep(customerPref?.pax)
           setActiveCategory(customerPref?.diet)
@@ -124,8 +119,6 @@ function HomePage() {
         const filtermenu = quickBites.filter((item) => item?.item_name.toLowerCase().includes(serach.toLowerCase()));
         setSelectedFilter(filtermenu) 
     }
-
-    console.log({ selectedFilter })
 
     return (
         <>

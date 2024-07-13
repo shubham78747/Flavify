@@ -126,7 +126,6 @@ function CombosSlider() {
           };
 
           const handleOptionChange = (e, itemId, optionId, price, groupName) => {
-            console.log({ itemId, optionId, price, groupName })
             setOption((prev) => {
                     return {
                         ...prev,
@@ -137,10 +136,8 @@ function CombosSlider() {
                       };
             });
           };
-          console.log({ option })
         const handleAddToCart = () => {
             const cartItemsAdd = filtereItem.items.map((item) => ({
-                // console.log({ item, adon, option, item_id: option[item.item_id]})
                 item_id: item.item_id,
                 item_name:item.item_name,
                 price: item.price,
@@ -165,8 +162,6 @@ function CombosSlider() {
             setOptionPrice(0);
             setAdonPrice(0);
             setShow(false);
-            // setFilteredItem([]);
-            // setAllCombos([]);
         };
     return (
         <div className="Combomain">

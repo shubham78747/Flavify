@@ -186,9 +186,6 @@ const recommendation2 = (
   for (let i = 0; i < noOfRecommendations; i++) {
     if (errors >= noOfRecommendations) {
       // this will happen if the menu_universe_cart does not have enough items/(horses/stars) to recommend
-      console.log(
-        `ERROR: not enough items in menu_universe_cart to recommend ${noOfRecommendations} items.`
-      );
       return recommendations;
     }
 

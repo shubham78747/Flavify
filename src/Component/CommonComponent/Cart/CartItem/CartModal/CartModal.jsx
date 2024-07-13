@@ -16,14 +16,28 @@ function Modals({
     setCartItems,
  }) {
     const [filtereddata,setFiltereddata] = useState([]);
-    console.log({filtereddata})
     const dispatch = useDispatch()
     const calculateItemPrice = () => {
         if(!isEmpty(filtereddata)) {
-            const basePrice = filtereddata?.items?.length > 0 && filtereddata?.items[0]?.price || 0;
-            console.log(    {basePrice,filtereddata}  )
-            const totalPrice = basePrice * filtereddata?.qty;
-            return totalPrice;
+            // const basePrice = filtereddata?.length > 0 && filtereddata?.price || 0;
+            let totalOptionPrice = 0;
+
+            
+
+    // data.totalOptionPrice = totalOptionPrice; // Store the total price of all options
+
+
+            console.log({ filtereddata })
+            const basePrice = {...filtereddata};
+            basePrice.items.forEach(item => {
+                Object.values(item.options).forEach(option => {
+                    totalOptionPrice += option.price;
+                });
+            });
+            // basePrice.items.map(item => console.log({ item }))
+            console.log({ basePrice })
+            const totalPrice = basePrice.price * filtereddata?.qty;
+            return totalPrice; 
         } else {
             return 0
         }
@@ -31,7 +45,6 @@ function Modals({
 
     const handleAddToCart = (itemId) => {
         const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        console.log({cartItems})
         const existingItemIndex = cartItems.findIndex(item => item.item_id === itemId);
         if (existingItemIndex !== -1) {
             cartItems[existingItemIndex] = { ...filtereddata, item_id: itemId };
@@ -44,36 +57,38 @@ function Modals({
         onHide();
         toast.success(`Item added successfully`);
     };
-
+        console.log({filtereddata})
         const handleAdonChange = (e, addon) => {
             const tempWorkingHours = [...filtereddata?.items];
             const isChecked = e.target.checked;
             if (isChecked) {
                 tempWorkingHours[0].add_ons = [...tempWorkingHours[0].add_ons, {addon_id: addon.addon_id, price: addon.price}]
-                tempWorkingHours[0].price = tempWorkingHours[0].price + addon.price;
+                filtereddata.price = filtereddata?.price + addon.price;
                 setFiltereddata((prev) => ({
                     ...prev,
                     items: tempWorkingHours,
-                    price: prev.price + addon.price,
+                    price:  filtereddata.price,
+                    // price: prev.price + addon.price,
                 }))
             } 
             else {
                 tempWorkingHours[0].add_ons = tempWorkingHours[0].add_ons.filter(ad => ad.addon_id !== addon.addon_id)
-                tempWorkingHours[0].price = tempWorkingHours[0].price - addon.price;
-                setFiltereddata((prev) => ({
+                filtereddata.price = filtereddata?.price - addon.price;
+                setFiltereddata((prev) => 
+                    ({
                     ...prev,
                     items: tempWorkingHours,
-                    price: prev.price - addon.price,
+                    price:  filtereddata.price,
+                    // price: prev.price - addon.price,
                 }))
-                setFiltereddata((prev) => ({
-                    ...prev,
-                    price: prev.price - addon.price,
-                }))
+                // setFiltereddata((prev) => ({
+                //     ...prev,
+                //     price: prev.price - addon.price,
+                // }))
                 }
             }
 
     //     const handleOptionChange = (e, opt) => {
-    //         console.log(opt)
     //         const tempWorkingHours = [...filtereddata?.items];
     //         const isChecked = e.target.checked;
     //         if (isChecked) {
@@ -104,22 +119,16 @@ function Modals({
     //         price: prev.price + addon.price,
     //     }))
     // } 
+    
     const handleOptionChange = (e,groupName,opt, groupIndex) => {
-        console.log({opt,groupName, filtereddata, groupIndex})
-        const data = {[groupName]:opt}
-        console.log(data)
-        
-        const tempWorkingHours = [...filtereddata?.items];
-        // console.log({ tempWorkingHours })
-        // const filterOpt = tempWorkingHours[0].options.filter(op => op.option_id === opt.option_id)
-        // console.log({filterOpt })
+            const tempWorkingHours = [...filtereddata?.items];
             tempWorkingHours[0].options[groupName] = {option_id: opt.option_id, price:opt.price}
-            tempWorkingHours[0].price = tempWorkingHours[0].price + opt.price;
-            console.log(tempWorkingHours,tempWorkingHours[0].options,  tempWorkingHours[0].price)
+            console.log({item:tempWorkingHours[0].options[groupName].price})
+            filtereddata.price = filtereddata?.price + opt.price;
             setFiltereddata((prev) => ({
                 ...prev,
                 items: tempWorkingHours,
-                price: tempWorkingHours[0].price,
+                // price: filtereddata.price,
             }))
 };
 
@@ -147,7 +156,6 @@ function Modals({
         if (item) {
             const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             const data = Array.isArray(cartItems) ? cartItems.find(cartItem => cartItem.item_id === item.item_id) : {};
-            console.log({ data })
             if (data) {
                 setFiltereddata(data);
             }
@@ -156,7 +164,6 @@ function Modals({
             }
         }
     }, [item]);
-    console.log({ filtereddata })
 
     return (
         <>
@@ -194,8 +201,7 @@ function Modals({
                                     {item && item.addOnsGrouped && item.addOnsGrouped.length > 0 ? (
                                         item.addOnsGrouped.map((group, index) => (
                                             <li key={`addon-group-${index}`}>
-                                                <h3>{group.groupName}</h3>
-                                                {console.log({ group })}
+                                                <h3>{group.groupName}</h3>                                             
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((addon, addonIndex) => (            
                                                         <li key={`addon-${addonIndex}`}>                                                                                                                
@@ -232,12 +238,10 @@ function Modals({
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((opt, optionIndex) => (                                                        
-                                                        <li key={`option-${optionIndex}`}>
-                                                           {console.log(opt,optionIndex,index)}
+                                                        <li key={`option-${optionIndex}`}>                                                         
                                                             <h5>{opt.option_name}</h5>
                                                             <label className="custom" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
-                                                                <span className="checkbox-label">₹{opt.price}</span>
-                                                                {console.log({ opt, filtereddata })}
+                                                                <span className="checkbox-label">₹{opt.price}</span>                                                               
                                                                 <input
                                                                     type="radio"
                                                                     id={`selectaddonoptionMeat${opt.option_id}`}                                                                    

@@ -30,6 +30,7 @@ function Search({selectedOption,handleCategoryClick,handleSearchchnage,toggleIma
             {
                 selectedOption && (
                     <div className="selected-image-container" onClick={toggleImage}>
+                    <> <Image src="Images/down.svg" alt="Veg" className="selected-image" /></>
                         {/* Render larger image based on selected option */}
                         {selectedOption === 'V' && (
                             <> <Image src="Images/veg.svg" alt="Veg" className="selected-image" /></>

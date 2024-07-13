@@ -39,7 +39,6 @@ function Modals({
     };
     
         const handleAdonChange = (e,index, addon) => {
-            console.log(index,addon)
             const isChecked = e.target.checked;
             const tempWorkingHours = [...filtereddata.items];
             if (isChecked) {
@@ -59,16 +58,12 @@ function Modals({
                 }))
                 }
             }
-            console.log(filtereddata)
-        const handleOptionChange = (e,index,opt, groupName) => {
-            console.log(index)
-            // console.log('sdhkiahsda',index,opt)
+         
+        const handleOptionChange = (e,index,opt, groupName) => {         
             const isChecked = e.target.checked;
-            const tempWorkingHours = [...filtereddata.items];
-            console.log({tempWorkingHours})
+            const tempWorkingHours = [...filtereddata.items];         
             if (isChecked) {
-                tempWorkingHours[index].options[groupName] = {option_id: opt.option_id, price:opt.price}
-                console.log(tempWorkingHours[index].options)
+                tempWorkingHours[index].options[groupName] = {option_id: opt.option_id, price:opt.price}        
                  setFiltereddata((prev) => ({
                     ...prev,
                     items: tempWorkingHours,

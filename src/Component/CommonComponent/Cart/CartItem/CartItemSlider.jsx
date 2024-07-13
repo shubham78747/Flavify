@@ -108,7 +108,6 @@ function CartItemSlider() {
             addOnsGrouped: groupedAddOns,
             optionsGrouped:  groupedOptions,
         }
-        console.log(data)
         setItem(data);
         setShow(true);
     };
