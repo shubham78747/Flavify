@@ -34,12 +34,12 @@ function MobileBar() {
                     <p>Cart</p>
                 </Link>
             </li>
-            <li className={activeLink === '/favourite' ? 'active' : ''}>
+            {/* <li className={activeLink === '/favourite' ? 'active' : ''}>
                 <Link to="/favourite" onClick={() => setActiveLink('/favourite')}>
                     <span><Icon icon="mdi:favourite" /></span>
                     <p>Favourite</p>
                 </Link>
-            </li>
+            </li> */}
             <li className={activeLink === '/menu' ? 'active' : ''}>
                 <Link to="/menu" onClick={() => setActiveLink('/menu')}>
                     <span><Image src='Images/cart.svg' /></span>

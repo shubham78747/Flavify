@@ -9,7 +9,7 @@ import Loader from '../../CommonComponent/Loader/Loader';
 import { useSelector } from 'react-redux';
 import Modals from '../../CommonComponent/Modal/Modal';
 import { addOnsGroupeds, getGroupedOptionsAndAddOns, optionsGroupeds } from '../../../Helper/Coman';
-
+import confetti from "https://esm.run/canvas-confetti@1";
 function ItemDetails({ items, selectedCategory }) {
     const { menu } = useSelector((state) => state.food);
     const [activeSlider, setActiveSlider] = useState({});
@@ -29,6 +29,10 @@ function ItemDetails({ items, selectedCategory }) {
             [itemKey]: !prevState[itemKey]
         }));
         setActiveBgGreen(prevState => (prevState === itemKey ? null : itemKey));
+        confetti({
+            particleCount: 150,
+            spread: 60
+        });
     };
     
     useEffect(() => {

@@ -362,7 +362,7 @@ span.bluetag {
 }
 
 .bg-white.bg-green {
-    box-shadow: inset 1px 1px 18px 3px #00000052;
+        background: #f5f5f5 !important;
 }
 
 .tabledetail.p-0 {

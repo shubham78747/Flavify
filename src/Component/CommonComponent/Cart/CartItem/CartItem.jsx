@@ -7,8 +7,7 @@ import { placeorder,Updateplaceorder } from '../action/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import CartModal from './CartModal/CartModal';
-import { useChannel } from 'ably/react';
-import { addItemToCart, setAllPastOrders } from '../../../../Pages/CartPage/Cartslice/Cartslice';
+import { addItemToCart } from '../../../../Pages/CartPage/Cartslice/Cartslice';
 import ComboModal from './ComboModal/ComboModal';
 import YouMayAlsoLike from './YouMayAlsoLike';
 import { getGroupedOptionsAndAddOns } from '../../../../Helper/Coman';
@@ -115,6 +114,8 @@ function CartItem() {
                             order_id: table?.order_id,
                             items: changedCartJson,
                         }
+                        console.log({updatedata,header})
+                        return
                         if(checkOrder?.order){
                             const response = await Updateplaceorder(updatedata)                         
                             if(response?.data){

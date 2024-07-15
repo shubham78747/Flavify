@@ -120,15 +120,21 @@ function Modals({
     //     }))
     // } 
     
-    const handleOptionChange = (e,groupName,opt, groupIndex) => {
+    const handleOptionChange = (e,groupName,opt) => {
             const tempWorkingHours = [...filtereddata?.items];
+            const existingOption = tempWorkingHours[0].options[groupName];
+            console.log({existingOption})
+
+                if (existingOption) {
+                    filtereddata.price -= existingOption.price;
+                }
             tempWorkingHours[0].options[groupName] = {option_id: opt.option_id, price:opt.price}
             console.log({item:tempWorkingHours[0].options[groupName].price})
-            filtereddata.price = filtereddata?.price + opt.price;
+            filtereddata.price += opt.price;
             setFiltereddata((prev) => ({
                 ...prev,
                 items: tempWorkingHours,
-                // price: filtereddata.price,
+                price: filtereddata.price,
             }))
 };
 
@@ -238,16 +244,17 @@ function Modals({
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((opt, optionIndex) => (                                                        
-                                                        <li key={`option-${optionIndex}`}>                                                         
+                                                        <li key={`option-${optionIndex}`}>   
+                                                          {/* {console.log({item,group,opt,selected:filtereddata?.items[0]?.options})}                                                       */}
                                                             <h5>{opt.option_name}</h5>
                                                             <label className="custom" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
                                                                 <span className="checkbox-label">₹{opt.price}</span>                                                               
                                                                 <input
                                                                     type="radio"
-                                                                    id={`selectaddonoptionMeat${opt.option_id}`}                                                                    
+                                                                    // id={`selectaddonoptionMeat${opt.option_id}`}                                                                    
                                                                     name={`option-${index}`}
-                                                                    onChange={(e) => handleOptionChange(e,group.groupName,opt, index)}
                                                                     checked={!isEmpty(filtereddata) && filtereddata?.items[0]?.options[group.groupName]?.option_id === opt.option_id}
+                                                                    onChange={(e) => handleOptionChange(e,group.groupName,opt)}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>

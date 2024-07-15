@@ -4,7 +4,7 @@ ul.mobilebar {
     text-decoration: none;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     background: white;
     position: fixed;
     bottom: 0;
@@ -38,8 +38,8 @@ ul.mobilebar {
 
 ul.mobilebar {
     margin: 0;
-    padding: 7px 28px;
-    box-shadow: 0px -4px 30px -20px #0000005c;
+    padding: 17px 28px 7px 28px;
+    box-shadow: 0px -4px 30px -20px #0000008f;
     border-radius: 15px 15px 0px 0px;
     -webkit-border-radius: 15px 15px 0px 0px;
     -moz-border-radius: 15px 15px 0px 0px;
@@ -53,7 +53,7 @@ ul.mobilebar a:after {
 
 ul.mobilebar a {
     text-decoration: none;
-    color: #5a0226;
+    color: #000;
 }
 
 ul.mobilebar p {
@@ -90,25 +90,47 @@ ul.mobilebar li a p:after {
     width: 38px;
     background: #5a0226;
     height: 5px;
+    transition: all 0.5s;
     border-radius: 10px 10px 0px 0px;
     opacity: 0;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    -o-transition: all 0.5s;
 }
 
 ul.mobilebar span {
-    width: 30px;
-    height: 30px;
+    width: 22px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: auto;
+    color: #000;
+}
+ul.mobilebar li.active span{
+color: #5a0226;
+}
+ul.mobilebar li.active a p:after {
+    opacity: 1;
+}
+ul.mobilebar li{
+    opacity: 0.5;
 }
 
-ul.mobilebar li.active a p:after {
+ul.mobilebar li a p{
+    color: #000;
+}
+ul.mobilebar li.active{
     opacity: 1;
 }
 
 ul.mobilebar li.active {
     transform: translateY(-5px);
+    -webkit-transform: translateY(-5px);
+    -moz-transform: translateY(-5px);
+    -ms-transform: translateY(-5px);
+    -o-transform: translateY(-5px);
 }
 
 .itemtitle h3 {

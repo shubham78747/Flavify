@@ -150,6 +150,7 @@
 .selected-image-container {
     position: absolute;
     right: 6px;
+    cursor: pointer;
     top: 50%;
     margin: 0;
     transform: translateY(-50%);
