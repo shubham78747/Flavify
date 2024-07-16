@@ -192,7 +192,6 @@ function Modals({
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((option, optionIndex) => (
                                                         <li key={`option-${option.option_id}`}>  
-                                                          {console.log({filtereddataca: filtereddata?.items[mainindex], groupName: group.groupName})}                                                          
                                                             <h5>{option.option_name}</h5>
                                                             <label className="custom" htmlFor={`selectaddonoptionMeat${option.option_id}`}>
                                                                 <span className="checkbox-label">₹{option.price}</span>                                                              

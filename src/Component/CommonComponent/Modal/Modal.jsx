@@ -206,7 +206,6 @@ function Modals({
                                                                     // value={option}
                                                                     name={`option-${index}`} 
                                                                     onChange={(e) => handleOptionChange(e,group.groupName, option)}
-                                                                    // checked={console.log()}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>

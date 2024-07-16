@@ -27,15 +27,12 @@ function Modals({
     // data.totalOptionPrice = totalOptionPrice; // Store the total price of all options
 
 
-            console.log({ filtereddata })
             const basePrice = {...filtereddata};
             basePrice.items.forEach(item => {
                 Object.values(item.options).forEach(option => {
                     totalOptionPrice += option.price;
                 });
             });
-            // basePrice.items.map(item => console.log({ item }))
-            console.log({ basePrice })
             const totalPrice = basePrice.price * filtereddata?.qty;
             return totalPrice; 
         } else {
@@ -57,7 +54,6 @@ function Modals({
         onHide();
         toast.success(`Item added successfully`);
     };
-        console.log({filtereddata})
         const handleAdonChange = (e, addon) => {
             const tempWorkingHours = [...filtereddata?.items];
             const isChecked = e.target.checked;
@@ -123,13 +119,11 @@ function Modals({
     const handleOptionChange = (e,groupName,opt) => {
             const tempWorkingHours = [...filtereddata?.items];
             const existingOption = tempWorkingHours[0].options[groupName];
-            console.log({existingOption})
 
                 if (existingOption) {
                     filtereddata.price -= existingOption.price;
                 }
             tempWorkingHours[0].options[groupName] = {option_id: opt.option_id, price:opt.price}
-            console.log({item:tempWorkingHours[0].options[groupName].price})
             filtereddata.price += opt.price;
             setFiltereddata((prev) => ({
                 ...prev,
@@ -245,10 +239,9 @@ function Modals({
                                                 <ul className='selectvariantmain'>
                                                     {group.itemList.map((opt, optionIndex) => (                                                        
                                                         <li key={`option-${optionIndex}`}>   
-                                                          {/* {console.log({item,group,opt,selected:filtereddata?.items[0]?.options})}                                                       */}
                                                             <h5>{opt.option_name}</h5>
                                                             <label className="custom" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
-                                                                <span className="checkbox-label">₹{opt.price}</span>                                                               
+                                                                <span className="checkbox-label">₹{opt.price}</span>
                                                                 <input
                                                                     type="radio"
                                                                     // id={`selectaddonoptionMeat${opt.option_id}`}                                                                    

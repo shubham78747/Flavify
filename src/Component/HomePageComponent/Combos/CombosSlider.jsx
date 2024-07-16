@@ -179,7 +179,7 @@ function CombosSlider() {
                                 <span className='bluetag'><Icon icon="carbon:close-outline" width="16px" height="16px" /> 30% OFF</span>
                                 <i><Image src={item.diet === 'N' ? '/Images/nonveg.svg' : item.diet === 'V' ?  '/Images/veg.svg' : '/Images/egg.svg'} alt="Veg"></Image></i>
                             </div>
-                            <h3>{item?.items.map(i => i.item_name).join(' + ')} Manchurian gravy + Shaahi Wrapes</h3>
+                            <h3>{item?.items.map(i => i.item_name).join(' + ')}</h3>
                             <div className="comboprice d-flex">
                                 <p>₹{item?.total-item?.discount} <del>₹{item?.discount} </del></p>
                                 <Link onClick={()=>handleShow(item)}>View Combo <Icon icon="teenyicons:right-small-outline" width="16px" height="16px" /></Link>

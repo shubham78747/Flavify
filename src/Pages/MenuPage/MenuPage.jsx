@@ -13,7 +13,7 @@ function MenuPage() {
   const [activePref, setActivePref] = useState(getitemdata?.diet || 'V');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [filteredItems, setFilteredItems] = useState([]);
-  const { customerPref } = useSelector((state) => state?.table);
+  const { customerPref, table } = useSelector((state) => state?.table);
   const dispatch = useDispatch()
 
   // const { channel } = useChannel('punched_sub_order', (message) => {
@@ -35,7 +35,7 @@ function MenuPage() {
     if (selectedCategory && activePref) {
       filterMenu(selectedCategory, activePref);
     }
-  }, [selectedCategory, activePref]);
+  }, [table, selectedCategory, activePref]);
 
   useEffect(() => {
     const getitemdata = JSON.parse(localStorage.getItem('custPref'));

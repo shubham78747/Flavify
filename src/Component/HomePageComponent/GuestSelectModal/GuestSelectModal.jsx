@@ -11,7 +11,7 @@ function GuestSelectModal() {
     const handleCloseClick = () => {
         document.body.classList.remove('show'); // Remove the 'show' class from the body
     };
-    const [activeCategory, setActiveCategory] = useState('veg');
+    const [activeCategory, setActiveCategory] = useState('V');
 
     // Handler to set the active category
     const handleCategoryClick = (category) => {
@@ -62,7 +62,7 @@ function GuestSelectModal() {
 export default GuestSelectModal;
 
 function ItemSelectModal({ onClose }) {
-    const [activeCategory, setActiveCategory] = useState('veg');
+    const [activeCategory, setActiveCategory] = useState('V');
 
     // Handler to set the active category
     const handleCategoryClick = (category) => {

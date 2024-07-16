@@ -10,8 +10,13 @@ import { useSelector } from 'react-redux';
 import Modals from '../../CommonComponent/Modal/Modal';
 import { addOnsGroupeds, getGroupedOptionsAndAddOns, optionsGroupeds } from '../../../Helper/Coman';
 import confetti from "https://esm.run/canvas-confetti@1";
+import predictMenu  from '../../../Helper/menuCombo';
+// import { predictMenu } from '../../../Helper/menuCombo';
+
 function ItemDetails({ items, selectedCategory }) {
     const { menu } = useSelector((state) => state.food);
+    const { cartItemsList } = useSelector((state) => state.cart);
+    const { table, customerPref } = useSelector((state) => state?.table);
     const [activeSlider, setActiveSlider] = useState({});
     const [loading, setLoading] = useState(true);
     const sliderRefs = useRef({});
@@ -21,18 +26,47 @@ function ItemDetails({ items, selectedCategory }) {
     const [item, setItem] = useState([]);
     const [isFilled, setIsFilled] = useState(false);
     const [flag, setFlag] = useState(null);
+    const [menuComboList, setMenuComboList] = useState([])
     // Function to handle the click and toggle the slider visibility
-    const handleViewCombosClick = (itemKey, e) => {
+    const handleViewCombosClick = async (itemKey, e, item) => {
         e.preventDefault();
+        
+        let cartForCombo = [];
+        cartItemsList.map(j => {
+            j.items.map(i => {
+                const menuItem = menu.items.find((k) => k.item_id === i.item_id);
+                const data = {
+                    item_id: menuItem.item_id,
+                    item_name: menuItem.item_name,
+                    item_category: menuItem?.item_category,
+                    item_subcategory: menuItem?.item_subcategory,
+                    qty: j.qty,
+                    price: j.price,
+                    diet: menuItem?.diet,
+                    is_available: menuItem?.is_available,
+                    is_quickbite: menuItem?.is_quickbite,
+                    flavify_category: menuItem?.flavify_category,
+                  }
+                  cartForCombo.push(data)
+            })
+        });
+
+        const data = await predictMenu(menu, cartForCombo, customerPref?.diet, item)
+        setMenuComboList(data)
+
         setActiveSlider(prevState => ({
-            ...prevState,
+            // ...prevState,
             [itemKey]: !prevState[itemKey]
         }));
         setActiveBgGreen(prevState => (prevState === itemKey ? null : itemKey));
-        confetti({
-            particleCount: 150,
-            spread: 60
-        });
+        if(!([itemKey] in activeSlider)) {
+            confetti({
+                particleCount: 150,
+                spread: 60
+            });
+        } else {
+            setMenuComboList(data)
+        }
     };
     
     useEffect(() => {
@@ -44,34 +78,6 @@ function ItemDetails({ items, selectedCategory }) {
     const handleQuickbiteClick = (quickbite) => {
         setFlag('Qickbitepage');
         const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite.item_id);
-        // const optionsGrouped = Object.values(menu.itemOptions
-        //     .filter((option) => option.item_id === quickbite.item_id)
-        //     .reduce((groups, itemOption) => {
-        //         const groupName = itemOption.option_group_name;
-        //         if (!groups[groupName]) {
-        //             groups[groupName] = { groupName, itemList: [] };
-        //         }
-        //         const optionDetails = menu.options.find(
-        //             (option) => option.option_id === itemOption.option_id
-        //         );
-        //         groups[groupName].itemList.push(optionDetails);
-        //         return groups;
-        //     }, {}));
-            
-        //     // Find related add-ons and group by addon_group_name
-        // const addOnsGrouped = Object.values(menu.itemAddOns
-        //     .filter((addon) => addon.item_id === quickbite.item_id)
-        //     .reduce((groups, itemAddon) => {
-        //         const groupName = itemAddon.addon_group_name;
-        //         if (!groups[groupName]) {
-        //             groups[groupName] = { groupName, itemList: [] };
-        //         }
-        //         const addonDetails = menu.addOns.find(
-        //             (addon) => addon.addon_id === itemAddon.addon_id
-        //         );
-        //         groups[groupName].itemList.push(addonDetails);
-        //         return groups;
-        //     }, {}));
 
             const data = {
                 item_id: quickbite.item_id,
@@ -123,16 +129,16 @@ function ItemDetails({ items, selectedCategory }) {
                                     </div>
                                 </Col>
                             </Row>
-                            <Link
+                            {["Soups & Salads", "Starters", "Main Course", "Desserts", "Beverages"].includes(item?.item_category) && ["Stars", "Puzzles"].includes(item?.flavify_category) && <Link
                                 to="#"
                                 className='viewcombomain mb-3'
-                                onClick={(e) => handleViewCombosClick(index, e)}
+                                onClick={(e) => handleViewCombosClick(index, e, item)}
                             >
                                 Combos <Icon icon="iconamoon:arrow-down-2-light" width="16px" height="16px" />
-                            </Link>
+                            </Link>}
                             {activeSlider[index] && (
                                 <div ref={(el) => (sliderRefs.current[index] = el)}>
-                                    <CombosSlider />
+                                    <CombosSlider comboList={menuComboList}/>
                                 </div>
                             )}
                         </div>

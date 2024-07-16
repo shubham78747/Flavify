@@ -23,6 +23,7 @@ import {
 } from "../../../Pages/CartPage/Cartslice/Cartslice";
 import { postcustomerpreference } from "../../../Pages/HomePage/action";
 import { isEmpty } from "lodash";
+import { getGroupedOptionsAndAddOns } from "../../../Helper/Coman";
 
 function TableHeaderTitle(props) {
   const [tablenom, setTableNom] = useState();
@@ -71,6 +72,53 @@ function TableHeaderTitle(props) {
 
   const handleClose = () => setShow(false);
 
+  function updateOrderedItemOptions(orderedItem) {
+    // Update each item's options
+    const updatedItems = orderedItem.items.map(item => {
+      const updatedSubItems = item.items.map(subItem => {
+
+        const { groupedOptions } = getGroupedOptionsAndAddOns(menu, subItem.item_id);
+
+        const optionMap = new Map();
+        groupedOptions.forEach(group => {
+          group.itemList.forEach(option => {
+            optionMap.set(option.option_id, {
+              groupName: group.groupName,
+              ...option
+            });
+          });
+        });
+        // Transform options array to a grouped options object
+        const options = subItem.options.reduce((acc, opt) => {
+          const optionDetail = optionMap.get(opt.option_id);
+          if (optionDetail) {
+            acc[optionDetail.groupName] = {
+              option_id: optionDetail.option_id,
+              price: optionDetail.price,
+            };
+          }
+          return acc;
+        }, {});
+  
+        return {
+          ...subItem,
+          options
+        };
+      });
+  
+      return {
+        ...item,
+        items: updatedSubItems
+      };
+    });
+  
+    // Return the updated ordered item object
+    return {
+      ...orderedItem,
+      items: updatedItems
+    };
+  }
+
   useEffect(() => {
     const tableDataStr = localStorage.getItem("tableData");
     const tableData = tableDataStr
@@ -91,7 +139,8 @@ function TableHeaderTitle(props) {
           if (order?.is_punched) {
             pastOrder.push(order);
           } else {
-            currecntOrder = order.items;
+            const groupWise = updateOrderedItemOptions(order)
+            currecntOrder = groupWise.items;
           }
         }
         if (table?.diet) {
@@ -104,6 +153,7 @@ function TableHeaderTitle(props) {
         if (currecntOrder.length > 0) {
           const data = { order: true };
           localStorage.setItem("custorder", JSON.stringify(data));
+          const cartData = JSON.parse(localStorage.getItem("cartItems"));
           dispatch(addItemToCart(currecntOrder));
           localStorage.setItem("cartItems", JSON.stringify(currecntOrder));
         } else {
@@ -216,6 +266,11 @@ function TableHeaderTitle(props) {
       setActiveCategory(customerPref?.diet)
     }
   }, [customerPref]);
+
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem('cartItems'))
+    dispatch(addItemToCart(cart))
+}, [0]);
 
   return (
     <>

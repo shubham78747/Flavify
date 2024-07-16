@@ -86,61 +86,59 @@ function CartItem() {
         }
     };
     
-            const handleCartItem = async() =>{
-                if(cartItems && cartItems.length > 0){
-                    try {
-                        let tempCart = [...cartItems]
-                        const checkOrder = JSON.parse(localStorage.getItem('custorder'));
-                        console.log(checkOrder)
-                        let changedCartJson = tempCart.map(item => {
-                            let tempItem =  {...item}
-                            tempItem.items = tempItem.items.map(i => {
-                                let tempi = {...i}
-                                tempi.options = Object.values(tempi.options).map(option => ({
-                                    option_id: option.option_id,
-                                    price: option.price
-                                }))
-                                return tempi
-                            })
-                            return tempItem
+        const handleCartItem = async() =>{
+            if(cartItems && cartItems.length > 0){
+                try {
+                    let tempCart = [...cartItems]
+                    const checkOrder = JSON.parse(localStorage.getItem('custorder'));
+                    console.log(checkOrder)
+                    let changedCartJson = tempCart.map(item => {
+                        let tempItem =  {...item}
+                        tempItem.items = tempItem.items.map(i => {
+                            let tempi = {...i}
+                            tempi.options = Object.values(tempi.options).map(option => ({
+                                option_id: option.option_id,
+                                price: option.price
+                            }))
+                            return tempi
                         })
+                        return tempItem
+                    })
 
-                        const header = {
-                            table_id: table?.table_id,
-                            order_id: table?.order_id,
-                            items: changedCartJson,  
-                        }
-                        const updatedata = {
-                            order_id: table?.order_id,
-                            items: changedCartJson,
-                        }
-                        console.log({updatedata,header})
-                        return
-                        if(checkOrder?.order){
-                            const response = await Updateplaceorder(updatedata)                         
-                            if(response?.data){
-                                navigate('/success')
-                                setCartItems([])
-                                setTotalPrice(0)
-                            }
-                            toast.success("Order Updated successfully!");
-                        }else{
-                            const response = await placeorder(header)
-                            if(response?.data){
-                                navigate('/success')
-                                setCartItems([])
-                                setTotalPrice(0)
-
-                                localStorage.setItem('custorder',JSON.stringify({order:true}))
-                            }
-                        }   
-                        toast.success("Order placed successfully!");             
-                    } catch (error) {
-                        console.error('Error sending data:', error);
+                    const header = {
+                        table_id: table?.table_id,
+                        order_id: table?.order_id,
+                        items: changedCartJson,  
                     }
-                }else{
-                    toast.warning("Please add an item");
+                    const updatedata = {
+                        order_id: table?.order_id,
+                        items: changedCartJson,
+                    }
+                    if(checkOrder?.order){
+                        const response = await Updateplaceorder(updatedata)                         
+                        if(response?.data){
+                            navigate('/success')
+                            setCartItems([])
+                            setTotalPrice(0)
+                        }
+                        toast.success("Order Updated successfully!");
+                    }else{
+                        const response = await placeorder(header)
+                        if(response?.data){
+                            navigate('/success')
+                            setCartItems([])
+                            setTotalPrice(0)
+
+                            localStorage.setItem('custorder',JSON.stringify({order:true}))
+                        }
+                    }   
+                    toast.success("Order placed successfully!");             
+                } catch (error) {
+                    console.error('Error sending data:', error);
                 }
+            }else{
+                toast.warning("Please add an item");
+            }
         }
 
         const handleQuickbiteClick = (quickbite) => {
