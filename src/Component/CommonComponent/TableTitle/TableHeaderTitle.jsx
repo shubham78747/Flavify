@@ -258,7 +258,7 @@ function TableHeaderTitle(props) {
     if (!isEmpty(allCombos)) {
       createCombos(allCombos[activeCategory], activeCategory);
     }
-  }, [allCombos]);
+  }, [allCombos, menu]);
 
   useEffect(() => {
     if (!isEmpty(customerPref)) {

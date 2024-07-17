@@ -17,11 +17,36 @@ function Modals({
  }) {
     const [filtereddata,setFiltereddata] = useState([]);
     const dispatch = useDispatch()
+    // const calculateItemPrice = () => {
+    //     const basePrice = filtereddata?.price || 0;
+    //     const totalPrice = basePrice * filtereddata?.qty;
+    //     return totalPrice;
+    // };
     const calculateItemPrice = () => {
-        const basePrice = filtereddata?.price || 0;
-        const totalPrice = basePrice * filtereddata?.qty;
-        return totalPrice;
+        if(!isEmpty(filtereddata)) {
+            // const basePrice = filtereddata?.length > 0 && filtereddata?.price || 0;
+            let totalOptionPrice = 0;
+            let totalAddonsPrice = 0;
+            const basePrice = {...filtereddata};
+
+            basePrice.items.forEach(item => {
+                item.add_ons.forEach(option => {
+                    totalAddonsPrice += option.price;
+                });
+            });
+
+            basePrice.items.forEach(item => {
+                Object.values(item.options).forEach(option => {
+                    totalOptionPrice += option.price;
+                });
+            });
+            const totalPrice = ((basePrice.price + totalAddonsPrice + totalOptionPrice) - filtereddata?.discount) * filtereddata?.qty;
+            return totalPrice; 
+        } else {
+            return 0
+        }
     };
+
 
     const handleAddToCart = (itemId) => {
         const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -46,7 +71,7 @@ function Modals({
                 setFiltereddata((prev) => ({
                     ...prev,
                     add_ons: tempWorkingHours,
-                    price: prev.price+addon.price,
+                    // price: prev.price+addon.price,
                 }))
             }
              else {
@@ -54,7 +79,7 @@ function Modals({
                 setFiltereddata((prev) => ({
                     ...prev,
                     add_ons: tempWorkingHours,
-                    price: prev.price-addon.price,
+                    // price: prev.price-addon.price,
                 }))
                 }
             }
@@ -67,7 +92,7 @@ function Modals({
                  setFiltereddata((prev) => ({
                     ...prev,
                     items: tempWorkingHours,
-                    price: prev.price+opt.price,
+                    // price: prev.price+opt.price,
 
                 }))
               }
@@ -198,7 +223,7 @@ function Modals({
                                                                 <input
                                                                     type="radio"
                                                                     id={`selectaddonoptionMeat${option.option_id}`}                                                                   
-                                                                    name={`option-${mainitem.item_name}-${index}`}
+                                                                    name={`option-${mainitem.item_name}-${group.groupName}`}
                                                                     onChange={(e) => handleOptionChange(e,mainindex,option, group.groupName)} 
                                                                     checked={!isEmpty(filtereddata) && filtereddata?.items[mainindex]?.options[group.groupName]?.option_id === option.option_id}
                                                                 />

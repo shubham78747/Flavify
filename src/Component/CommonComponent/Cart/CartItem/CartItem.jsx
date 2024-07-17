@@ -94,6 +94,12 @@ function CartItem() {
                     console.log(checkOrder)
                     let changedCartJson = tempCart.map(item => {
                         let tempItem =  {...item}
+                        if(['LandingPage', 'Menu'].includes(item.combo)) {
+                            tempItem.price = calculateItemPrice(item, 'combo')
+                        } else {
+                            tempItem.price = calculateItemPrice(item, '')
+                        }
+                        tempItem = calculateItemPrice(item, '')
                         tempItem.items = tempItem.items.map(i => {
                             let tempi = {...i}
                             tempi.options = Object.values(tempi.options).map(option => ({
@@ -236,6 +242,49 @@ function CartItem() {
             setShowCombo(true)
         };
 
+        const calculateItemPrice = (cartItem, type) => {
+            // if(!isEmpty(filtereddata)) {
+                // const basePrice = filtereddata?.length > 0 && filtereddata?.price || 0;
+                let totalOptionPrice = 0;
+                let totalAddonsPrice = 0;
+                const basePrice = {...cartItem};
+    
+                basePrice.items.forEach(item => {
+                    item.add_ons.forEach(option => {
+                        totalAddonsPrice += option.price;
+                    });
+                });
+    
+                basePrice.items.forEach(item => {
+                    Object.values(item.options).forEach(option => {
+                        totalOptionPrice += option.price;
+                    });
+                });
+                let totalPrice = 0
+                if(type === 'combo') {
+                    totalPrice = ((basePrice.price + totalAddonsPrice + totalOptionPrice) - cartItem?.discount) * cartItem?.qty;
+                } else {
+                    totalPrice = (basePrice.price + totalAddonsPrice + totalOptionPrice) * cartItem?.qty;
+                }
+                return totalPrice; 
+            // } else {
+            //     return 0
+            // }
+        }
+
+        const calculateCartTotal = (cart) => {
+            console.log({ cart })
+            let totalCartPrice = 0
+            cart.forEach(item => {
+                if(['LandingPage', 'Menu'].includes(item.combo)) {
+                    totalCartPrice += calculateItemPrice(item, 'combo')
+                } else {
+                    totalCartPrice += calculateItemPrice(item, '')
+                }
+            })
+            return totalCartPrice
+        }
+
     return (
         <>
             <Accordion defaultActiveKey={['0']} alwaysOpen>
@@ -261,7 +310,8 @@ function CartItem() {
                                         <span>{item.qty}</span>
                                         <Link to="#" onClick={() => addquantity(item)}>+</Link>
                                     </div>
-                                    <p>₹{item?.price * item.qty}</p>
+                                    {/* <p>₹{item?.price * item.qty}</p> */}
+                                    <p>{calculateItemPrice(item, '')}</p>
                                     {/* <p>₹{item.price}</p> */}
                                 </div>
                             </li>
@@ -289,7 +339,8 @@ function CartItem() {
                                     <span>{item.qty}</span>
                                     <Link to="#" onClick={() => addquantity(item)}>+</Link>
                                 </div>
-                                <p>₹{item.price * item.qty}</p>
+                                {/* <p>₹{item.price * item.qty}</p> */}
+                                <p>{calculateItemPrice(item, 'combo')}</p>
                                 {/* <p>₹{item.price}</p> */}
                             </div>
                         </li>
@@ -300,7 +351,7 @@ function CartItem() {
             </Accordion>
             <YouMayAlsoLike />
             <PastOrder pastOrdersList={pastOrdersList}/>
-            <Link className='btn-green placeorder' onClick={handleCartItem}>{!JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span> ₹{totalPrice && totalPrice?.toFixed(2)}</span></Link>
+            <Link className='btn-green placeorder' onClick={handleCartItem}>{!JSON.parse(localStorage.getItem('custorder'))?.order ? 'Place order' : 'Update Order'} - <span>{calculateCartTotal(cartItems)}</span></Link>
             <CartModal show={show} onHide={handleClose} item={itemdata} setCartItems={setCartItems}/>
             <ComboModal show={showCombo} onHide={handleCloseCombo} item={comboitemdata} setCartItems={setCartItems}/>
         </>

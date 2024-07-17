@@ -99,11 +99,25 @@ function CombosSlider({comboList}) {
             setSelectedOptions(selectedOptions.filter(option => option !== id));
         }
     };
+    useEffect(() => {
+        const newAdonPrice = Object.values(adon).reduce((acc, addOns) => {
+          const totalAddOnPrice = addOns.reduce((sum, addOn) => sum + addOn.price, 0);
+          return acc + totalAddOnPrice;
+        }, 0);
+        const newOptionPrice = Object.values(option).reduce((acc, options) => {
+          const totalOptionPrice = Object.values(options).reduce((sum, option) => sum + option.price, 0);
+          return acc + totalOptionPrice;
+        }, 0);
+        setAdonPrice(newAdonPrice);
+        setOptionPrice(newOptionPrice);
+      }, [adon, option]);
 
     // Calculate total price
     const calculateTotalPrice = () => {
-        const selectedOptionPrices = selectedOptions.reduce((total, option) => total + optionPrices[option], 0);
-        return (basePrice + selectedOptionPrices) * count;
+        console.log({ filtereItem })
+        const totalPrice = filtereItem.price - filtereItem.discount;
+        const totalPriceWithqty = (totalPrice + adonPrice + optionPrice) * filtereItem.qty;
+        return totalPriceWithqty;
     };
 
     const createCombos = (combos, diet) => {
@@ -195,7 +209,7 @@ function CombosSlider({comboList}) {
             options: option[item?.item_id] ? option[item?.item_id] : {}
         }));
           const cartData = {
-            combo: "LandingPage",
+            combo: "Menu",
             qty: 1,
             price: calculateTotalPrice(),
             discount: filtereItem.discount,
@@ -354,7 +368,7 @@ function CombosSlider({comboList}) {
                                                                     type="radio"
                                                                     id={`selectaddonoptionMeat${option.option_id}`}
                                                                     value={option}
-                                                                    name={`option-${index}`}
+                                                                    name={`option-${mainitem.item_name}-${group.groupName}`}
                                                                     onChange={(e) => handleOptionChange(e, mainitem.item_id, option.option_id, option.price, group.groupName)}                                                            
                                                                 />
                                                                 <span className="checkbox-indicator"></span>

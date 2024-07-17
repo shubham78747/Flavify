@@ -9,6 +9,8 @@ import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import {addComboItemToCart, addItemToCart} from '../../../Pages/CartPage/Cartslice/Cartslice'
 import { addOnsGroupeds, getGroupedOptionsAndAddOns, optionsGroupeds } from '../../../Helper/Coman';
+import {isEmpty} from "lodash"
+
 function CombosSlider() {
     const options = {
         margin: 24,
@@ -137,6 +139,7 @@ function CombosSlider() {
             });
           };
         const handleAddToCart = () => {
+            console.log({ filtereItem })
             const cartItemsAdd = filtereItem.items.map((item) => ({
                 item_id: item.item_id,
                 item_name:item.item_name,
@@ -147,7 +150,7 @@ function CombosSlider() {
               const cartData = {
                 combo: "LandingPage",
                 qty: 1,
-                price: calculateTotalPrice(),
+                price: filtereItem.total,
                 discount: filtereItem.discount,
                 items: cartItemsAdd
               };
@@ -163,6 +166,8 @@ function CombosSlider() {
             setAdonPrice(0);
             setShow(false);
         };
+
+        console.log({ option })
     return (
         <div className="Combomain">
             {allCombos?.length > 0 && <OwlCarousel className="owl-theme mb-3" {...options}>
@@ -269,17 +274,20 @@ function CombosSlider() {
                                             <li key={`option-group-${index}`} className='combo-option-list'>
                                                 <h3>{group.groupName}</h3>
                                                 <ul className='selectvariantmain'>
-                                                    {group.itemList.map((option, optionIndex) => (
-                                                        <li key={`option-${option.option_id}`}>                                                       
-                                                            <h5>{option.option_name}</h5>
-                                                            <label className="custom" htmlFor={`selectaddonoptionMeat${optionIndex}`}>
-                                                                <span className="checkbox-label">₹{option.price}</span>
+                                                    {group.itemList.map((opt, optionIndex) => (
+                                                        <li key={`option-${opt.option_id}`}>                                                       
+                                                            <h5>{opt.option_name}</h5>
+                                                            {console.log({ check: option[mainitem.item_id] ? option[mainitem.item_id][group.groupName]?.option_id === opt.option_id : false, mainitem: mainitem.item_id, groupName: group.groupName, option, optId: opt.option_id })}
+                                                            <label className="custom" htmlFor={`selectaddonoptionMeat${opt.option_id}`}>
+                                                                <span className="checkbox-label">₹{opt.price}</span>
+                                                                {console.log({ checkkk: !isEmpty(option) && option[mainitem.item_id] ? option[mainitem.item_id][group.groupName]?.option_id === opt.option_id : false, mainitem: mainitem.item_id, groupName: group.groupName})}
                                                                 <input
                                                                     type="radio"
-                                                                    id={`selectaddonoptionMeat${option.option_id}`}
-                                                                    value={option}
-                                                                    name={`option-${index}`}
-                                                                    onChange={(e) => handleOptionChange(e, mainitem.item_id, option.option_id, option.price, group.groupName)}                                                            
+                                                                    id={`selectaddonoptionMeat${opt.option_id}`}
+                                                                    // value={opt}
+                                                                    name={`option-${mainitem.item_id}-${group.groupName}`}
+                                                                    onChange={(e) => handleOptionChange(e, mainitem.item_id, opt.option_id, opt.price, group.groupName)}                                                            
+                                                                    checked={!isEmpty(option) && option[mainitem.item_id] ? option[mainitem.item_id][group.groupName]?.option_id === opt.option_id : false}
                                                                 />
                                                                 <span className="checkbox-indicator"></span>
                                                             </label>

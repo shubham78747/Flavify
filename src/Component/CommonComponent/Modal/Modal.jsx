@@ -42,16 +42,16 @@ function Modals({
             setCount(1);
         }
     }, [show]);
-    const handleAddToCart = (itemId) => {
+    const handleAddToCart = (item) => {
         const selectedItem = {
-            item_id: itemId,
+            item_id: item.item_id,
             combo: flag === 'Likespage'? 'Checkout' : "None",
             item_name: item.item_name,
             discount:0,
-            price: calculateItemPrice(),
+            price: item.price,
             qty: count,
             items: [{
-                item_id: itemId,
+                item_id: item.item_id,
                 price: item.price,
                 add_ons: adon.map(addon => ({
                     addon_id: addon.addon_id,
@@ -233,7 +233,7 @@ function Modals({
                                         <Icon icon="ic:round-plus" width="24px" height="24px" />
                                     </span>
                                 </div>
-                                <Link className='btngreen continue' onClick={()=>handleAddToCart(item.item_id)}>
+                                <Link className='btngreen continue' onClick={()=>handleAddToCart(item)}>
                                     Add Item - ₹{calculateItemPrice()}
                                 </Link>
                             </div>
