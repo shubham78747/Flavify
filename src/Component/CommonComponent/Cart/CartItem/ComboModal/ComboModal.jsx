@@ -17,14 +17,9 @@ function Modals({
  }) {
     const [filtereddata,setFiltereddata] = useState([]);
     const dispatch = useDispatch()
-    // const calculateItemPrice = () => {
-    //     const basePrice = filtereddata?.price || 0;
-    //     const totalPrice = basePrice * filtereddata?.qty;
-    //     return totalPrice;
-    // };
+
     const calculateItemPrice = () => {
         if(!isEmpty(filtereddata)) {
-            // const basePrice = filtereddata?.length > 0 && filtereddata?.price || 0;
             let totalOptionPrice = 0;
             let totalAddonsPrice = 0;
             const basePrice = {...filtereddata};
@@ -56,6 +51,7 @@ function Modals({
         } else {
             cartItems.push({ ...filtereddata, item_id: itemId });
         }
+        console.log('conbodata',{cartItems})
         dispatch(addItemToCart(cartItems))
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
         setCartItems(cartItems)
@@ -92,18 +88,8 @@ function Modals({
                  setFiltereddata((prev) => ({
                     ...prev,
                     items: tempWorkingHours,
-                    // price: prev.price+opt.price,
-
                 }))
               }
-            //  else {
-            //     tempWorkingHours[index].options = tempWorkingHours[index].options.filter(ad => ad.option_id !== opt.option_id)
-            //     setFiltereddata((prev) => ({
-            //         ...prev,
-            //         items: tempWorkingHours,
-            //         price: prev.price-opt.price,
-            //     }))
-            // }
     };
     
     const handleAddClick = () => {

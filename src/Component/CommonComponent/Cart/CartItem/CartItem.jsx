@@ -27,26 +27,9 @@ function CartItem() {
     const dispatch = useDispatch()
     const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
 
-    // const { channel } = useChannel('punched_sub_order', (message) => {
-    //     const response = JSON.parse(message.data)
-    //     let pastOrders = []
-        
-    //     const data = {
-    //         is_punched: true,
-    //         items: cartItemsList,
-    //         sub_order_id: response.sub_order_id
-    //     }
-    //     pastOrders = [...pastOrdersList, data]
-    //     dispatch(setAllPastOrders(pastOrders))
-    //     dispatch(addItemToCart([]))
-    //     localStorage.setItem('cartItems', JSON.stringify([]))
-    // });
-
     useEffect(() => {
-        // if (cartItemsList) {
             setCartItems(cartItemsList);
             calculateTotalPrice(cartItemsList);
-        // }
     }, [cartItemsList]);
 
     useEffect(() => {
@@ -63,16 +46,16 @@ function CartItem() {
         localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
     };
 
-    const addquantity = (item) => {
-        const updatedCartItems = cartItems.map(cartItem => 
-            cartItem.item_name === item.item_name ? { ...cartItem, qty: cartItem.qty + 1 } : cartItem
+    const addquantity = (index) => {
+        const updatedCartItems = cartItems.map((cartItem, idx) =>
+            idx === index ? { ...cartItem, qty: cartItem.qty + 1 } : cartItem
         );
         updateCartItemsInLocalStorage(updatedCartItems);
     };
-
-    const removequantity = (item) => {
-        const updatedCartItems = cartItems.map(cartItem => 
-            cartItem.item_name === item.item_name ? { ...cartItem, qty: cartItem.qty - 1 } : cartItem
+    
+    const removequantity = (index) => {
+        const updatedCartItems = cartItems.map((cartItem, idx) =>
+            idx === index ? { ...cartItem, qty: cartItem.qty - 1 } : cartItem
         ).filter(cartItem => cartItem.qty > 0);
         updateCartItemsInLocalStorage(updatedCartItems);
     };
@@ -91,26 +74,25 @@ function CartItem() {
                 try {
                     let tempCart = [...cartItems]
                     const checkOrder = JSON.parse(localStorage.getItem('custorder'));
-                    console.log(checkOrder)
-                    let changedCartJson = tempCart.map(item => {
+                    let changedCartJson = tempCart?.map(item => {
                         let tempItem =  {...item}
                         if(['LandingPage', 'Menu'].includes(item.combo)) {
                             tempItem.price = calculateItemPrice(item, 'combo')
                         } else {
                             tempItem.price = calculateItemPrice(item, '')
                         }
-                        tempItem = calculateItemPrice(item, '')
-                        tempItem.items = tempItem.items.map(i => {
+
+                        tempItem.items = tempItem.items?.map(i => {
                             let tempi = {...i}
-                            tempi.options = Object.values(tempi.options).map(option => ({
+                            tempi.options = Object.values(tempi.options)?.map(option => ({
                                 option_id: option.option_id,
                                 price: option.price
-                            }))
+                            }))                
                             return tempi
                         })
+                        console.log({tempItem})
                         return tempItem
                     })
-
                     const header = {
                         table_id: table?.table_id,
                         order_id: table?.order_id,
@@ -120,6 +102,7 @@ function CartItem() {
                         order_id: table?.order_id,
                         items: changedCartJson,
                     }
+                    console.log({header,updatedata,changedCartJson})
                     if(checkOrder?.order){
                         const response = await Updateplaceorder(updatedata)                         
                         if(response?.data){
@@ -149,36 +132,6 @@ function CartItem() {
 
         const handleQuickbiteClick = (quickbite) => {
             const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite.item_id);
-            // const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
-            // const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
-            // const optionsGrouped = Object.values(itemOptions
-            // .filter((option) => option.item_id === quickbite.item_id)
-            // .reduce((groups, itemOption) => {
-            //     const groupName = itemOption.option_group_name;
-            //     if (!groups[groupName]) {
-            //     groups[groupName] = { groupName, itemList: [] };
-            //     }
-            //     const optionDetails = menu.options.find(
-            //     (option) => option.option_id === itemOption.option_id
-            //     );
-            //     groups[groupName].itemList.push(optionDetails);
-            //     return groups;
-            // }, {}));
-
-            // // Find related add-ons and group by addon_group_name
-            // const addOnsGrouped = Object.values(itemAddOns
-            // .filter((addon) => addon.item_id === quickbite.item_id)
-            // .reduce((groups, itemAddon) => {
-            //     const groupName = itemAddon.addon_group_name;
-            //     if (!groups[groupName]) {
-            //     groups[groupName] = { groupName, itemList: [] };
-            //     }
-            //     const addonDetails = menu.addOns.find(
-            //     (addon) => addon.addon_id === itemAddon.addon_id
-            //     );
-            //     groups[groupName].itemList.push(addonDetails);
-            //     return groups;
-            // }, {}));
             const data = {
                 item_id: quickbite.item_id,
                 price: quickbite.price,
@@ -191,49 +144,16 @@ function CartItem() {
         };  
 
         const handleComboClick = (quickbite) => {
-            // const itemOptions = Array.isArray(menu.itemOptions) ? menu.itemOptions : [];
-            // const itemAddOns = Array.isArray(menu.itemAddOns) ? menu.itemAddOns : [];
             let itemsdata = []
             quickbite.items.map(ele => {
                 const { add_ons, options, ...rest} = ele
                 const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, ele.item_id);
-                // const optionsGrouped = Object.values(itemOptions
-                // .filter((option) => option.item_id === rest.item_id)
-                // .reduce((groups, itemOption) => {
-                //     const groupName = itemOption.option_group_name;
-                //     if (!groups[groupName]) {
-                //     groups[groupName] = { groupName, itemList: [] };
-                //     }
-                //     const optionDetails = menu.options.find(
-                //     (option) => option.option_id === itemOption.option_id
-                //     );
-                //     groups[groupName].itemList.push(optionDetails);
-                //     return groups;
-                // }, {}));
-    
-                // // Find related add-ons and group by addon_group_name
-                // const addOnsGrouped = Object.values(itemAddOns
-                // .filter((addon) => addon.item_id === rest.item_id)
-                // .reduce((groups, itemAddon) => {
-                //     const groupName = itemAddon.addon_group_name;
-                //     if (!groups[groupName]) {
-                //     groups[groupName] = { groupName, itemList: [] };
-                //     }
-                //     const addonDetails = menu.addOns.find(
-                //     (addon) => addon.addon_id === itemAddon.addon_id
-                //     );
-                //     groups[groupName].itemList.push(addonDetails);
-                //     return groups;
-                // }, {}));
-
                 rest.addOnsGrouped = groupedAddOns;
                 rest.optionsGrouped =  groupedOptions;
                 itemsdata.push(rest)
             })
             const data = {
-                // item_id: quickbite.item_id,
                 price: quickbite.price,
-                // item_name: quickbite.item_name,
                 qty: quickbite.qty,
                 items: itemsdata,
                 discount: quickbite.discount,
@@ -243,8 +163,6 @@ function CartItem() {
         };
 
         const calculateItemPrice = (cartItem, type) => {
-            // if(!isEmpty(filtereddata)) {
-                // const basePrice = filtereddata?.length > 0 && filtereddata?.price || 0;
                 let totalOptionPrice = 0;
                 let totalAddonsPrice = 0;
                 const basePrice = {...cartItem};
@@ -267,13 +185,9 @@ function CartItem() {
                     totalPrice = (basePrice.price + totalAddonsPrice + totalOptionPrice) * cartItem?.qty;
                 }
                 return totalPrice; 
-            // } else {
-            //     return 0
-            // }
         }
 
         const calculateCartTotal = (cart) => {
-            console.log({ cart })
             let totalCartPrice = 0
             cart.forEach(item => {
                 if(['LandingPage', 'Menu'].includes(item.combo)) {
@@ -293,8 +207,7 @@ function CartItem() {
                     <Accordion.Body>
                         <ul>
                         {cartItems?.length > 0 && cartItems?.map((item,index)=> item.combo === 'None' || item.combo === 'Checkout' ? (
-                            <li key={index}>    
-                              {console.log(item)}                      
+                            <li key={index}>                                                      
                                 <div className="itemmaindetail" onClick={() => handleQuickbiteClick(item)}> 
                                     <span>
                                         <Image src='Images/makhniimg.png'></Image>
@@ -306,9 +219,9 @@ function CartItem() {
                                 </div>
                                 <div className="itemaddremove">
                                     <div className="addremove">
-                                        <Link to="#" onClick={() => removequantity(item)}>-</Link>
+                                        <Link to="#" onClick={() => removequantity(index)}>-</Link>
                                         <span>{item.qty}</span>
-                                        <Link to="#" onClick={() => addquantity(item)}>+</Link>
+                                        <Link to="#" onClick={() => addquantity(index)}>+</Link>
                                     </div>
                                     {/* <p>₹{item?.price * item.qty}</p> */}
                                     <p>{calculateItemPrice(item, '')}</p>
@@ -319,8 +232,7 @@ function CartItem() {
                         <li className='comboBox' >
                             <ul onClick={() => handleComboClick(item)}>
                                 {item.items.map((i, ix) => (
-                                    <li key={ix}>
-                                    {console.log({i})}
+                                    <li key={ix}>                                  
                                         <div className="itemmaindetail">
                                             <span>
                                                 <Image src='Images/makhniimg.png'></Image>
@@ -335,9 +247,9 @@ function CartItem() {
                             </ul>
                             <div className="itemaddremove">
                                 <div className="addremove">
-                                    <Link to="#" onClick={() => removequantity(item)}>-</Link>
+                                    <Link to="#" onClick={() => removequantity(index)}>-</Link>
                                     <span>{item.qty}</span>
-                                    <Link to="#" onClick={() => addquantity(item)}>+</Link>
+                                    <Link to="#" onClick={() => addquantity(index)}>+</Link>
                                 </div>
                                 {/* <p>₹{item.price * item.qty}</p> */}
                                 <p>{calculateItemPrice(item, 'combo')}</p>

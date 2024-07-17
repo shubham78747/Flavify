@@ -138,8 +138,8 @@ function CombosSlider() {
                       };
             });
           };
+          console.log({filtereItem})
         const handleAddToCart = () => {
-            console.log({ filtereItem })
             const cartItemsAdd = filtereItem.items.map((item) => ({
                 item_id: item.item_id,
                 item_name:item.item_name,
@@ -166,8 +166,6 @@ function CombosSlider() {
             setAdonPrice(0);
             setShow(false);
         };
-
-        console.log({ option })
     return (
         <div className="Combomain">
             {allCombos?.length > 0 && <OwlCarousel className="owl-theme mb-3" {...options}>
@@ -277,10 +275,10 @@ function CombosSlider() {
                                                     {group.itemList.map((opt, optionIndex) => (
                                                         <li key={`option-${opt.option_id}`}>                                                       
                                                             <h5>{opt.option_name}</h5>
-                                                            {console.log({ check: option[mainitem.item_id] ? option[mainitem.item_id][group.groupName]?.option_id === opt.option_id : false, mainitem: mainitem.item_id, groupName: group.groupName, option, optId: opt.option_id })}
+                                                            {/* {console.log({ check: option[mainitem.item_id] ? option[mainitem.item_id][group.groupName]?.option_id === opt.option_id : false, mainitem: mainitem.item_id, groupName: group.groupName, option, optId: opt.option_id })} */}
                                                             <label className="custom" htmlFor={`selectaddonoptionMeat${opt.option_id}`}>
                                                                 <span className="checkbox-label">₹{opt.price}</span>
-                                                                {console.log({ checkkk: !isEmpty(option) && option[mainitem.item_id] ? option[mainitem.item_id][group.groupName]?.option_id === opt.option_id : false, mainitem: mainitem.item_id, groupName: group.groupName})}
+                                                                {/* {console.log({ checkkk: !isEmpty(option) && option[mainitem.item_id] ? option[mainitem.item_id][group.groupName]?.option_id === opt.option_id : false, mainitem: mainitem.item_id, groupName: group.groupName})} */}
                                                                 <input
                                                                     type="radio"
                                                                     id={`selectaddonoptionMeat${opt.option_id}`}
