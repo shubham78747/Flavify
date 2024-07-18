@@ -179,8 +179,10 @@ function CombosSlider() {
                 <div className="item" key={index}>
                     <div className="combodetail">
                         <ul className='saladimgs gap-1 mb-0'>
-                            <li><Image src='Images/combo1.png'></Image></li>
-                            <li><Image src='Images/combo2.png'></Image></li>
+                            {item?.items?.map((i, ind) => (
+                                <li key={ind} className={i?.url}><Image src={i?.url ? i?.url : 'Images/combo1.png'}></Image></li>
+                            ))}
+                            {/* <li><Image src='Images/combo2.png'></Image></li> */}
                             <Link className='plusicon'><Image src='Images/plus.png'></Image></Link>
                         </ul>
                         <div className="combosubdetail">

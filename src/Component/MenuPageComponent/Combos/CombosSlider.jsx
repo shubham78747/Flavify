@@ -234,8 +234,11 @@ function CombosSlider({comboList}) {
                     <div className="item" key={index}>
                         <div className="combodetail">
                             <ul className='saladimgs gap-1 mb-0'>
-                                <li><Image src='Images/combo1.png'></Image></li>
-                                <li><Image src='Images/combo2.png'></Image></li>
+                            {item?.items?.map((i, ind) => (
+                                <li key={ind} className={i?.url}><Image src={i?.url ? i?.url : 'Images/combo1.png'}></Image></li>
+                            ))}
+                                {/* <li><Image src='Images/combo1.png'></Image></li>
+                                <li><Image src='Images/combo2.png'></Image></li> */}
                                 <Link className='plusicon'><Image src='Images/plus.png'></Image></Link>
                                 <Link className='vegicon'><Image src='Images/veg.svg'></Image></Link>
                                 <Link className='nonvegicon'><Image src='Images/nonveg.svg'></Image></Link>
@@ -255,29 +258,6 @@ function CombosSlider({comboList}) {
                         </div>
                     </div>
                 ))}
-                {/* <div className="item">
-                    <div className="combodetail">
-                        <ul className='saladimgs gap-1 mb-0'>
-                            <li><Image src='Images/combo1.png'></Image></li>
-                            <li><Image src='Images/combo2.png'></Image></li>
-                            <Link className='plusicon'><Image src='Images/plus.png'></Image></Link>
-                            <Link className='vegicon'><Image src='Images/veg.svg'></Image></Link>
-                            <Link className='nonvegicon'><Image src='Images/nonveg.svg'></Image></Link>
-                        </ul>
-                        <div className="combosubdetail">
-                            <div className="offertab">
-                                <span className='bluetag'><Icon icon="carbon:close-outline" width="16px" height="16px" /> 30% OFF</span>
-                                <i><Image src='Images/veg.svg'></Image></i>
-                            </div>
-                            <h3>Manchurian gravy + Shaahi Wrapes</h3>
-                            <div className="comboprice d-flex">
-                                <p>₹920 <del>₹1200 </del></p>
-                                <Link onClick={handleShow}>View Combo <Icon icon="teenyicons:right-small-outline" width="16px" height="16px" /></Link>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-
             </OwlCarousel>}
             <Modal show={show} onHide={handleClose} className="singleitem combomodal">
                 <Modal.Header closeButton>

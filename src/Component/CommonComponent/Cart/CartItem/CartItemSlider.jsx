@@ -63,10 +63,14 @@ function CartItemSlider() {
       }
     };
     useEffect(() => {
-      if(pastOrdersList?.length > 0 || cartItemsList?.length > 0) {
-        const data = [...pastOrdersList, ...cartItemsList]
-        filterAllItemsFromCart(data)
+      let data = []
+      if(pastOrdersList?.length > 0) {
+        data = [...data, ...pastOrdersList]
+      } 
+      if(cartItemsList?.length > 0) {
+        data = [...data, ...cartItemsList]
       }
+      filterAllItemsFromCart(data)
     }, [pastOrdersList, cartItemsList, menu, customerPref])
 
     const handleClose = () => setShow(false);
@@ -91,7 +95,7 @@ function CartItemSlider() {
                     <div className="item" key={index}>
                         <div className="combodetail">
                             <ul className='saladimgs gap-1 mb-0'>
-                                <li ><Image src='Images/manchurianimg.png'></Image></li>
+                                <li ><Image src={ele?.url ? ele?.url : 'Images/manchurianimg.png'}></Image></li>
                             </ul>
                             <div className="combosubdetail">
 

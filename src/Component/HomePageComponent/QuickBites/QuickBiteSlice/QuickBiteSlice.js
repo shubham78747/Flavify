@@ -57,7 +57,7 @@ const foodSlice = createSlice({
         }, {});
         state.categories = Object.keys(categories).map(item => ({
           item_name: item
-     }));
+        }));
       })
   },
 });

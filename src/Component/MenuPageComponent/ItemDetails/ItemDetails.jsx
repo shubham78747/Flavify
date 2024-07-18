@@ -32,7 +32,7 @@ function ItemDetails({ items, selectedCategory }) {
         e.preventDefault();
         
         let cartForCombo = [];
-        cartItemsList.map(j => {
+        cartItemsList?.map(j => {
             j.items.map(i => {
                 const menuItem = menu.items.find((k) => k.item_id === i.item_id);
                 const data = {
@@ -50,6 +50,8 @@ function ItemDetails({ items, selectedCategory }) {
                   cartForCombo.push(data)
             })
         });
+
+        console.log({ cartForCombo })
 
         const data = await predictMenu(menu, cartForCombo, customerPref?.diet, item)
         setMenuComboList(data)
@@ -124,7 +126,7 @@ function ItemDetails({ items, selectedCategory }) {
                                 </Col>
                                 <Col lg={4}>
                                     <div className="itemaddimg">
-                                        <Image src='/Images/itemimg.png' alt="Item"></Image>
+                                        <Image src={item?.url ? item?.url : '/Images/itemimg.png'} alt="Item"></Image>
                                         <Link to="#" onClick={() => handleQuickbiteClick(item)}><Icon icon="charm:plus" width="16px" height="16px" /> ADD</Link>
                                     </div>
                                 </Col>

@@ -23,9 +23,10 @@ const Carousel = ({ items, handleQuickbiteClick }) => {
         {slides.length > 0 && <OwlCarousel className="owl-theme mb-3" {...options}>
           {items?.map((item, index) => (
             <div className="item" key={index}>
+              {console.log({ item })}
               <div className="dishname">
                 <span onClick={() => handleQuickbiteClick(item)}>
-                  <Image src='Images/healthy.png' />
+                  <Image src={item?.url ? item?.url : 'Images/healthy.png'} />
                 </span>
                 <h4>{item?.item_name}</h4>
               </div>

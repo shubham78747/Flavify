@@ -268,7 +268,7 @@ function TableHeaderTitle(props) {
     for (const combo of combos) {
       let comboItems = [];
       combo.items.map((item) => {
-        const i = menu.items.find((i) => i.item_id === item);
+        const i = menu?.items?.find((i) => i.item_id === item);
         comboItems.push(i);
       });
       const data = {

@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux';
 function PastOrder({pastOrdersList}) {
     const [orders, setOrders] = useState([]);
     // const {pastOrdersList} = useSelector(state => state.cart)
+
+    console.log({ pastOrdersList })
     
     useEffect(() => {
         setOrders(pastOrdersList)
@@ -23,8 +25,7 @@ function PastOrder({pastOrdersList}) {
                                 <Accordion.Header>Order {order?.sub_order_id}</Accordion.Header>
                                 <Accordion.Body>
                                     <ul>
-                                     {order?.items?.map((item,index)=>{
-                                        return(
+                                     {order?.items?.map((item,index)=> item.combo === 'None' || item.combo === 'Checkout' ? (
                                             <li key={index}>
                                             <div className="itemmaindetail">
                                                 <span>
@@ -44,7 +45,35 @@ function PastOrder({pastOrdersList}) {
                                                 <p>₹{item.price}</p>
                                             </div>
                                         </li>
-                                        )})}
+                                        ) : (
+                                            <li className='comboBox' >
+                                                <ul>
+                                                    {item.items.map((i, ix) => (
+                                                        <li key={ix}>                                  
+                                                            <div className="itemmaindetail">
+                                                                <span>
+                                                                    <Image src='Images/makhniimg.png'></Image>
+                                                                </span>
+                                                                <div className="itemsubdetail">
+                                                                    <Link to=""><Image src='Images/veg.svg'></Image>{i?.item_name}</Link>
+                                                                    <span>₹{i.price}</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>   
+                                                    ))}
+                                                </ul>
+                                                {/* <div className="itemaddremove">
+                                                    <div className="addremove">
+                                                        <Link to="#" onClick={() => removequantity(index)}>-</Link>
+                                                        <span>{item.qty}</span>
+                                                        <Link to="#" onClick={() => addquantity(index)}>+</Link>
+                                                    </div>
+                                                    <p>₹{item.price * item.qty}</p>
+                                                    <p>{calculateItemPrice(item, 'combo')}</p>
+                                                    <p>₹{item.price}</p>
+                                                </div> */}
+                                            </li>
+                                        ))}
                                        
                                         {/* <li>
                                             <div className="itemmaindetail">
