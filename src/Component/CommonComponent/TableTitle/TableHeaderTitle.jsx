@@ -128,6 +128,8 @@ function TableHeaderTitle(props) {
       if (table?.fresh_order && !tableData.isfirst) {
         setShow(true);
         localStorage.setItem("custRef", JSON.stringify({ diet: "V", pax: 1 }));
+        dispatch(addItemToCart([]));
+          localStorage.setItem("cartItems", JSON.stringify([]));
       }
       if (!table?.fresh_order) {
         const getitemdata = JSON.parse(localStorage.getItem("custPref"));

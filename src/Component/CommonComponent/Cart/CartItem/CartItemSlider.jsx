@@ -36,7 +36,7 @@ function CartItemSlider() {
       const itemSet = new Set();
       if (menu && menu?.items) {
         data.map((element) => {
-          element.items.map((ele) => {
+          element.items?.map((ele) => {
             const item = menu?.items?.find((i) => i.item_id === ele.item_id);
             if (item && !itemSet.has(item.item_id)) {
               const returmData = {
@@ -73,34 +73,6 @@ function CartItemSlider() {
        const handleCardSlide = (quickbite) => {
         setFlag('Likespage');
         const { groupedOptions, groupedAddOns } = getGroupedOptionsAndAddOns(menu, quickbite.item_id);
-        // const optionsGrouped = Object.values(menu.itemOptions
-        // .filter((option) => option.item_id === quickbite.item_id)
-        // .reduce((groups, itemOption) => {
-        //     const groupName = itemOption.option_group_name;
-        //     if (!groups[groupName]) {
-        //     groups[groupName] = { groupName, itemList: [] };
-        //     }
-        //     const optionDetails = menu.options.find(
-        //     (option) => option.option_id === itemOption.option_id
-        //     );
-        //     groups[groupName].itemList.push(optionDetails);
-        //     return groups;
-        // }, {}));
-
-        // // Find related add-ons and group by addon_group_name
-        // const addOnsGrouped = Object.values(menu.itemAddOns
-        // .filter((addon) => addon.item_id === quickbite.item_id)
-        // .reduce((groups, itemAddon) => {
-        //     const groupName = itemAddon.addon_group_name;
-        //     if (!groups[groupName]) {
-        //     groups[groupName] = { groupName, itemList: [] };
-        //     }
-        //     const addonDetails = menu.addOns.find(
-        //     (addon) => addon.addon_id === itemAddon.addon_id
-        //     );
-        //     groups[groupName].itemList.push(addonDetails);
-        //     return groups;
-        // }, {}));
         const data = {
             item_id: quickbite.item_id,
             price: quickbite.price,

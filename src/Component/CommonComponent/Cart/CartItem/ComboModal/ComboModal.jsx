@@ -36,6 +36,7 @@ function Modals({
                 });
             });
             const totalPrice = ((basePrice.price + totalAddonsPrice + totalOptionPrice) - filtereddata?.discount) * filtereddata?.qty;
+            // const totalPrice = (basePrice.price + totalAddonsPrice + totalOptionPrice) * filtereddata?.qty;
             return totalPrice; 
         } else {
             return 0

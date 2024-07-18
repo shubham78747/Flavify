@@ -138,7 +138,6 @@ function CombosSlider() {
                       };
             });
           };
-          console.log({filtereItem})
         const handleAddToCart = () => {
             const cartItemsAdd = filtereItem.items.map((item) => ({
                 item_id: item.item_id,
@@ -147,6 +146,7 @@ function CombosSlider() {
                 add_ons: adon[item?.item_id] ? [...adon[item?.item_id]] : [],
                 options: option[item?.item_id] ? option[item?.item_id] : {}
             }));
+            console.log({ filtereItem })
               const cartData = {
                 combo: "LandingPage",
                 qty: 1,
@@ -155,7 +155,13 @@ function CombosSlider() {
                 items: cartItemsAdd
               };
               let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-              cartItems.push(cartData);
+              const existingItemIndex = cartItems.findIndex(cartItem => JSON.stringify(cartItem.items) === JSON.stringify(cartData.items));
+
+              if (existingItemIndex !== -1) {
+                  cartItems[existingItemIndex].qty += filtereItem.qty;
+              } else {
+                  cartItems.push(cartData);
+              }
               dispatch(addItemToCart(cartItems))
               localStorage.setItem('cartItems', JSON.stringify(cartItems));
               toast.success(`Add Item SuccessFully`);
@@ -184,7 +190,7 @@ function CombosSlider() {
                             </div>
                             <h3>{item?.items.map(i => i.item_name).join(' + ')}</h3>
                             <div className="comboprice d-flex">
-                                <p>₹{item?.total-item?.discount} <del>₹{item?.discount} </del></p>
+                                <p>₹{item?.total} <del>₹{item?.discount} </del></p>
                                 <Link onClick={()=>handleShow(item)}>View Combo <Icon icon="teenyicons:right-small-outline" width="16px" height="16px" /></Link>
                             </div>
                         </div>

@@ -26,7 +26,6 @@ function CartItem() {
     const [comboitemdata,setComboItemdata] = useState([]);
     const dispatch = useDispatch()
     const { pastOrdersList, cartItemsList } = useSelector(state => state.cart)
-
     useEffect(() => {
             setCartItems(cartItemsList);
             calculateTotalPrice(cartItemsList);
@@ -76,11 +75,12 @@ function CartItem() {
                     const checkOrder = JSON.parse(localStorage.getItem('custorder'));
                     let changedCartJson = tempCart?.map(item => {
                         let tempItem =  {...item}
-                        if(['LandingPage', 'Menu'].includes(item.combo)) {
-                            tempItem.price = calculateItemPrice(item, 'combo')
-                        } else {
-                            tempItem.price = calculateItemPrice(item, '')
-                        }
+                        // if(['LandingPage', 'Menu'].includes(item.combo)) {
+                        //     tempItem.price = calculateItemPrice(item, 'combo')
+                        //     console.log(calculateItemPrice(item, 'combo'))
+                        // } else {
+                        //     tempItem.price = calculateItemPrice(item, '')
+                        // }
 
                         tempItem.items = tempItem.items?.map(i => {
                             let tempi = {...i}
@@ -167,29 +167,32 @@ function CartItem() {
                 let totalAddonsPrice = 0;
                 const basePrice = {...cartItem};
     
-                basePrice.items.forEach(item => {
+                basePrice.items?.forEach(item => {
                     item.add_ons.forEach(option => {
                         totalAddonsPrice += option.price;
                     });
                 });
     
-                basePrice.items.forEach(item => {
+                basePrice.items?.forEach(item => {
                     Object.values(item.options).forEach(option => {
                         totalOptionPrice += option.price;
                     });
                 });
                 let totalPrice = 0
+                console.log({ basePrice, totalAddonsPrice, totalOptionPrice })
                 if(type === 'combo') {
                     totalPrice = ((basePrice.price + totalAddonsPrice + totalOptionPrice) - cartItem?.discount) * cartItem?.qty;
+                    // totalPrice = (basePrice.price + totalAddonsPrice + totalOptionPrice) * cartItem?.qty;
                 } else {
                     totalPrice = (basePrice.price + totalAddonsPrice + totalOptionPrice) * cartItem?.qty;
                 }
+                console.log(totalPrice)
                 return totalPrice; 
         }
 
         const calculateCartTotal = (cart) => {
             let totalCartPrice = 0
-            cart.forEach(item => {
+            cart?.forEach(item => {
                 if(['LandingPage', 'Menu'].includes(item.combo)) {
                     totalCartPrice += calculateItemPrice(item, 'combo')
                 } else {
@@ -231,7 +234,7 @@ function CartItem() {
                         ) : 
                         <li className='comboBox' >
                             <ul onClick={() => handleComboClick(item)}>
-                                {item.items.map((i, ix) => (
+                                {item?.items?.map((i, ix) => (
                                     <li key={ix}>                                  
                                         <div className="itemmaindetail">
                                             <span>
