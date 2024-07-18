@@ -79,8 +79,10 @@ function CartItem() {
                         //     tempItem.price = calculateItemPrice(item, 'combo')
                         //     console.log(calculateItemPrice(item, 'combo'))
                         // } else {
-                        //     tempItem.price = calculateItemPrice(item, '')
                         // }
+                        const {totalOptionPrice, totalAddonsPrice} = calculateAddonAndOptionsPrice(tempItem)
+                        console.log({ item, tempItem: tempItem.price, totalAddonsPrice, totalOptionPrice})
+                        tempItem.price = tempItem.price + totalAddonsPrice + totalOptionPrice;
 
                         tempItem.items = tempItem.items?.map(i => {
                             let tempi = {...i}
@@ -162,22 +164,40 @@ function CartItem() {
             setShowCombo(true)
         };
 
-        const calculateItemPrice = (cartItem, type) => {
-                let totalOptionPrice = 0;
+        const calculateAddonAndOptionsPrice = (basePrice) => {
+            let totalOptionPrice = 0;
                 let totalAddonsPrice = 0;
+            basePrice.items?.forEach(item => {
+                item.add_ons.forEach(option => {
+                    totalAddonsPrice += option.price;
+                });
+            });
+
+            basePrice.items?.forEach(item => {
+                Object.values(item.options).forEach(option => {
+                    totalOptionPrice += option.price;
+                });
+            });
+
+            return {totalOptionPrice, totalAddonsPrice}
+        }
+        const calculateItemPrice = (cartItem, type) => {
+                // let totalOptionPrice = 0;
+                // let totalAddonsPrice = 0;
                 const basePrice = {...cartItem};
+                const {totalOptionPrice, totalAddonsPrice} = calculateAddonAndOptionsPrice(basePrice)
     
-                basePrice.items?.forEach(item => {
-                    item.add_ons.forEach(option => {
-                        totalAddonsPrice += option.price;
-                    });
-                });
+                // basePrice.items?.forEach(item => {
+                //     item.add_ons.forEach(option => {
+                //         totalAddonsPrice += option.price;
+                //     });
+                // });
     
-                basePrice.items?.forEach(item => {
-                    Object.values(item.options).forEach(option => {
-                        totalOptionPrice += option.price;
-                    });
-                });
+                // basePrice.items?.forEach(item => {
+                //     Object.values(item.options).forEach(option => {
+                //         totalOptionPrice += option.price;
+                //     });
+                // });
                 let totalPrice = 0
                 console.log({ basePrice, totalAddonsPrice, totalOptionPrice })
                 if(type === 'combo') {

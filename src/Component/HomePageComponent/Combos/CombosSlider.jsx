@@ -190,7 +190,7 @@ function CombosSlider() {
                             </div>
                             <h3>{item?.items.map(i => i.item_name).join(' + ')}</h3>
                             <div className="comboprice d-flex">
-                                <p>₹{item?.total} <del>₹{item?.discount} </del></p>
+                                <p>₹{item?.total - item?.discount} <del>₹{item?.discount} </del></p>
                                 <Link onClick={()=>handleShow(item)}>View Combo <Icon icon="teenyicons:right-small-outline" width="16px" height="16px" /></Link>
                             </div>
                         </div>

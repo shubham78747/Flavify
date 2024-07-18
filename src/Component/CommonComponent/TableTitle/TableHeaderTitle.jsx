@@ -105,11 +105,17 @@ function TableHeaderTitle(props) {
           options
         };
       });
-  
-      return {
+      let data = {
         ...item,
         items: updatedSubItems
-      };
+      } 
+
+      console.log({ data})
+
+      const {totalOptionPrice, totalAddonsPrice} = calculateAddonAndOptionsPrice(data)
+  
+      data.price = data.price - (totalAddonsPrice + totalOptionPrice)
+      return data;
     });
   
     // Return the updated ordered item object
@@ -118,7 +124,23 @@ function TableHeaderTitle(props) {
       items: updatedItems
     };
   }
+  const calculateAddonAndOptionsPrice = (basePrice) => {
+    let totalOptionPrice = 0;
+        let totalAddonsPrice = 0;
+    basePrice?.items?.forEach(item => {
+        item?.add_ons?.forEach(option => {
+            totalAddonsPrice += option.price;
+        });
+    });
 
+    basePrice?.items?.forEach(item => {
+        Object.values(item.options)?.forEach(option => {
+            totalOptionPrice += option.price;
+        });
+    });
+
+    return {totalOptionPrice, totalAddonsPrice}
+}
   useEffect(() => {
     const tableDataStr = localStorage.getItem("tableData");
     const tableData = tableDataStr
@@ -141,7 +163,9 @@ function TableHeaderTitle(props) {
           if (order?.is_punched) {
             pastOrder.push(order);
           } else {
-            const groupWise = updateOrderedItemOptions(order)
+            let groupWise = updateOrderedItemOptions(order)
+            console.log({ groupWise })
+            
             currecntOrder = groupWise.items;
           }
         }
@@ -195,6 +219,7 @@ function TableHeaderTitle(props) {
       dispatch(setAllPastOrders(pastOrder));
     }
   }, [table]);
+  
   const handleSliderChange = (event) => {
     setCurrentStep(Number(event.target.value));
   };

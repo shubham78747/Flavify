@@ -18,23 +18,27 @@ function Modals({
     const [filtereddata,setFiltereddata] = useState([]);
     const dispatch = useDispatch()
 
+    const calculateAddonAndOptionsPrice = (basePrice) => {
+        let totalOptionPrice = 0;
+            let totalAddonsPrice = 0;
+        basePrice.items?.forEach(item => {
+            item.add_ons.forEach(option => {
+                totalAddonsPrice += option.price;
+            });
+        });
+
+        basePrice.items?.forEach(item => {
+            Object.values(item.options).forEach(option => {
+                totalOptionPrice += option.price;
+            });
+        });
+
+        return {totalOptionPrice, totalAddonsPrice}
+    }
     const calculateItemPrice = () => {
         if(!isEmpty(filtereddata)) {
-            let totalOptionPrice = 0;
-            let totalAddonsPrice = 0;
             const basePrice = {...filtereddata};
-
-            basePrice.items.forEach(item => {
-                item.add_ons.forEach(option => {
-                    totalAddonsPrice += option.price;
-                });
-            });
-
-            basePrice.items.forEach(item => {
-                Object.values(item.options).forEach(option => {
-                    totalOptionPrice += option.price;
-                });
-            });
+            const {totalOptionPrice, totalAddonsPrice} = calculateAddonAndOptionsPrice(basePrice)
             const totalPrice = ((basePrice.price + totalAddonsPrice + totalOptionPrice) - filtereddata?.discount) * filtereddata?.qty;
             // const totalPrice = (basePrice.price + totalAddonsPrice + totalOptionPrice) * filtereddata?.qty;
             return totalPrice; 
